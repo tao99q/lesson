@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //call,apply,bind在低版本IE下不支持
+    //try{}catch(e){}
+    //try里面的代码 如果报错了,就会执行catch里面的代码,错误信息会存储在事件对象e中的e.message中
+    function getType(type){
+       try{
+           return Object.prototype.toString.call(type).split(" ")[1].replace("]",'');
+       }catch(e){
+           console.log(e.message);
+           return type.constructor.name
+       }
+    }
+    var time=new  Date();
+    var reg=/\d/;
+    console.log(getType(time));//Date
+    console.log(getType(reg));//RegExp
+
+
+    //将类数组转为数组的方法
+    function toArray(likeArray){
+       try{
+           return [].slice.call(likeArray);
+           //[].__proto__->Array.prototype
+       }catch(e){
+           var ary=[];
+           for(var i=0;i<likeArray.length;i++){
+               ary.push(likeArray[i]);
+           }
+           return ary
+       }
+    }
+    function ff (){
+        //arguments;参数集合类数组
+       return toArray(arguments);
+    }
+    console.log(ff(1, 2, 3, 4, 5));
+</script>
+</body>
+</html>

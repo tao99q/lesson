@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--
+构造函数模式：
+构造一个类，因为类是函数数据类型的，所以我通过写一个函数来表示一个类【自定义类】
+这就叫构造函数模式
+怎么让他表示的是个类呢？
+1.最好函数名字首字母大写
+2.通过new这个关键词来创造一个变量，这个变量叫做实例-》var 实例 = new 类
+3.通过this 给他的实例增加私有的属性名和赋属性值
+
+通过new一个类的具体实例步骤：
+1.预解释
+2.自动生成一个this（代表当前实例），通过this给实例增加属性名，属性值
+3.默认将创建好的实例this返回，所以你不需要写return
+
+假如说我写了return
+1.return 基本数据类型，不会对他造成影响
+2.return 引用数据类型 ，就会改变实例的值，return谁实例就是谁
+
+
+【注意】
+var obj=new F<==相等的==>var obj=new F()；
+
+每个实例之间地址都不一样
+-->
+<script type="text/javascript">
+    function Fn() {
+        //this
+        this.name="a";
+        this.age=1;
+        this.f=function () {
+            console.log(this);
+        };
+        //return this
+    }
+    var obj=Fn();//undefined
+    var obj1= new Fn();
+    var obj2= new Fn();
+    var obj3= new Fn();
+
+    var a="1";
+    function FF() {
+        var a=0;
+        this.a++;//window.a=2
+        console.log(this.a);
+        this.a=a;//window.a=0
+        this.b=this.a;//window.b=0
+        return a
+    }
+    var o1=FF();//o1=0
+    var o2=new  FF();//{a:0,b:0}
+    console.log(o2);
+    var o3=new  FF;
+</script>
+</body>
+</html>

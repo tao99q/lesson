@@ -1,0 +1,263 @@
+[[ch_cookies_and_sessions]]
+== Cookies and Sessions
+
+HTTP is a _stateless_ protocol.((("HTTP", "stateless protocol")))((("stateless protocols")))  That means that when you load a page in your browser, and then you navigate to another page on the same website, neither the server nor the browser has any intrinsic way of knowing that it's the same browser visiting the same site.  Another way of saying this is that the way the Web works is that _every HTTP request contains all the information necessary for the server to satisfy the request_.
+
+This is a problem, though: if the story ended there, we could never "log in" to anything.  Streaming media wouldn't work.  Websites wouldn't be able to remember your preferences from one page to the next.  So there needs be a way to build state on top of HTTP, and that's where cookies and sessions enter the picture.((("cookies", id="ix_cookies", range="startofrange")))
+
+Cookies, unfortunately, have gotten a bad name thanks to the nefarious things that people have done with them.  This is unfortunate because cookies are really quite essential to the functioning of the "modern web" (although HTML5 has introduced some new features, like local storage, that could be used for the same purpose).
+
+The idea of a cookie is simple: the server sends a bit of information, and the browser stores it for some configurable period of time.  It's really up to the server what the particular bit of information is: often it's just a unique ID number that identifies a specific browser so that the illusion of state can be maintained.((("cookies", "important points about cookies")))
+
+There are some important things you need to know about cookies:
+
+Cookies are not secret from the user::
+	All cookies that the server sends to the client are available for the client to look at.  There's no reason you can't send something encrypted to protect its contents, but there's seldom any need for this (at least if you're not doing anything nefarious!). ((("signed cookies"))) _Signed_ cookies, which we'll discuss in a bit, can obfuscate the contents of the cookie, but this is in no way cryptographically secure from prying eyes.
+
+The user can delete or disallow cookies::
+	Users have full control over cookies, and browsers make it possible to delete cookies in bulk or individually.  Unless you're up to no good, there's no real reason for users to do this, but it is useful during testing.  Users can also disallow cookies, which is more problematic: only the simplest web applications can make do without cookies.
+
+Regular cookies can be tampered with::
+	Whenever a browser makes a request of your server that has an associated cookie, and you blindly trust the contents of that cookie, you are opening yourself up for attack.  The height of foolishness, for example, would be to execute code contained in a cookie.  To ensure cookies aren't tampered with, use signed cookies.
+
+Cookies can be used for attacks::
+	A category of attacks called cross-site scripting attacks (XSS)	has sprung up in recent years.  One technique of XSS attacks involves malicious JavaScript modifying the contents of cookies.  This is additional reason not to trust the contents of cookies that come back to your server.  Using signed cookies helps (tampering will be evident in a signed cookie whether the user or malicious JavaScript modified it), and there's also a setting that specifies that cookies are to be modified only by the server.  These cookies can be limited in usefulness, but they are certainly safer.
+
+Users will notice if you abuse cookies::
+	If you set a lot of cookies on your users' computers, or store a lot of data, it will irritate your users, something you should avoid.  Try to keep your use of cookies to a minimum.
+
+Prefer sessions over cookies::
+	For the most part, you can use _sessions_ to maintain state,((("sessions", "preferring over cookies"))) and it's generally wise to do so.  It's easier, you don't have to worry about abusing your users' storage, and it can be more secure.  Sessions rely on cookies, of course, but with sessions, Express will be doing the heavy lifting for you.
+
+[NOTE]
+====
+Cookies are not magic: when the server wishes the client to store a cookie, it sends a header called +Set-Cookie+ containing((("Set-Cookie header"))) name/value pairs, and when a client sends a request to a server for which it has cookies, it sends((("Cookie request headers"))) multiple +Cookie+ request headers containing the value of the cookies.
+====
+
+=== Externalizing Credentials
+
+To make cookies secure, a _cookie secret_ is necessary.((("cookies", "externalizing credentials")))((("cookie secret")))  The cookie secret is a string that's known to the server and used to encrypt secure cookies before they're sent to the client.  It's not a password that has to be remembered, so it can just be a random string.  ((("credentials", "externalizing")))((("externalizing credentials")))((("xkcd password generator")))((("random password generator")))I usually use http://bit.ly/xkcd_pw_generator[a random password generator inspired by xkcd] to generate the cookie secret.
+
+It's a common practice to externalize third-party credentials, such as the cookie secret, database passwords, and API tokens (Twitter, Facebook, etc.).  Not only does this ease maintenance (by making it easy to locate and update credentials), it also allows you to omit the credentials file from your version control system.  This is especially critical for open source repositories hosted on GitHub or other public source control repositories.
+
+To that end, we're going to externalize our credentials in a JavaScript file (it's also fine to use JSON or XML, though I find JavaScript to be the easiest appraoch).((("JavaScript", "credentials.js file")))  Create a file called __credentials.js__:
+
+[source,js]
+----
+module.exports = {
+    cookieSecret: 'your cookie secret goes here',
+};
+----
+
+Now, to make sure we don't accidentally add this file to our repository, add __credentials.js__ to your __.gitignore__ file.  To import your((("credentials", "importing into your application"))) credentials into your application, all you need to do is:
+
+[source,js]
+----
+var credentials = require('./credentials.js');
+----
+
+We'll be using this same file to store other credentials later on, but for now, all we need is our cookie secret.
+
+[NOTE]
+====
+If you're following along by using the companion repository, you'll have to create your own _credentials.js_ file, as it is not included in the repository.
+====
+
+=== Cookies in Express
+
+Before you start setting and accessing((("Express", "cookies in")))((("cookies", "in Express"))) cookies in your app, you need((("cookie-parser middleware"))) to include the +cookie-parser+ middleware.  First, +npm install --save cookie-parser+, then:
+
+[source,js]
+----
+app.use(require('cookie-parser')(credentials.cookieSecret));
+----
+
+Once you've done this, you can set a cookie or a signed cookie anywhere ((("res.cookie")))you have access to a request object:
+
+[source,js]
+----
+res.cookie('monster', 'nom nom');
+res.cookie('signed_monster', 'nom nom', { signed: true });
+----
+
+++++
+<?hard-pagebreak?>
+++++
+
+[NOTE]
+====
+Signed cookies take precedence over unsigned cookies.((("signed cookies")))  If you name your signed cookie +signed_monster+, you cannot have an unsigned cookie with the same name (it will come back as +undefined+).
+====
+
+To retrieve the value of a cookie (if any) sent from the client, just access the +cookie+ or +signedCookie+ properties of ((("req.signedCookies")))((("req.cookies")))the request object:
+
+[source,js]
+----
+var monster = req.cookies.monster;
+var signedMonster = req.signedCookies.monster;
+----
+
+[NOTE]
+====
+You can use any string you want for a cookie name.((("cookies", "in Express", "names of")))  For example, we could have used +\'signed monster'+ instead of +\'signed_monster'+, but then we would have to use the bracket notation to retrieve the pass:[<phrase role="keep-together">cookie:</phrase>] +req.signedCookies[\'signed monster']+.  For this reason, I recommend using cookie names without special characters.
+====
+
+To delete a cookie, use +req.clearCookie+:
+
+[source,js]
+----
+res.clearCookie('monster');
+----
+
+When you set a cookie, you can ((("cookies", "in Express", "specifying cookie options")))specify the following options:
+
++domain+::
+	Controls the domains the cookie is associated with; this allows you to assign cookies to specific subdomains.  Note that you cannot set a cookie for a different domain than the server is running on: it will simply do nothing.
+
++path+::
+	Controls the path this cookie applies to.  Note that paths have an implicit wildcard after them: if you use a path of __/__ (the default), it will apply to all pages on your site.  If you use a path of __/foo__, it will apply to the paths __/foo__, __/foo/bar__, etc.
+
++maxAge+::
+	Specifies how long the client should keep the cookie before deleting it, in milliseconds.  If you omit this, the cookie will be deleted when you close your browser.  (You can also specify a date for expiration with the +expires+ option, but the syntax is frustrating.  I recommend using +maxAge+.)
+
++secure+::
+	Specifies that this cookie will be sent only over a secure (HTTPS) connection.
+
++httpOnly+::
+	Setting this to true specifies the cookie will be modified only by the server.  That is, client-side JavaScript cannot modify it.  This helps prevent XSS attacks.
+
++signed+::
+	Set to true to sign this cookie, making it available in +res.signedCookies+ instead of +res.cookies+.  Signed cookies that have been tampered with will be rejected by the server, and the cookie value will be reset to its original value.
+
+=== Examining Cookies
+
+As part of your testing, you'll probably want a way to examine the cookies on your system.((("browsers", "viewing cookies")))((("cookies", "examining")))  Most browsers have a way to view individual cookies and the values they store.  ((("Chrome", "viewing cookies")))In Chrome, open the developer tools, and select the Resources tab.  In the tree on the left, you'll see Cookies.  Expand that, and you'll see the site you're currently visiting listed.  Click that, and you will see all the cookies associated with this site.  You can also right-click the domain to clear all cookies, or right-click an individual cookie to remove it specifically.
+
+=== Sessions
+
+Sessions are really just a more convenient way to maintain state.((("sessions", id="ix_sessions", range="startofrange")))  To implement sessions, _something_ has to be stored on the client; otherwise, the server wouldn't be able to identify the client from one request to the next.  The usual method of doing this is a cookie that contains a unique identifier.  The server then uses that identifier to retrieve the appropriate session information.  Cookies aren't the only way to accomplish this: during the height of the "cookie scare" (when cookie abuse was rampant), many users were simply turning off cookies, and other ways to maintain state were devised, such as decorating URLs with session information.  These techniques were messy, difficult, and inefficient, and best left in the past. ((("HTML5", "local storage"))) HTML5 provides another option for sessions, called local storage, but there's currently no compelling reason to use this technique over tried and true cookies.((("cookies", range="endofrange", startref="ix_cookies")))
+
+Broadly speaking, there are two ways to implement sessions: store everything in the cookie, or store only a unique identifier in the cookie and everything else on the server.((("sessions", "cookie-based")))((("cookie-based sessions")))  The former are called "cookie-based sessions," and merely represent a convenience over using cookies.  However, it still means that everything you add to the session will be stored on the client's browser, which is an approach I don't recommend.  I would  recommend this approach only if you know that you will be storing just a small amount of information, that you don't mind the user having access to the information, and that it won't be growing out of control over time.  If you want to take this approach, see the https://www.npmjs.org/package/cookie-session[+cookie-session+ middleware].
+
+==== Memory Stores
+
+If you would rather store session information((("sessions", "memory stores"))) on the server, which I recommend, you have to have somewhere to store it.  The entry-level option is memory sessions.  They are very easy to set up, but they have a huge downside: when you restart the server (which you will be doing a lot of over the course of this book!), your session information disappears.  Even worse, if you scale out by having multiple servers (see <<ch_production_concerns>>), a different server could service a request every time: session data would sometimes be there, and sometimes not.  This is clearly an unacceptable user experience.  However, for our development and testing needs, it will suffice.  We'll see how to permanently store session information in <<ch_persistence>>.
+
+First, install((("express-session middleware"))) +express-session+ (+npm install --save express-session+); then, after linking in the cookie parser, link in +express-session+:
+
+[source,js]
+----
+app.use(require('cookie-parser')(credentials.cookieSecret));
+app.use(require('express-session')());
+----
+
+The +express-session+ middleware accepts a configuration object with the following options:
+
++key+::
+	The name of the cookie that will store the unique session identifier.  Defaults to +connect.sid+.
+
++store+::
+	An instance of a session store.  Defaults to an instance of +MemoryStore+, which is fine for our current purposes.  We'll see how to use a database store in <<ch_persistence>>.
+
++cookie+::
+	Cookie settings for the session cookie (+path+, +domain+, +secure+, etc.).  Regular cookie defaults apply.
+
+==== Using Sessions
+
+Once you've set up sessions, using them((("sessions", "using"))) couldn't be simpler: just use properties of the((("req.session"))) request object's +session+ variable:
+
+[source,js]
+----
+req.session.userName = 'Anonymous';
+var colorScheme = req.session.colorScheme || 'dark';
+----
+
+Note that with sessions, we don't have to use the request object for retrieving the value and the response object for setting((("request and response objects", "sessions and"))) the value: it's all performed on the request object.  (The response object does not have a +session+ property.)  To delete a session, you can use JavaScript's +delete+ operator:
+
+[source,js]
+----
+req.session.userName = null;     	// this sets 'userName' to null,
+                                 	// but doesn't remove it
+
+delete req.session.colorScheme;		// this removes 'colorScheme'
+----
+
+=== Using Sessions to Implement Flash Messages
+
+"Flash" messages (not to be confused with Adobe Flash) are simply a way to provide feedback to users in a way that's not disruptive to their navigation.((("flash messages, implemening using sessions")))((("sessions", "using to implement flash messages")))  The easiest way to implement flash messages is to use sessions (you can also use the querystring, but in addition to those having uglier URLs, the flash messages will be included in a bookmark, which is probably not what you want).  Let's set up our HTML first.  We'll be using Bootstrap's alert messages((("Bootstrap", "alert messages"))) to display our flash messages, so make sure you have Bootstrap linked in.  In your template file, somewhere prominent (usually directly below your site's header), add the following:
+
+[source,html]
+----
+{{#if flash}}
+	<div class="alert alert-dismissible alert-{{flash.type}}">
+		<button type="button" class="close" 
+			data-dismiss="alert" aria-hidden="true">&times;<button>
+		<strong>{{flash.intro}}</strong> {{{flash.message}}}
+	</div>
+{{/if}}
+----
+
+Note that we use three curly brackets for +flash.message+: this will allow us to provide some simple HTML in our messages (we might want to emphasize words or include hyperlinks).  Now let's add some middleware to add the +flash+ object to the context if there's one in the session.  Once we've displayed a flash message once, we want to remove it from the session so it isn't displayed on the next request.  Add this code before your routes:
+
+[source,js]
+----
+app.use(function(req, res, next){
+	// if there's a flash message, transfer
+	// it to the context, then clear it
+	res.locals.flash = req.session.flash;
+	delete req.session.flash;
+	next();
+});
+----
+
+Now let's see how to actually use the flash message.  Imagine we're signing up users for a newsletter, and we want to redirect them to the newsletter archive after they sign up.  This is what our form handler might look like:
+
+[source,js]
+----
+app.post('/newsletter', function(req, res){
+    var name = req.body.name || '', email = req.body.email || '';
+    // input validation
+    if(!email.match(VALID_EMAIL_REGEX)) {
+        if(req.xhr) return res.json({ error: 'Invalid name email address.' });
+        req.session.flash = {
+            type: 'danger',
+            intro: 'Validation error!',
+            message: 'The email address you entered was  not valid.',
+        };
+        return res.redirect(303, '/newsletter/archive');
+    }
+    new NewsletterSignup({ name: name, email: email }).save(function(err){
+        if(err) {
+            if(req.xhr) return res.json({ error: 'Database error.' });
+            req.session.flash = {
+                type: 'danger',
+                intro: 'Database error!',
+                message: 'There was a database error; please try again later.',
+            }
+            return res.redirect(303, '/newsletter/archive');
+        }
+        if(req.xhr) return res.json({ success: true });
+        req.session.flash = {
+            type: 'success',
+            intro: 'Thank you!',
+            message: 'You have now been signed up for the newsletter.',
+        };
+        return res.redirect(303, '/newsletter/archive');
+    });
+});
+----
+
+Note how the same handler can be used for AJAX submissions (because we check +req.xhr+),((("req.xhr property"))) and that we're careful to distinguish between input validation and database errors.  Remember that even if we do input validation on the frontend (and you should), you should also perform it on the backend, because malicious users can circumvent frontend validation.
+
+Flash messages are a great mechanism to have available in your website, even if other methods are more appropriate in certain areas (for example, flash messages aren't always appropriate for multiform "wizards" or shopping cart checkout flows).  Flash messages are also great during development, because they are an easy way to provide feedback, even if you replace them with a different technique later.  Adding support for flash messages is one of the first things I do when setting up a website, and we'll be using this technique throughout the rest of the book.
+
+[TIP]
+====
+Because the flash message is being transferred from ((("res.locals.flash")))the session to +res.locals.flash+ in middleware, you have to perform a redirect((("redirects", "for flash message display"))) for the flash message to be displayed.((("req.session.flash")))  If you want to display a flash message without redirecting, set +res.locals.flash+ instead of +req.session.flash+.
+====
+
+=== What to Use Sessions For
+
+Sessions are useful whenever you want to save a user preference that applies across pages.((("sessions", "when to use")))  Most commonly, sessions are used to provide user authentication information: you log in, and a session is created.  After that, you don't have to log in again every time you re-load the page.  Sessions can be useful even without user accounts, though.  It's quite common for sites to remember how you like things sorted, or what date format you prefer—all without your having to log in.
+
+While I encourage you to prefer sessions over cookies, it's important to understand how cookies work (especially because they enable sessions to work).((("cookies", "sessions and")))  It will help you with diagnosing issues and understanding the security and privacy considerations of your application.((("sessions", range="endofrange", startref="ix_sessions")))	

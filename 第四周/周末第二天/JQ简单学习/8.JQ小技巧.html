@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<body>
+	<div id="box" style="width: 200px;cursor: pointer">
+		鼠标点我
+	</div>
+	<div class="box1" style="width: 10px"></div>
+	<div class="box2" style="width: 100px;height: 100px;background-color: #666"></div>
+	<div class="box3" style="width: 30px"></div>
+
+	<button id="open">open</button>
+	<button id="close">close</button>
+	<a href="https://www.baidu.com">百度</a>
+	<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+
+		//1鼠标右键的禁用
+		$(document).contextmenu(function(){
+			//console.log("haha");
+			//return false 阻止事件默认行为的方法
+			return false;
+		});
+		$("a")[0].onclick=function(){
+			//阻止a标签的默认跳转行为
+			return false;
+		};
+
+		//2.鼠标的键值
+		$("#box").mousedown(function(e){
+			//e事件对象
+			console.log(e.which);
+			//右键 :3,左键:1,中间:2
+		});
+		//3.自定义选择器
+		var select="widthMore50px";//选择宽度大于50的元素
+		console.dir($);
+		$.expr[":"][select]=function(a){
+			//return 后面是你条件
+			return $(a).width()>50;
+		};
+
+		console.log($("div"));
+		console.log($("div:widthMore50px"));
+		$("div p:first");
+
+		//关闭动画
+		//jQuery.fx.off=false   页面上动画有效果
+		//jQuery.fx.off=true    关掉页面上动画效果
+
+
+
+		$("#box").click(function(){
+			$('.box2').stop().slideToggle();
+		});
+		$("#close").click(function(){
+			jQuery.fx.off=true;
+		});
+		$("#open").click(function(){
+			jQuery.fx.off=false;
+		});
+
+
+		//改变this
+		//$.proxy(函数,改变的this)
+		var a=0;
+		function f1(){
+			console.log(this.a)
+		}
+		//f1();
+		var obj={a:"a",f1:f1};
+		//obj.f1();
+
+		$.proxy(f1, obj)();
+		//去除首尾空格
+
+		var str="   aa   ";
+		str=$.trim(str);
+		console.log(str.length);
+
+		//unique()去重
+		var ary=[1,2,2,3,1];
+		console.log($.unique(ary));
+
+
+		//isEmptyObject判断是不是个空对象 {}
+		//PlainObject 判断是不是个对象  {}
+		var obj={};
+		var obj1={1:1};
+		console.log($.isEmptyObject(obj));
+		console.log($.isPlainObject(obj));
+		console.log($.isEmptyObject(obj1));
+		console.log($.isPlainObject(obj1));
+	</script>
+	</body>
+</html>

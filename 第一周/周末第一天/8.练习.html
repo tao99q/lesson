@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #oUl li{
+            width: 200px;
+            height: 40px;
+            background-color: aquamarine;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<ul id="oUl">
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+</ul>
+</body>
+</html>
+<script type="text/javascript">
+    var oLis=document.getElementById("oUl").getElementsByTagName("li");
+//    for(var i=0;i<oLis.length;i++){
+//        oLis[i].onclick=function () {
+//            alert(i)
+//        }
+//    }
+    for(var i=0;i<oLis.length;i++){
+        oLis[i].onclick=(function () {
+            var n=i;
+            return function () {
+                this.innerHTML=parseFloat(this.innerHTML)+n
+            }
+        })()
+    }
+    for(var i=0;i<oLis.length;i++){
+        oLis[i].onclick=(function (i) {
+            return function () {
+                this.innerHTML=parseFloat(this.innerHTML)+i;
+            }
+        })(i)
+    }
+
+    var a=(function () {
+        return 1
+    })()
+</script>
+<!--
+需求：每一次绑定事件的时候把他对应的那个i存起来，别人修改不了，
+我们的私有变量可以实现别人修改不了，正好我们的不销毁的私有作用域可以实现把私有变量存起来
+
+i=0; oLis[0].onclick=(自执行函数执行，形成私有作用域A，私有变量i=0；return xxxfff000)(0)；xxxfff000-》function (){alert(i)}
+i=1;oLis[1].onclick=(自执行函数执行，形成私有作用域B，私有变量i=1；return xxxfff111)(1)；xxxfff111-》function (){alert(i)}
+i=2;oLis[2].onclick=(自执行函数执行，形成私有作用域C，私有变量i=2；return xxxfff222)(2)；xxxfff222-》function (){alert(i)}
+i=3;oLis[3].onclick=(自执行函数执行，形成私有作用域D，私有变量i=3；return xxxfff333)(3)；xxxfff333-》function (){alert(i)}
+
+
+olis[2].onclick=function (){alert(i)};遇到变量i，自己没有，往上一级找，作用域C就是他的上一级。C中有私有变量i=2;
+-->

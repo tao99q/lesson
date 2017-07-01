@@ -1,0 +1,376 @@
+[[ch_production_concerns]]
+== Production Concerns
+
+While it may feel premature to start discussing production concerns at this point, you can save yourself a lot of time and suffering down the line if you start thinking about production early on: launch day will be here before you know it.((("production concerns", id="ix_prodconcerns", range="startofrange")))
+
+In this chapter, we'll learn about Express's support for different execution environments, methods to scale your website, and how to monitor your website's health.  We'll see how you can simulate a production environment for testing and development, and also how to perform stress testing so you can identify production problems before they happen.
+
+=== Execution Environments
+
+Express supports the concept of _execution environments_: a way to run your application in production, development, or test mode.((("execution environments")))((("production concerns", "execution environments")))  You could actually have as many different environments as you want.  For example, you could have a staging environment, or a training environment.  However, keep in mind that development, production, and test are "standard" environments: Express, Connect, and third-party middleware may make decisions based on those environments.  In other words, if you have a "staging" environment, there's no way to make it automatically inherit the properties of a production environment.  For this reason, I recommend you stick with the standards of production, development, and test.
+
+While it is possible to specify the execution environment by((("app.set"))) calling +app.set(\'env\', \'production')+, it is inadvisable to do so: it means your app will always run in that environment, no matter what the situation.  Worse, it may start running in one environment and then switch to another.
+
+It's preferable to specify the execution environment by using((("+NODE_ENV+"))) the environment variable +NODE_ENV+.  Let's modify our app to report on the mode it's running in by calling +app.get(\'env')+:
+
+[source,js]
+----
+http.createServer(app).listen(app.get('port'), function(){
+    console.log( 'Express started in ' + app.get('env') +
+        ' mode on http://localhost:' + app.get('port') +
+        '; press Ctrl-C to terminate.' );
+});
+----
+
+If you start your server now, you'll see you're running in development mode: it's the default if you don't specify otherwise. ((("servers", "running in production mode")))((("production mode, +NODE_ENV+"))) Let's try putting it in production mode:
+
+----
+$ export NODE_ENV=production
+$ node meadowlark.js
+----
+
+If you're using a Unix/BSD system or Cygwin, there's a handy syntax that allows you to modify the environment only for the((("operating systems", "Unix/BSD system or Cygwin, modifying execution environment"))) duration of that command:
+
+----
+$ NODE_ENV=production node meadowlark.js
+----
+
+This will run the server in production mode, but once the server terminates, the +NODE_ENV+ environment variable won't be modified.
+
+[NOTE]
+====
+If you start Express in production mode, you may notice warnings about components that are not suitable for use in production mode.  If you've been following along with the examples in this book, you'll see that +connect.session+ is using a memory store, which is not suitable for a production environment.  Once we switch to a database store in <<ch_persistence>>, this warning will disappear.
+====
+
+=== Environment-Specific Configuration
+
+Just changing the execution environment won't do much, though Express will log more warnings to the console in production mode (for example, informing you of modules that are deprecated and will be removed in the future).((("production concerns", "environment-specific configuration")))  Also, in production mode, view caching is enabled by default (see <<ch_templating>>).
+
+Mainly, the execution environment is a tool for you to leverage, allowing you to easily make decisions about how your application should behave in the different environments.  As a word of caution, you should try to minimize the differences between your development, test, and production environments.  That is, you should use this feature sparingly.  If your development or test environments differ wildly from production, you are increasing your chances of different behavior in production, which is a recipe for more defects (or harder-to-find ones).  Some differences are inevitable: for example, if your app is highly database driven, you probably don't want to be messing with the production database during development, and that would be a good candidate for environment-specific configuration.  Another low-impact area is more verbose logging.  There are a lot of things you might want to log in development that are unnecessary to record in production.
+
+Let's add some logging to our application.((("logging", "adding to an application")))  For development, we'll ((("development mode", "using morgan for logging")))((("morgan middleware", "using for logging in development environment")))use _Morgan_ (+npm install --save morgan+), which uses colorized output that's easy on the eyes.  For pass:[<phrase role="keep-together">production,</phrase>] we'll use _express-logger_ (+npm install --save express-logger+),((("express-logger"))) which supports log rotation (every 24 hours, the log is copied, and a new one starts, to prevent logfiles from growing unwieldy).  Let's add logging support to our application file:
+
+[source,js]
+----
+switch(app.get('env')){
+    case 'development':
+        // compact, colorful dev logging
+        app.use(require('morgan')('dev'));
+        break;
+    case 'production':
+        // module 'express-logger' supports daily log rotation
+        app.use(require('express-logger')({
+            path: __dirname + '/log/requests.log'
+        }));
+        break;
+}
+----
+
+If you want to test the logger, you can run your application in production mode (+NODE_ENV=production node meadowlark.js+).  If you would like to see the rotation feature in action, you can edit __node_modules/express-logger/logger.js__ and change the variable +defaultInterval+ to something like 10 seconds instead of 24 hours (remember that modifying packages in __node_modules__ is only for experimentation or learning).
+
+[NOTE]
+====
+In the previous example, we're using ++\__dirname++ to store the request log in a subdirectory of the project itself.  If you take this approach, you will want to add +log+ to your __.gitignore__ file.  Alternatively, you could take a more Unix-like approach, and save the logs in a subdirectory of __/var/log__, like Apache does by default.
+====
+
+I will stress again that you should use your best judgment when making environment-specific configuration choices.((("development mode", "environment-specific configuration choices")))  Always keep in mind that when your site is live, your production instances will be running in +production+ mode (or they should be).  Whenever you're tempted to make a development-specific modification, you should always think first about how that might have QA consequences in production.  We'll see a more robust example of environment-specific configuration in <<ch_persistence>>.
+
+=== Scaling Your Website
+
+These days, scaling usually means one of two things: scaling up or scaling out.((("scaling your website")))((("production concerns", "scaling your website")))  Scaling up refers to making((("scaling up"))) servers more powerful: faster CPUs, better architecture, more cores, more memory, etc. ((("scaling out"))) Scaling out, on the other hand, simply means more servers.  With the increased poularity of cloud computing and the ubiquity of virtualization, server computational power is becoming less relevant, and scaling out is the most cost-effective method for scaling websites according to their needs.
+
+When developing websites for Node, you should always consider the possibility of scaling out.((("Node", "support for scaling out")))  Even if your application is tiny (maybe it's even an intranet application that will always have a very limited audience) and will never conceivably need to be scaled out, it's a good habit to get into.  After all, maybe your next Node project will be the next Twitter, and scaling out will be essential.  Fortunately, Node's support for scaling out is very good, and writing your application with this in mind is painless.
+
+The most important thing to remember when building a website((("persistence", "website designed to be scaled out"))) designed to be scaled out is persistence.  If you're used to relying on file-based storage for persistence, _stop right there_. ((("file-based storage, problems with"))) That way lies madness.  My first experience with this problem was nearly disastrous.  One of our clients was running a web-based contest, and the web application was designed to inform the first 50 winners that they would receive a prize.  With that particular client, we were unable to easily use a database due to some corporate IT restrictions, so most persistence was achieved by writing flat files.  I proceeded just as I always had, saving each entry to a file.  Once the file had recorded 50 winners, no more people would be notified that they had won.  The problem is that the server was load-balanced: half the requests were served by one server, and the other half by another.  One server notified 50 people that they had won...and so did the other server.  Fortunately, the prizes were small (fleece blankets) and not iPads, and the client took their lumps and handed out 100 prizes instead of 50 (I offered to pay for the extra 50 blankets out-of-pocket for my mistake, but they generously refused to take me up on my offer).  The moral of this story is that unless you have a filesystem that's accessible to _all_ of your servers, you should not rely on the local filesystem for persistence.  The exceptions are read-only data, like logging, and backups.  For example, I have commonly backed up form submission data to a local flat file in case the database connection failed.  In the case of a database outage, it is a hassle to go to each server and collect the files, but at least no damage has been done.
+
+==== Scaling Out with App Clusters
+
+Node itself supports _app clusters_, a simple, single-server form of scaling out.((("scaling your website", "scaling out with app cllusters")))((("Node", "app clusters, support for")))((("production concerns", "scaling your website", "scaling out with app clusters")))((("app clusters")))  With app clusters, you can create an independent server for each core (CPU) on the system (having more servers than the number of cores will not improve the performance of your app).  App clusters are good for two reasons: first, they can help maximize the performance of a given server (the hardware, or virtual machine), and second, it's a low-overhead way to test your app under parallel conditions.
+
+Let's go ahead and add cluster support to our website.((("app clusters", "adding cluster support to the website")))  While it's quite common to do all of this work in your main application file, we are going to create a second application file that will run the app in a cluster, using the nonclustered application file we've been using all along.  To enable that, we have to make a slight modification to __meadowlark.js__ first:
+
+[source,js]
+----
+function startServer() {
+    http.createServer(app).listen(app.get('port'), function(){
+      console.log( 'Express started in ' + app.get('env') +
+        ' mode on http://localhost:' + app.get('port') +
+        '; press Ctrl-C to terminate.' );
+    });
+}
+
+if(require.main === module){
+    // application run directly; start app server
+    startServer();
+} else {
+    // application imported as a module via "require": export function
+    // to create server
+    module.exports = startServer;
+}
+----
+
+This modification allows __meadowlark.js__ to either be run directly (+node meadowlark.js+) or included as a module via a +require+ statement.((("scripts, running directly or included as a module via require statement")))((("require statement, running a script as a module via")))  
+
+[TIP]
+====
+When a script is run directly, +require.main === module+ will be true; if it is false, it means your script has been loaded from another script using +require+.
+====
+
+Then, we create a new script, __meadowlark_cluster.js__:
+
+[source,js]
+----
+var cluster = require('cluster');
+
+function startWorker() {
+    var worker = cluster.fork();
+    console.log('CLUSTER: Worker %d started', worker.id);
+}
+
+if(cluster.isMaster){
+
+    require('os').cpus().forEach(function(){
+	    startWorker();
+    });
+
+    // log any workers that disconnect; if a worker disconnects, it
+    // should then exit, so we'll wait for the exit event to spawn
+    // a new worker to replace it
+    cluster.on('disconnect', function(worker){
+        console.log('CLUSTER: Worker %d disconnected from the cluster.',
+            worker.id);
+    });
+
+    // when a worker dies (exits), create a worker to replace it
+    cluster.on('exit', function(worker, code, signal){
+        console.log('CLUSTER: Worker %d died with exit code %d (%s)',
+            worker.id, code, signal);
+        startWorker();
+    });
+
+} else {
+
+    // start our app on worker; see meadowlark.js
+    require('./meadowlark.js')();
+
+}
+----
+
+When this JavaScript is executed, it will either be in the context of master (when it is run directly, with +node meadowlark_cluster.js+), or in the context of a worker, when Node's cluster system executes it.  The properties +cluster.isMaster+ and +cluster.isWorker+ determine which context you're running in.((("cluster.isMaster and cluster.isWorker properties")))  When we run this script, it's executing in master mode, and we start a worker using +cluster.fork+ for each CPU((("cluster.fork"))) in the system.  Also, we respawn any dead workers by listening for +exit+ events from workers.
+
+Finally, in the +else+ clause, we handle the worker case.  Since we configured __meadowlark.js__ to be used as a module, we simply import it and immediately invoke it (remember, we exported it as a function that starts the server).
+
+Now start up your new clustered server:
+
+[source,js]
+----
+node meadowlark_cluster.js
+----
+
+[NOTE]
+====
+If you are using virtualization (like Oracle's VirtualBox), you may have to configure your VM to have multiple CPUs.  By default, virtual machines often have a single CPU.
+====
+
+Assuming you're on a multicore system, you should see some number of workers started.  If you want to see evidence of different workers handling different requests, add the following middleware before your routes:
+
+[source,js]
+----
+app.use(function(req,res,next){
+    var cluster = require('cluster');
+    if(cluster.isWorker) console.log('Worker %d received request',
+        cluster.worker.id);
+});
+----
+
+Now you can connect to your application with a browser.  Reload a few times, and see how you can get a different worker out of the pool on each request.
+
+==== Handling Uncaught Exceptions
+
+In the asynchronous world of Node, uncaught exceptions are of particular concern.((("exceptions, uncaught, handling")))((("uncaught exceptions, handling")))((("scaling your website", "handling uncaught exceptions")))((("production concerns", "scaling your website", "handling uncaught exceptions")))  Let's start with a simple example that doesn't cause too much trouble (I encourage you to follow along with these examples):
+
+[source,js]
+----
+app.get('/fail', function(req, res){
+    throw new Error('Nope!');
+});
+----
+
+When Express executes route handlers, it wraps them in a try/catch block, so this isn't actually an uncaught exception.  This won't cause too much problem: Express will log the exception on the server side, and the visitor will get an ugly stack dump.  However, your server is stable, and other requests will continue to be served correctly.((("errors", "providing custom error page")))  If we want to provide a "nice" error page, create a file __views/500.handlebars__ and add an error handler after all of your routes:
+
+[source,js]
+----
+app.use(function(err, req, res, next){
+    console.error(err.stack);
+    app.status(500).render('500');
+});
+----
+
+It's always a good practice to provide a custom error page: not only does it look more professional to your users when errors do occur, but it allows you to take action when errors occur.  For example, this error handler would be a good place to send an email to your dev team letting them know that an error occurred.  Unfortunately, this helps only for exceptions that Express can catch.  Let's try something worse:
+
+[source,js]
+----
+app.get('/epic-fail', function(req, res){
+    process.nextTick(function(){
+        throw new Error('Kaboom!');
+    });
+});
+----
+
+Go ahead and try it.  The result is considerably more catastrophic: it brought your whole server down!  In addition to not displaying a friendly error message to your user, now your server is down, and _no_ requests are being served.  This is ((("setTimeout")))because `setTimeout` is executing _asynchronously_; execution of the function with the exception is being deferred until Node is idle.  The problem is, when Node is idle and gets around to executing the function, it no longer has context about the request it was being served from, so it has no resource but to unceremoniously shut down the whole server, because now it's in an undefined state (Node can't know the purpose of the function, or its caller, so it can no longer assume that any further functions will work correctly).
+
+[NOTE]
+====
++process.nextTick+ is very similar to calling +setTimeout+ with an pass:[<phrase role="keep-together">argument</phrase>] of zero, but it's more efficient.((("process.nextTick")))  We're using it here for demonstration purposes: it's not something you would generally use in server-side code.  However, in coming chapters, we will be dealing with many things that execute asynchronously: database access, filesystem access, and network access, to name a few, and they are all subject to this problem.
+====
+
+There is action that we can take to handle uncaught exceptions, but __if Node can't determine the stability of your application, neither can you__.  In other words, if there is an uncaught exception, the only recourse is to shut down the server.  The best we can do in this circumstance is to shut down as gracefully as possible and have a failover mechanism.  The easiest failover mechanism is to use a cluster (as mentioned previously).((("app clusters", "uncaught exceptions and")))  If your application is operating in clustered mode and one worker dies, the master will spawn another worker to take its place.  (You don't even have to have multiple workers: a cluster with one worker will suffice, though the failover may be slightly slower.)
+
+So with that in mind, how can we shut down as gracefully as possible when confronted with an unhandled exception?  Node has two mechanisms to deal with this: the +uncaughtException+ event and _domains_.((("uncaughtException event")))
+
+Using domains is the more recent and recommended approach (+uncaughtException+ may even be removed in future versions of Node).((("uncaught exceptions, handling", "using domains")))((("domains", "using to deal with uncaught exceptions")))  A _domain_ is basically an execution context that will catch errors that occur inside it.  Domains allow you to be more flexible in your error handling: instead of having one global uncaught exception handler, you can have as many domains as you want, allowing you to create a new domain when working with error-prone code.
+
+A good practice is to process every request in a domain, allowing you to trap any uncaught errors in that request and respond appropriately (by gracefully shutting down the server).  We can accomplish this very easily by adding a middleware.  This middleware should go above any other routes or middleware:
+
+[source,js]
+----
+app.use(function(req, res, next){
+    // create a domain for this request
+    var domain = require('domain').create();
+    // handle errors on this domain
+    domain.on('error', function(err){
+        console.error('DOMAIN ERROR CAUGHT\n', err.stack);
+        try {
+            // failsafe shutdown in 5 seconds
+            setTimeout(function(){
+                console.error('Failsafe shutdown.');
+                process.exit(1);
+            }, 5000);
+
+            // disconnect from the cluster
+            var worker = require('cluster').worker;
+            if(worker) worker.disconnect();
+
+            // stop taking new requests
+            server.close();
+
+            try {
+                // attempt to use Express error route
+                next(err);
+            } catch(err){
+                // if Express error route failed, try
+                // plain Node response
+                console.error('Express error mechanism failed.\n', err.stack);
+                res.statusCode = 500;
+                res.setHeader('content-type', 'text/plain');
+                res.end('Server error.');
+            }
+        } catch(err){
+            console.error('Unable to send 500 response.\n', err.stack);
+        }
+    });
+
+    // add the request and response objects to the domain
+    domain.add(req);
+    domain.add(res);
+
+    // execute the rest of the request chain in the domain
+    domain.run(next);
+});
+
+// other middleware and routes go here
+
+var server = http.createServer(app).listen(app.get('port'), function(){
+    console.log('Listening on port %d.', app.get('port'));
+});
+----
+
+The first thing we do is create a domain, and then attach an error handler to it.  This function will be invoked any time an uncaught error occurs in the domain.  Our approach here is to attempt to respond appropriately to any in-progress requests, and then shut down this server.  Depending on the nature of the error, it may not be possible to respond to in-progress requests, so the first thing we do is establish a deadline for shutting down.  In this case, we're allowing the server five seconds to respond to any in-progress requests (if it can).  The number you choose will be dependent on your application: if it's common for your application to have long-running requests, you should allow more time.  Once we establish the deadline, we disconnect from the cluster (if we're in a cluster), which should prevent the cluster from assigning us any more requests.  Then we explicitly tell the server that we're no longer accepting new connections.  Finally, we attempt to respond to the request that generated the error by passing on to the error-handling route (+next(err)+).  If that throws an exception, we fall back to trying to respond with the plain Node API.  If all else fails, we log the error (the client will receive no response, and eventually time out).
+
+Once we've set up the unhandled exception handler, we add the request and response objects to the domain (allowing any methods on those objects that throw an error to be handled by the domain), and finally, we run the next middleware in the pipeline in the context of the domain.  Note that this effectively runs _all_ middleware in the pipeline in the domain, since calls to +next()+ are chained.
+
+If you search npm, you will find several middleware that essentially offer this functionality.  However, it's very important to understand how domain error handling works, and also the importance of shutting down your server when there are uncaught exceptions.  Lastly, what "shutting down gracefully" means is going to vary depending on your deployment configuration.  For example, if you were limited to one worker, you may want to shut down immediately, at the expense of any sessions in progress, whereas if you had multiple workers, you would have more leeway in letting the dying worker serve the remaining requests before shutting down.
+
+I highly recommend reading William Bert's excellent((("Bert, William"))) article, http://bit.ly/100_percent_uptime[The 4 Keys to 100% Uptime with Node.js].  William's real-world experience running Fluencia and SpanishDict on Node make him an authority on the subject, and he considers using domains to be essential to Node uptime.  It is also worth going through the http://nodejs.org/api/domain.html[official Node documentation] on domains.
+
+==== Scaling Out with Multiple Servers
+
+Where scaling out using clustering can maximize the performance of an individual server, what happens when you need more than one server?((("production concerns", "scaling your website", "scaling out with multiple servers")))((("scaling your website", "scaling out with multiple servers")))  That's where things get a little more complicated.  To achieve this kind of parallelism, you need a _proxy_ server.((("proxy servers")))((("reverse proxy")))((("forward-facing proxy")))  (It's often called a _reverse proxy_ or _forward-facing proxy_ to distinguish it from proxies commonly used to access external networks, but I find this language to be confusing and unnecessary, so I will simply refer to it as a proxy).
+
+The two rising stars in the proxy sphere are Nginx (pronounced "engine X") and HAProxy.((("HAProxy")))((("Nginx")))  Nginx servers in particular are springing up like weeds: I recently did a competitive analysis for my company and found upward of 80% of our competitors were using Nginx.  Nginx and HAproxy are both robust, high-performance proxy servers, and are capable of the most demanding applications (if you need proof, consider that Netflix, which accounts for as much as 30% of _all Internet traffic_, uses Nginx).
+
+There are also some smaller Node-based proxy servers, such as https://npmjs.org/package/proxy[proxy] and https://npmjs.org/package/http-proxy[node-http-proxy].((("Node", "proxy servers")))  These are great options if your needs are modest, or for development.  For production, I would recommend using Nginx or HAProxy (both are free, though they offer support for a fee).
+
+Installing and configuring a proxy is beyond the scope of this book, but it is not as hard as you might think (especially if you use proxy or node-http-proxy).  For now, using clusters gives us some assurance that our website is ready for scaling out.
+
+If you do configure a proxy server, ((("proxy servers", "informing Express of")))make sure you tell Express that you are using a proxy and that it should be trusted:
+
+[source,js]
+----
+app.enable('trust proxy');
+----
+
+Doing this will ensure that +req.ip+, +req.protocol+, and +req.secure+ will reflect the details about the connection between the _client and the proxy_, not between the client and your app.  Also, +req.ips+ will be an array that indicates the original client IP, and the names or IP addresses of any intermediate proxies.
+
+=== Monitoring Your Website
+
+Monitoring your website is one of the most important—and most often overlooked—QA measures you can take. ((("monitoring your website")))((("production concerns", "monitoring your website"))) The only thing worse than being up at three in the morning fixing a broken website is being woken up at three by your boss because the website is down (or, worse still, coming in in the morning to realize that your client just lost ten thousand dollars in sales because the website had been down all night and no one pass:[<phrase role="keep-together">noticed).</phrase>]
+
+There's nothing you can do about failures: they are as inevitable as death and taxes.  However, if there is one thing you can do to convince your boss and your clients that you are great at your job, it's to _always_ know about failures before they do.
+
+==== Third-Party Uptime Monitors
+
+Having an uptime monitor running on your website's server is as effective as having a smoke alarm in a house that nobody lives in.((("production concerns", "monitoring your website", "third-party uptime monitors")))((("monitoring your website", "third-party uptime monitors")))  It might be able to catch errors if a certain page goes down, but if the whole _server_ goes down, it may go down without even sending out an SOS.  That's why your first line of defense should be third-party uptime monitors.  http://uptimerobot.com[UptimeRobot] is free((("UptimeRobot"))) for up to 50 monitors and is simple to configure.  Alerts can go to email, SMS (text message), Twitter, or an iPhone app.  You can monitor for the return code from a single page (anything other than a 200 is considered an error), or to check for the presence or absence of a keyword on the page.((("keyword monitors")))  Keep in mind that if you use a keyword monitor, it may affect your analytics (you can exclude traffic from uptime monitors in most analytics services).
+
+If your needs are more sophisticated, there are other, more expensive services out there such as http://pingdom.com[Pingdom] and http://www.site24x7.com[Site24x7].((("Pingdom")))((("Site24x7")))
+
+==== Application Failures
+
+Uptime monitors are great for detecting massive failures.((("monitoring your website", "application failures")))((("production concerns", "monitoring your website", "application failures")))((("application failures, monitoring")))  And they can even be used to detect application failures if you use keyword monitors.  For example, if you religiously include they keyword "server failure" when your website reports an error, keyword monitoring may meet your needs.  However, often there are failures that you want to handle gracefully.  Your user gets a nice "We're sorry, but this service is currently not functioning" message, and you get an email or text message letting you know about the failure.  Commonly, this is the approach you would take when you rely on third-party components, such as databases or other web servers.((("email", "using to monitor application failures")))
+
+One easy way to handle application failures is to have errors emailed to yourself.  In <<ch_sending_email>>, we showed how you can create an error-handling mechanism that notifies you of errors.
+
+If your notification needs are sophisticated (for example, if you have a large IT staff, some of whom are "on call" on a rotating basis), you might consider looking into a notification service, like Amazon's Simple Notification Service (SNS).((("Amazon Simple Notification Service (SNS)")))((("notification services")))
+
+[TIP]
+====
+You can also look into dedicated error-monitoring services, such as https://getsentry.com[Sentry] or https://airbrake.io[Airbrake],((("Airbrake")))((("Sentry"))) which can provide a more friendly experience than getting error emails.
+====
+
+=== Stress Testing
+
+Stress testing (or load testing) is designed to give you some confidence that your server will function under the load of hundreds or thousands of simultaneous requests.((("production concerns", "stress testing")))((("load testing")))((("stress testing")))  This is another deep area that could be the subject for a whole book: stress testing can be arbitrarily sophisticated, and how complicated you want to get depends largely on the nature of your project.  If you have reason to believe that your site could be massively popular, you might want to invest more time in stress testing.
+
+For now, let's add a simple test to make sure your application can serve the home page a hundred times in under a second.  For the stress testing, we'll use a ((("loadtest")))Node module called _loadtest_:
+
+----
+npm install --save loadtest
+----
+
+Now let's add a test suite, called __qa/tests-stress.js__:
+
+[source,js]
+----
+var loadtest = require('loadtest');
+var expect = require('chai').expect;
+
+suite('Stress tests', function(){
+
+      test('Homepage should handle 100 requests in a second', function(done){
+          var options = {
+              url: 'http://localhost:3000',
+              concurrency: 4,
+              maxRequests: 100
+          };
+          loadtest.loadTest(options, function(err,result){
+            expect(!err);
+            expect(result.totalTimeSeconds < 1);
+            done();
+          });
+      });
+
+});
+----
+
+We've already got our Mocha task configured in Grunt, so we should just be able to run +grunt+, and see our new test passing (don't forget to start your server in a separate window first).
+((("production concerns", range="endofrange", startref="ix_prodconcerns")))

@@ -1,0 +1,606 @@
+[[ch_static_content]]
+== Static Content
+
+Static content refers to the resources your app will be serving that don't change on a per-request basis.((("static content", id="ix_staticcont", range="startofrange")))  Here are the usual suspects:
+
+Multimedia::
+	Images, videos, and audio files.((("multimedia")))  It's quite possible to generate image files on the fly, of course (and video and audio, though that's far less common), but most multimedia resources are static.
+
+CSS::
+	Even if you use an ((("CSS")))abstracted CSS language like LESS, Sass, or Stylus, at the end of the day, your browser needs plain CSS,footnote:[It is possible to use uncompiled LESS in a browser, with some JavaScript magic.  There are performance consequences to this approach, so I don't recommend it.] which is a static resource.
+
+JavaScript::
+	Just because the server is running JavaScript doesn't((("JavaScript", "client-side, as static resource"))) mean there won't be client-side JavaScript.((("client-side JavaScript")))  Client-side JavaScript is considered a static resource.  Of course, now the line is starting to get a bit hazy: what if there was common code that we wanted to use on the backend and client side?  There are ways to solve this problem, but at the end of the day, the JavaScript that gets sent to the client is generally static.((("binary downloads")))
+
+Binary downloads::
+	This is the catch-all category: any PDFs, ZIP files, installers, and the like.	
+
+You'll note that HTML doesn't make the list.  What about HTML pages that are static?  If you have those, it's fine to treat them as a static resource, but then the URL will end in __.html__, which isn't very "modern."  While it is possible to create a route that simply serves a static HTML file without the __.html__ extension, it's generally easier to create a view (a view doesn't have to have any dynamic content).
+
+Note that if you are building an API only, there may be no static resources.  If that's the case, you may skip this chapter.
+
+=== Performance Considerations
+
+How you handle static resources has a significant impact on the real-world performance of your website, especially if your site is multimedia-heavy.((("performance", "and handling of static resources")))((("static content", "performance considerations")))  The two primary performance considerations are _reducing the number of requests_ and _reducing content size_.
+
+Of the two, reducing the number of (HTTP) requests is more critical, especially for mobile (the overhead of making an HTTP request is significantly higher over a cellular network).((("requests, reducing number of")))  Reducing the number of requests can be accomplished in two ways: combining resources and browser caching.
+
+Combining resources is primarily an architectural and frontend concern: as much as possible, small images should be combined into a single sprite.((("images", "small, combining into a single sprite")))((("sprites")))  Then use CSS to set the offset and size to display only the portion of the image you want.  For creating sprites, I highly recommend the free service http://wearekiss.com/spritepad[SpritePad].((("SpritePad")))  It makes generating sprites incredibly easy, and it generates the CSS for you as well.  Nothing could be easier.  SpritePad's free functionality is probably all you'll ever need, but if you find yourself creating a lot of sprites, you might find their premium offerings worth it.
+
+Browser caching helps reduce HTTP requests by storing commonly used static resources in the client's browser.((("browsers", "caching")))((("caching", "browser")))  Though browsers go to great lengths to make caching as automatic as possible, it's not magic: there's a lot you can and should do to enable browser caching of your static resources.
+
+Lastly, we can increase performance by reducing the size of static resources.  Some techniques are _lossless_ (size reduction can be achieved without losing any data),((("lossy size reduction")))((("lossless size reduction"))) and some techniques are _lossy_ (size reduction is achieved by reducing the quality of static resources).  Lossless techniques include minification of JavaScript and CSS, and optimizing PNG images.((("PNG images")))((("compression")))  Lossy techniques include increasing JPEG and video compression levels.  We'll be discussing PNG optimization and minification (and bundling, which also reduces HTTP requests) in this chapter.
+
+[NOTE]
+====
+You generally don't have to worry ((("cross-origin resource sharing (CORS)")))about cross-domain resource sharing (CORS) when using a CDN.  External resources loaded in HTML aren't subject to CORS policy: you only have to enable CORS for resources that are loaded via AJAX (see <<ch_rest_apis_and_json>>).
+====
+
+=== Future-Proofing Your Website
+
+When you move your website into production, the static resources must be hosted on the Internet _somewhere_. ((("static content", "future-proofing your website"))) You may be used to hosting them on the same server where all your dynamic HTML is generated.  Our example so far has also taken this approach: the Node/Express server we spin up when we type +node meadowlark.js+ serves all of the HTML as well as static resources.  However, if you want to maximize the performance of your site (or allow for doing so in the future), you will want to make it easy to host your static resources on a _content delivery network_ (CDN).((("content delivery networks (CDNs)")))((("CDNs", see="content delivery networks")))  A CDN is a server that's optimized for delivering static resources.  It leverages special headers (that we'll learn about soon) that enable browser caching.  Also, CDNs can enable _geographic optimization_; ((("geographic optimization")))that is, they can deliver your static content from a server that is geographically closer to your client.  While the Internet is very fast indeed (not operating at the speed of light, exactly, but close enough), it is still faster to deliver data over a hundred miles than a thousand.  Individual time savings may be small, but if you multiply across all of your users, requests, and resources, it adds up fast.
+
+It's quite easy to "future-proof" your website so that you can move your static content to a CDN when the time comes, and I recommend that you get in the habit of always doing it.  What it boils down to is creating an abstraction layer for your static resources so that relocating them all is as easy as flipping a switch.
+
+Most of your static resources will be referenced in HTML views (+<link>+ elements to CSS files, +<script>+ references to JavaScript files, +<img>+ tags referencing images, and multimedia embedding tags).((("views", "static resources referenced in")))  Then, it is common to have static references in CSS, usually the +background-image+ property.((("CSS", "static resources referenced in")))  Lastly, static resources are sometimes referenced in JavaScript, such as JavaScript code that dynamically changes or inserts +<img>+ tags or the +background-image+ property.((("JavaScript", "static resources referenced in code")))
+
+==== Static Mapping
+
+At the heart of our strategy for making static resources relocatable, and friendly to caching,((("static content", "future-proofing your website", "static mapping"))) is the concept of mapping: when we're writing our HTML, we really don't want to have to worry about the gory details of where our static resources are going to be hosted.  What we _are_ concerned with is the logical organization of our static resources.  That is to say, it's important that photos of our Hood River vacations go in __/img/vacations/hood-river__ and photos of Manzanita in __/img/vacations/manzanita__.  So we'll focus on making it easy to use only this organization when specifying static resources.  For example, in HTML, you want to be able to write +<img src="/img/meadowlark_logo.png" alt="Meadowlark Travel Logo">+, not +<img src="//s3-us-west-2.amazonaws.com/meadowlark/img/meadowlark_logo-3.png" alt="Meadowlark Travel Logo">+ (as it might look if you're using Amazon's cloud storage).
+
+[TIP]
+====
+We will be using "protocol-relative URLs" to reference our static pass:[<phrase role="keep-together">resources.</phrase>]((("protocol relative URLs")))((("URLs", "protocol relative, using to reference static resources")))  This refers to URLs that begin only with __//__ not __http://__ or __https://__.  This allows the browser to use whatever protocol is pass:[<phrase role="keep-together">appropriate</phrase>].  If the user is viewing a secure page, it will use HTTPS; otherwise, it will use HTTP.  Obviously, your CDN must support HTTPS, and I haven't found one that doesn't.
+====
+
+So this boils down to a mapping problem: we wish to map less specific paths (__/img/meadowlark_logo.png__) to more specific paths (__//s3-us-west-2.amazonaws.com/meadowlark/img/meadowlark_logo-3.png__).  Furthermore, we wish to be able to change that mapping at will.  For example, before you sign up for an Amazon S3 account, you may wish to host your images locally (__//meadowlarktravel.com/img/meadowlark_logo.png__).
+
+In these examples, all we're doing to achieve our mapping is adding something to the start of the path, which we'll call a _base URL_.  However, your mapping scheme could be more sophisticated than that: essentially the sky's the limit here.  For example, you could employ a database of digital assets to map "+Meadowlark Logo+" to __http://meadowlarktravel.com/img/meadowlark_logo.png__.  While that's possible, I would warn you away from it: using filenames and paths is a pretty standard and ubiquitous way to organize content, and you should have a compelling reason to deviate from that. ((("asset versioning"))) A more practical example of a more sophisticated mapping scheme is to employ asset versioning (which we'll be discussing later).  For example, if the Meadowlark Travel logo has undergone five revisions, you could write a mapper that would map __/img/meadowlark_logo.png__ to __/img/meadowlark_logo-5.png__.
+
+For now, we're going to be sticking with a very simple mapping scheme: we just add a base URL.  We're assuming all static assets begin with a slash.  Since we'll be using our mapper for several different types of files (views, CSS, and JavaScript), we'll want to modularize it.  Let's create a file called __lib/static.js__:
+
+[source,js]
+----
+var baseUrl = '';
+
+exports.map = function(name){
+	return baseUrl + name;
+}
+----
+
+Not very exciting, is it?  And right now, it doesn't do anything at all: it just returns its argument unmodified (assuming the argument is a string, of course).  That's okay; right now, we're in development, and it's fine to have our static resources hosted on __localhost__.  Note that also we'll probably want to read the value of +baseUrl+ from a configuration file; for now, we'll just leave it in the module.
+
+[NOTE]
+====
+It's tempting to add some functionality that checks for the presence of a beginning slash in the asset name and adds it if it isn't present, but keep in mind that your asset mapper is going to be used _everywhere_, and therefore should be as fast as possible.  We can statically analyze our code as part of our QA toolchain to make sure our asset names always start with a slash.
+====
+
+==== Static Resources in Views
+
+Static resources in views are the easiest to deal with, so we'll start there.((("static content", "future-proofing your website", "static resources in views")))((("views", "static resources in")))  We can create a Handlebars helper (see <<ch_templating>>) to give us a link to a static resource:
+
+[source,js]
+----
+// set up handlebars view engine
+var handlebars = require('express3-handlebars').create({
+    defaultLayout:'main',
+    helpers: {
+        static: function(name) {
+            return require('./lib/static.js').map(name);
+        }
+    }
+});
+----
+
+We added a Handlebars helper called ++static++, which simply calls our static mapper.  Now let's modify __main.layout__ to use this new helper for the logo image:
+
+[source,html]
+----
+<header><img src="{{static '/img/logo.jpg'}}"
+    alt="Meadowlark Travel Logo"></header>
+----
+
+If we run the website, we'll see that absolutely nothing has changed: if we inspect the source, we'll see that the URL of the logo image is still __/img/meadowlark_logo.jpg__, as expected.
+
+Now we'll take some time and replace all of our references to static resources in our views and templates.  Now static resources in all of our HTML should be ready to be moved to a CDN.
+
+==== Static Resources in CSS
+
+CSS is going to be slightly more complicated, because we don't have Handlebars to help us out (it is possible to configure Handlebars to generate CSS,((("static content", "future-proofing your website", "static resources in CSS")))((("CSS", "static resources in"))) but it's not supported—it's not what Handlebars was designed for).  However, CSS preprocessors like LESS, Sass, and Stylus all support variables, which is what we need.((("Sass")))((("Stylus")))  Of these three popular preprocessors, I prefer LESS, which is what we'll be using here.((("LESS")))  If you use Sass or Stylus, the technique is very similar, and it should be clear how to adapt this technique to a different preprocessor.
+
+++++
+<?hard-pagebreak?>
+++++
+
+We'll add a background image to our site to provide a little texture.((("images", "background image for a site")))  Create a directory called __less__, and a file in it called __main.less__:
+
+[source,css]
+----
+body {
+	background-image: url("/img/backgrouind.png");
+}
+----
+
+This looks exactly like CSS so far, and that's not by accident: LESS is backward compatible with CSS, so any valid CSS is also valid LESS.  As a matter of fact, if you already have any CSS in your __public/css/main.css__ file, you should move it into __less/main.less__.  Now we need a way to compile the LESS to generate CSS.((("Grunt", "compiling LESS to generate CSS")))  We'll use a Grunt task for that:
+
+----
+npm install --save-dev grunt-contrib-less
+----
+
+Then modify __Gruntfile.js__.  Add +grunt-contrib-less+ to the list of Grunt tasks to load, then add the following section to +grunt.initConfig+:
+
+[source,js]
+----
+less: {
+    development: {
+        files: {
+            'public/css/main.css': 'less/main.less',
+        }
+    }
+}
+----
+
+The syntax essentially reads "generate __public/css/main.css__ from __less/main.less__."  Now run +grunt less+, and you'll see you now have a CSS file.  Let's link it into our layout, in the +<head>+ section:
+
+[source,html]
+----
+	<!-- ... -->
+    <link rel="stylesheet" href="{{static /css/main.css}}">
+</head>
+----
+
+Note that we're using our newly minted +static+ helper!  This is not going to solve the problem of the link to __/img/background.png__ inside the generated CSS file, but it will create a relocatable link to the CSS file itself.
+
+Now that we've got the framework set up, let's make the URL used in the CSS file relocatable.  First, we'll link in our static mapper as a LESS custom function.((("LESS", "linking in static mapper as LESS custom function")))  This can all be accomplished in __Gruntfile.js__:
+
+[source,js]
+----
+less: {
+    development: {
+        options: {
+            customFunctions: {
+                static: function(lessObject, name) {
+                    return 'url("' +
+                        require('./lib/static.js').map(name.value) +
+                        '")';
+                }
+            }
+        },
+        files: {
+            'public/css/main.css': 'less/main.less',
+        }
+    }
+}
+----
+
+Note that we add the standard CSS +url+ specifier and double quotes to the output of the mapper: that will ensure that our CSS is valid.  Now all we have to do is modify our LESS file, __less/main.less__:
+
+[source,css]
+----
+body {
+	background-image: static("/img/background.png");
+}
+----
+
+Notice that all that really changed was that we replaced +url+ with +static+; it's as easy as that.
+
+=== Static Resources in Server-Side JavaScript
+
+Using our static mapper in server-side JavaScript is really easy, as we've already written a module to do our mapping.((("server-side JavaScript", "static resources in")))((("static content", "static resources in server-side JavaScript")))((("JavaScript", "static resources in server-side JavaScript")))  For example, let's say we want to add an easter egg to our application.  At Meadowlark Travel, we're huge fans of Bud Clark (a former Portland mayor).  We want our logo replaced with a logo with a picture of Mr. Clark on his birthday.  Modify __meadowlark.js__:
+
+[source,js]
+----
+var static = require('./lib/static.js').map;                                                                                                           
+
+app.use(function(req, res, next){
+        var now = new Date();                                                                                                                          
+        res.locals.logoImage = now.getMonth()==11 && now.getDate()==19 ?                                                                               
+                static('/img/logo_bud_clark.png') :                                                                                                    
+                static('/img/logo.png');                                                                                                               
+        next();                                                                                                                                        
+});
+----
+
+Then in __views/layouts/main.handlebars__:
+
+[source,html]
+----
+<header><img src="{{logoImage}}" alt="Meadowlark Travel Logo"></header>
+----
+
+Note that we don't use the +static+ Handlebars helper in the view: that's because we already used it in the route handler, and if we used it here, we'd be double-mapping the file, which would be no good!
+
+=== Static Resources in Client-Side JavaScript
+
+Your first instinct might simply be to make the static mapper available to the client, and for our simple case,((("JavaScript", "static resources in client-side JavaScript")))((("client-side JavaScript", "static resources in"))) it would work fine (although we would have to use _browserify_, which allows you to use Node-style modules in the browser).((("browserify")))  However, I am going to recommend against this approach because it will quickly fall apart as our mapper gets more sophisticated.  For example, if we start to use a database for more sophisticated mapping, that will no longer work in the browser.  Then we would have to get into the business of making an AJAX call so the server could map a file for us, which will slow things down considerably.
+
+So what to do?  Fortunately, there's a simple solution.  It's not quite as elegant as having access to the mapper, but it won't cause problems for us down the line.
+
+Let's say you use jQuery to dynamically change the shopping cart image: when it's empty, the visual representation of the shopping cart is empty.((("images", "shopping cart, on the client")))((("jQuery", "dynamically changing shopping cart image")))  After the user has added items to it, a box appears in the cart.  (We would really want to use a sprite for this, but for the sake of the example, we will use two different images).
+
+Our two images are called __/img/shop/cart_empty.png__ and __/img/shop/cart_full.png__.  Without mapping, we might use something like this:
+
+[source,js]
+----
+$(document).on('meadowlark_cart_changed'){
+	$('header img.cartIcon').attr('src', cart.isEmpty() ?
+		'/img/shop/cart_empty.png' : '/img/shop/cart_full.png' );
+}
+----
+
+This will fall apart when we move our images to a CDN, so we want to be able to map these images too.  The solution is just to do the mapping on the server, and set custom JavaScript variables.  In __views/layouts/main.handlebars__, we can do that:
+
+[source,html]
+----
+<!-- ... -->
+<script>
+    var IMG_CART_EMPTY = '{{static '/img/shop/cart_empty.png'}}';
+    var IMG_CART_FULL = '{{static '/img/shop/cart_full.png'}}';
+</script>	
+----
+
+Then our jQuery simply uses those variables:
+
+[source,js]
+----
+$(document).on('meadowlark_cart_changed', function(){                                                                                  
+        $('header img.cartIcon').attr('src', cart.isEmpty() ?                                                                          
+                IMG_CART_EMPTY : IMG_CART_FULL );                                                                                      
+}); 
+----
+
+If you do a lot of image swapping on the client side, you'll probably want to consider organizing all of your image variables in an object (which itself becomes something of a map).  For example, we might rewrite the previous code as:
+
+[source,html]
+----
+<!-- ... -->
+<script>
+	var static = {
+		IMG_CART_EMPTY: '{{static '/img/shop/cart_empty.png'}}',
+		IMG_CART_FULL: '{{static '/img/shop/cart_full.png'}}
+	}
+</script>	
+----
+
+=== Serving Static Resources
+
+Now that we've seen how we can create a framework that allows us to easily change where our static resources are served from,((("static content", "serving static resources"))) what is the best way to actually store the assets?((("caching", "browser")))((("browsers", "caching")))  It helps to understand the headers that your browser uses to determine how (and whether) to cache a resource:
+
++Expires+/+Cache-Control+::
+	These two headers tell your browser the maximum amount of time a resource can be cached.  They are taken seriously by the browser: if they inform the browser((("Cache-Control header")))((("Expires header"))) to cache something for a month, it simply won't redownload it for a month, as long as it stays in the cache.  It's important to understand that a browser may remove the image from the cache prematurely, for reasons you have no control over.  For example, the user could clear the cache manually, or the browser could clear your resource to make room for other resources the user is visiting more frequently.  You only need one of these headers, and +Expires+ is more broadly supported, so it's preferable to use that one.  If the resource is in the cache, and it has not expired yet, the browser will not issue a +GET+ request at all, which improves performance, especially on mobile.
+
++Last-Modified+/+ETag+::
+	These two tags provide a versioning of sorts: if the browser needs to fetch the resource, it will examine these tags _before_ downloading the content.((("Last-Modified header")))  A +GET+ request is still issued to the server, but if the values returned by these headers satisfy the browser that the resource hasn't changed, it will not proceed to download the file.  As the name implies, +Last-Modified+ allows you to specify the date the resource was last modified.((("ETag header")))  +ETag+ allows you to use an arbitrary string, which is usually a version string or a content hash.
+
+When serving static resources, you should use the +Expires+ header _and_ either +Last-Modified+ or +ETag+.  Express's built-in +static+ middleware sets +Cache-Control+, but doesn't handle either +Last-Modified+ or +ETag+.  So, while it's suitable for development, it's not a great solution for deployment.
+
+If you choose to host your static resources on a CDN, such as Amazon CloudFront, Microsoft Azure, or MaxCDN, the advantage is that they will handle most of these details for you.  You will be able to fine-tune the details, but the defaults provided by any of these services are already good.
+
+If you don't want to host your static resources on a CDN, but want something more robust than Express's built-in +connect+ middleware, consider using a proxy server, such as Nginx (see <<ch_production_concerns>>), which is quite capable.
+
+=== Changing Your Static Content
+
+Caching significantly improves the performance of your website, but it isn't without its consequences.  In particular, if you change any of your((("static content", "changing"))) static resources, clients may not see them until the cached versions expire in your browser.  Google recommends you cache for a month, preferably a year.  Imagine a user who uses your website every day on the same browser: that person might not see your updates for a whole year!
+
+Clearly this is an undesirable situation, and you can't just tell your users to clear their cache.  The solution is _fingerprinting_. ((("fingerprinting resource bundles"))) Fingerprinting simply decorates the name of the resource with some kind of version information.  When you update the asset, the resource name changes, and the browser knows it needs to download it.((("asset versioning")))
+
+Let's take our logo, for example (__/img/meadowlark_logo.png__).  If we host it on a CDN for maximum performance, specifying an expiration of one year, and then go and change the logo, your users may not see the updated logo for up to a year.  However, if you rename your logo __/img/meadowlark_logo-1.png__ (and reflect that name change in your HTML), the browser will be forced to download it, because it looks like a new resource.
+
+If you consider the dozens—or even hundreds or thousands—of images on your site, this approach may seem very daunting.  If you're in that situation (large numbers of images hosted on a CDN), this is where you might consider making your static mapper more sophisticated.  For example, you might store the current version of all your digital assets in a database, and the static mapper could look up the asset name (__/img/meadowlark_logo.png__, for example) and return a URL to the _most recent version_ of the asset (__/img/meadowlark_logo-12.png__).
+
+At the very least, you should fingerprint your CSS and JavaScript files.  It's one thing if your logo is not current, but it's incredibly frustrating to roll out a new feature, or change the layout on a page, only to find that your users aren't seeing the changes because the resources are cached.
+
+A popular alternative to fingerprinting individual files is to _bundle_ your resources. ((("bundling"))) Bundling takes all of your CSS and smashes it into one file that's impossible for a human to read, and does the same for your client-side JavaScript.  Since new files are being created anyway, it's usually easy and common to fingerprint those files.
+
+=== Bundling and Minification
+
+In an effort to reduce HTTP requests _and_ reduce the data sent over the wire, "bundling and minification" has become popular.((("static content", "bundling and minification")))((("bundling", "and minification")))  Bundling takes like files (CSS or JavaScript) and bundles multiple files into one (thereby reducing HTTP requests).((("minification")))  Minification removes anything unnecessary from your source, such as whitespace (outside of strings), and it can even rename your variables to something shorter.
+
+One additional advantage of bundling and minification is that it reduces the number of assets that need to be fingerprinted.  Still, things are getting complicated quick!  Fortunately, there are some Grunt tasks that will help us manage the madness.
+
+Since our project doesn't currently have any client-side JavaScript, let's create two files: one will be for "contact us" form submission handling, and the other will be for shopping cart functionality.  We'll just put some logging in there for now so we can verify that the bundling and minification is working:
+
+__public/js/contact.js__:
+
+[source,js]
+----
+$(document).ready(function(){
+    console.log('contact forms initialized');
+});
+----
+
+__public/js/cart.js__:
+
+[source,js]
+----
+$(document).ready(function(){
+    console.log('shopping cart initialized');  
+});
+----
+
+We've already got a CSS file (generated from a LESS file), but let's add another one.  We'll put our cart-specific styles in their own CSS file.((("Grunt", "using for bundling and minification")))  Call it __less/cart.less__:
+
+[source,css]
+----
+div.cart {
+    border: solid 1px black;
+}
+----
+
+Now in __Gruntfile.js__ add it to the list of LESS files to compile:
+
+[source,js]
+----
+files: {
+    'public/css/main.css': 'less/main.less',
+    'public/css/cart.css': 'less/cart.css',
+}
+----
+
+We'll use no fewer than three Grunt tasks to get where we're going: one for the JavaScript, one for the CSS, and another to fingerprint the files.  Let's go ahead and install those modules now:
+
+----
+npm install --save-dev grunt-contrib-uglify
+npm install --save-dev grunt-contrib-cssmin
+npm install --save-dev grunt-hashres
+----
+
+Then load these tasks in the Gruntfile:
+
+[source,js]
+----
+    [
+        // ...
+        'grunt-contrib-less',
+        'grunt-contrib-uglify',
+        'grunt-contrib-cssmin',
+        'grunt-hashres',
+    ].forEach(function(task){
+        grunt.loadNpmTasks(task);
+    });
+----
+
+And set up the tasks:
+
+[source,js]
+----
+    grunt.initConfig({
+        // ...
+        uglify: {
+            all: {
+                files: {
+                    'public/js/meadowlark.min.js': ['public/js/**/*.js']
+                }       
+            }
+        },
+        cssmin: {
+            combine: {
+                files: {
+                    'public/css/meadowlark.css': ['public/css/**/*.css', 
+                        '!public/css/meadowlark*.css']
+                }   
+            },
+            minify: {
+                src: 'public/css/meadowlark.css',
+                dest: 'public/css/meadowlark.min.css',
+            }
+        },
+        hashres: {
+            options: {
+                fileNameFormat: '${name}.${hash}.${ext}'
+            },
+            all: {
+                src: [
+                    'public/js/meadowlark.min.js',
+                    'public/css/meadowlark.min.css',
+                ],
+                dest: [
+                    'views/layouts/main.handlebars',
+                ]
+            },
+        }   
+    });
+};
+----
+
+Let's look at what we just did. ((("uglify task")))((("CSS", "bundling and minifying files"))) In the +uglify+ task (minification is often called "uglifying" because...well, just look at the output, and you'll understand), we take all the site JavaScript((("JavaScript", "bundling and minifying files"))) and combine it into one file called __meadowlark.min.js__.  For +cssmin+, we have two tasks: we first combine all the CSS files into one called __meadowlark.css__ (note the second element in that array: the exclamation point at the beginning of the string says _not_ to include these files...this will prevent it from circularly including the files it generates itself!).  Then we minify the combined CSS into a file called __meadowlark.min.css__.
+
+Before we get to +hashres+, let's pause for a second.  We've now taken all of our JavaScript and put it in __meadowlark.min.js__ and all of our CSS and put it in __meadowlark.min.css__.  Now, instead of referencing individual files in our HTML, we'll want to reference them in our layout file. ((("layouts", "referencing bundled and minified files"))) So let's modify our layout file:
+
+[source,html]
+----
+    <!-- ... -->
+    <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+    <script src="{{static '/js/meadowlark.min.js'}}"></script>
+    <link rel="stylesheet" href="{{static '/css/meadowlark.min.css'}}">
+</head>
+----
+
+So far, it may seem like a lot of work for a small payoff.  However, as your site grows, you will find yourself adding more and more JavaScript and CSS.  I've seen projects that have had a dozen or more JavaScript files and five or six CSS files.  Once you reach that point, bundling and minification will yield impressive performance improvements.
+
+Now on to the +hashres+ task.((("hashres task")))((("fingerprinting resource bundles", "bundled and minified CSS and JavaScript files")))  We want to fingerprint these bundled and minified CSS and JavaScript files so that when we update our website, our clients see the changes immediately, instead of waiting for their cached version to expire.  The +hashres+ task handles the complexities of that for us.  Note that we tell it that we want to rename the __public/js/meadowlark.min.js__ and __public/css/meadowlark.min.css__ file.  +hashres+ will generate a hash of the file (a mathematical fingerprinting) and append it to the file.  So now, instead of __/js/meadowlark.min.js__, you'll have __/js/meadowlark.min.62a6f623.js__ (the actual value of the hash will be different if your version differs by even a single character).  If you had to remember to change the references in __views/layout/main.handlebars__ every time, well...you would probably forget sometimes.  Fortunately, the +hashres+ task comes to the rescue: it can automatically change the references for you.  See in the configuration how we specified __views/layouts/main.handlebars__ in the +dest+ section?  That will automatically change the references for us.
+
+So now let's give it a try.  It's important that we do things in the right order, because these tasks have dependencies:
+
+----
+grunt less
+grunt cssmin
+grunt uglify
+grunt hashres
+----
+
+That's a lot of work every time we want to change our CSS or JavaScript, so let's set up a Grunt task so we don't have to remember all that.  Modify __Gruntfile.js__:
+
+[source,js]
+----
+grunt.registerTask('default', ['cafemocha', 'jshint', 'exec']);
+grunt.registerTask('static', ['less', 'cssmin', 'uglify', 'hashres']);
+----
+
+Now all we have to do is type +grunt static+, and everything will be taken care of pass:[<phrase role="keep-together">for us.</phrase>]
+
+==== Skipping Bundling and Minification in Development Mode
+
+One problem with bundling and minification is that it makes frontend debugging all but impossible.  All of your JavaScript and CSS are smashed into their own bundles, and the situation can even be worse if you choose extremely aggressive options for your minification.((("static content", "bundling and minification", "skipping in development mode")))((("development mode", "skipping bundling and minification")))((("minification", "skipping in development mode")))((("bundling", "skipping in development mode")))  What would be ideal is a way to disable bundling and minification in development mode.  Fortunately, I've written just the module for you: +connect-bundle+.((("connect-bundle module")))
+
+Before we get started with that module, let's create a configuration file.((("JSON", "configuration file for connect-bundle")))  We'll be defining our bundles now, but we will also use this configuration file later to specify database settings.  It's common to specify your configuration in a JSON file, and it's a little known but very useful trick that you can read and parse a JSON file using +require+, just as if it were a module:
+
+[source,js]
+----
+var config = require('./config.json');
+----
+
+However, because I get tired of typing quotation marks, I generally prefer to put my configuration in a JavaScript file (which is almost identical to a JSON file, minus a few quotation marks).  So let's create __config.js__:
+
+[source,js]
+----
+module.exports = {
+    bundles: {
+
+        clientJavaScript: {
+            main: {
+                file: '/js/meadowlark.min.js',
+                location: 'head',
+                contents: [
+                    '/js/contact.js',
+                    '/js/cart.js',
+                ]
+            }
+        },
+
+        clientCss: {
+            main: {
+                file: '/css/meadowlark.min.css',
+                contents: [
+                    '/css/main.css',
+                    '/css/cart.css',
+                ]
+            }
+        }
+    }
+}
+----
+
+We're defining bundles for JavaScript and CSS.  We could have multiple bundles (one for desktop and one for mobile, for example), but for our example, we just have one bundle, which we call "main."  Note that in the JavaScript bundle, we can specify a location.  For reasons of performance and dependency, it may be desirable to put your JavaScript in different locations.  In the +<head>+, right after the open +<body>+ tag, and right before the close +<body>+ tag are all common locations to include a JavaScript file.  Here, we're just specifying "head" (we can call it whatever we want, but JavaScript bundles must have a location).
+
+Now we modify __views/layouts/main.handlebars__:
+
+[source,html]
+----
+    <!-- ... -->
+    {{#each _bundles.css}}
+        <link rel="stylesheet" href="{{static .}}">
+    {{/each}}
+    {{#each _bundles.js.head}}
+        <script src="{{static .}}"></script>
+    {{/each}}
+</head>
+----
+
+Note that we're still using our +{{static}}+ helper; we still want to be able to map and relocate our resources.  By default, +connect-bundle+ will put the bundles in a property +_bundles+ of +res.locals+, though you can control the name of the property if you wish (see the +connect-bundle+ documentation).
+
+Now if we want to use a fingerprinted bundle name, we have to modify __config.js__ instead of __views/layouts/main.handlebars__.  Modify __Gruntfile.js__ accordingly:
+
+[source,js]
+----
+hashres: {
+    options: {
+        fileNameFormat: '${name}.${hash}.${ext}'
+    },
+    all: {
+        src: [
+            'public/js/meadowlark.min.js',
+            'public/css/meadowlark.min.css',
+        ],
+        dest: [
+            'config.js',
+        ]
+    },
+}   
+----
+
+Now you can run +grunt static+; you'll see that __config.js__ has been updated with the fingerprinted bundle names.
+
+=== A Note on Third-Party Libraries
+
+You'll notice I haven't included jQuery in any bundles in these examples. ((("bundling", "third-party libraries and")))((("libraries", "bundling third-party libraries")))((("jQuery", "not included in bundles"))) jQuery is so incredibly ubiquitous, I find that there is dubious value in including it in a bundle: the chances are, your browser probably has a cached copy.  The gray area would be libraries such as Handlebars, Backbone, or Bootstrap: they're quite popular, but not as likely to be always cached in the browser.  If you're using only one or two third-party libraries, it's probably not worth bundling them with your scripts.  If you've got five or more libraries, though, you might see a performance gain by bundling the libraries.
+
+=== QA
+
+If you choose to implement some form of static mapping, either using the techniques in this chapter or something else, consistency will be key.((("static content", "quality assurance in static mapping")))((("quality assurance", "static mapping")))  Forgetting to use the +{{static}}+ helper even once will create a maintenance headache: you could spend hours trying to figure out why your changes aren't being reflected on the live site when you update your CDN.
+
+Instead of waiting for the inevitable bug, or hoping that code reviews will catch the problem, why not add a component to our QA toolchain to fix the problem?  We'll use a Grunt plugin called ++grunt-lint-pattern++, which simply searches for a pattern in source files and generates an error if it's found. ((("linting", "catching unmapped statics"))) First, install the package:
+
+----
+npm install --save-dev grunt-lint-pattern
+----
+
+Then add +grunt-lint-pattern+ to the list of ((("Grunt", "grunt-lint-pattern module")))modules to be loaded in __Gruntfile.js__, and add the following configuration:
+
+[source,js]
+----
+lint_pattern: {
+    view_statics: {
+        options: {
+            rules: [
+                {
+                    pattern: /<link [^>]*href=["'](?!\{\{static )/,
+                    message: 'Un-mapped static resource found in <link>.'
+                },
+                {
+                    pattern: /<script [^>]*src=["'](?!\{\{static )/,
+                    message: 'Un-mapped static resource found in <script>.'
+                },
+                {
+                    pattern: /<img [^>]*src=["'](?!\{\{static )/,
+                    message: 'Un-mapped static resource found in <img>.'
+                },
+            ]
+        },
+        files: {
+            src: [
+                'views/**/*.handlebars'
+            ]
+        }
+    },
+    css_statics: {
+        options: {
+            rules: [
+                {
+                    pattern: /url\(/,
+                    message: 'Un-mapped static found in LESS property.'
+                },
+            ]
+        },
+        files: {
+            src: [
+                'less/**/*.less'
+            ]
+        }
+    }
+}
+----
+
+And add +lint_pattern+ to your default rule:
+
+[source,js]
+----
+grunt.registerTask('default', ['cafemocha', 'jshint', 'exec', 'lint_pattern']);
+----
+
+Now when we run +grunt+ (_which we should be doing regularly_), we will catch any instances of unmapped statics.
+
+=== Summary
+
+For what seems like such a simple thing, static resources are a lot of trouble.  However, they probably represent the bulk of the data actually being transferred to your visitors, so spending some time optimizing them will yield substantial payoff.
+
+Depending on the size and complexity of your website, the techniques for static mapping I've outlined here may be overkill.  For those projects, the other viable solution is to simply host your static resources on a CDN from the start, and always use the full URL to the resource in your views and CSS.  You will probably still want to run some kind of linting to make sure you're not hosting static resources locally: you can use +grunt-lint-pattern+ to search for links that don't start with +(?:https?:)?//+; that will prevent you from accidentally using local resources.
+
+Elaborate bundling and minification is another area in which you can save time if the payoff isn't worth it for your application.  In particular, if your site includes only one or two JavaScript files, and all of your CSS lives in a single file, you could probably skip bundling altogether, and minification will produce only modest gains, unless your JavaScript or CSS is massive.
+
+Whatever technique you choose to use to serve your static resources, I highly recommend hosting them separately, preferably on a CDN.  If it sounds like a hassle to you, let me assure that it's not nearly as difficult as it sounds, especially if you spend a little time on your deployment system, so deploying static resources to one location and your application to another is automatic.
+
+If you're concerned about the hosting costs of CDNs, I encourage you to take a look at what you're paying now for hosting.  Most hosting providers essentially charge for bandwidth, even if you don't know it.  However, if all of a sudden your site is mentioned on Slashdot, and you get "Slashdotted," you may find yourself with a hosting bill you didn't expect.  CDN hosting is usually set up so that you pay for what you use.  To give you an example, a website that I manage for a medium-sized regional company, which uses about 20 GB a month of bandwidth, pays only a few dollars per month to host static resources (and it's a very media-heavy site).
+
+The performance gains you realize by hosting your static resources on a CDN are significant, and the cost and inconvenience of doing so is minimal, so I highly recommend going this route.
+((("static content", range="endofrange", startref="ix_staticcont")))

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #box{
+            width: 600px;
+            height: 550px;
+            margin: 20px auto;
+            border: 2px solid darkblue;
+            padding: 20px;
+        }
+        #oUl{
+            padding: 0;
+            list-style: none;
+            height: 180px;
+        }
+        #oUl li{
+            list-style: none;
+            background-color: antiquewhite;
+            font-size: 20px;
+            text-align: center;
+            height: 30px;
+            line-height: 30px;
+            margin-bottom: 10px;
+        }
+        #oUl li:hover{
+            background-color: chocolate;
+            box-shadow: 1px 2px 3px 1px;
+        }
+        #oUl.o0{
+            background-color: darksalmon;
+        }
+        #oUl.o1{
+            background-color: gainsboro;
+        }
+        #oUl.o2{
+            background-color: lightblue;
+        }
+        #box2{
+            width: 100%;
+            border: 2px dashed darkseagreen;
+            box-shadow: 2px 2px 5px;
+            height: 300px;
+            overflow: hidden;
+        }
+        #box2 img{
+            width: 80px;
+            height: 80px;
+            margin: 10px;
+        }
+        .p0{
+            display: none;
+            color: red;
+        }
+        #btn{
+            background-color: blue;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <ul id="oUl">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+    </ul>
+    <div id="box2">
+
+    </div>
+    <p class="p0">是否删除
+        <button id="btn">是</button>
+    </p>
+
+
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+    //5.
+    var box=document.getElementById("box");
+    var box2=document.getElementById("box2");
+    var oUl=document.getElementById("oUl");
+    var oLis=oUl.getElementsByTagName("li");
+    var p0=box.getElementsByClassName("p0")[0];
+    var btn=document.getElementById("btn");
+    btn.f=false;
+    var flag=0;
+    for (var i=0;i<oLis.length;i++){
+        oLis[i].i=i;
+        oLis[i].s="";
+        oLis[i].onclick=function () {
+            this.parentNode.className="o"+this.i;
+            if(!btn.f){
+               this.s="";
+               flag=flag+this.i+1;
+               for(var j=0;j<this.i+1;j++){
+                   this.s+="<img src='img/"+Math.round(Math.random()*5+1)+".jpg'/>"
+               }
+               box2.innerHTML+=this.s;
+           }
+            if(flag>=18){
+                p0.style.display="block";
+                btn.onclick=function () {
+                    btn.f=true;
+                    p0.style.display="none"
+                }
+            }
+            if(box2.children.length<=0){
+                p0.style.display="block";
+                p0.innerText="是否增加";
+                btn.onclick=function () {
+                    btn.f=false;
+                    p0.style.display="none"
+                }
+            }
+            if(btn.f){
+                flag=flag-this.i-1;
+                for(var k=0;k<this.i+1;k++){
+                    box2.removeChild(box2.children[0])
+                }
+            }
+
+        }
+    }
+</script>

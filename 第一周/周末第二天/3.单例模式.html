@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>单例模式</title>
+</head>
+<body>
+<script type="text/javascript">
+    var obj1={
+        name:"李凯",
+        age:20,
+        say:function () {
+            console.log("为什么？")
+        }
+    };
+    //对象obj1,还有一个名字叫做 命名空间
+    //单例模式：就是一个对象，保障变量名字不冲突,调用自己的方法直接用this就可以
+    var public={
+        sort:function () {}
+    };
+    var mq={
+        search:function () {console.log("search")},
+        sort:function () {
+            //this=mq
+            this.search();
+            console.log("sort");
+        }
+    };
+    var lk={
+        search:function () {console.log("searchAll")},
+        sort:function () {console.log("sortStr")}
+    };
+    mq.search();
+    lk.sort();
+    mq.sort()//this=mq
+</script>
+</body>
+</html>

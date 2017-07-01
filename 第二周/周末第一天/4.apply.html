@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+//    Function.prototype.call;
+//    Function.prototype.apply;
+//    Function.prototype.bind;
+
+    //apply(参数1,参数2);参数1用来改变前面函数的this,参数2是个数组,将数组中的每一项当做参数传给前面的函数
+
+    function fn(n,m){
+        console.log(n,m)
+    }
+    fn(1,2);
+    fn.call(null,1,2);//fn(1,2)
+    fn.apply(null,[1,2]);//fn(1,2)
+
+    //bind(),只用来改变前面函数的this,得到一个新的函数,原函数不变,不会让函数执行
+    function ff(){
+        console.log(this);
+    }
+    var a={a:1};
+    var ff1=ff.bind(a);
+    ff1();//this == a
+    ff();
+
+
+</script>
+</body>
+</html>

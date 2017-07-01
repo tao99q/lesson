@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--
+事件行为如果不绑定方法，我们的事件同样会触发，只不过是触发的时候什么都没干
+
+DOM0级事件的绑定（不存在兼容问题）
+元素.事件行为=function
+只能绑定一次，因为就相当于给事件行为属性付了一个值，一个地址值，如果在赋值一次，后面的就把前面的覆盖了
+移除事件 ：元素.事件行为=null
+
+DOM2级事件（有兼容问题）
+在标准浏览器中  addEventListener("事件类型（事件行为前面没有on）",function,false(不写默认)/true)
+可以实现多次绑定 按顺序执行
+
+注意：为了移除事件我们在绑定事件的时候要写一个函数名（因为函数引用数据类型的，要移除一个地址）
+绑定的时候怎么写的移除的时候就怎么写
+DOM2级事件移除：removeEventListener("事件类型（事件行为前面没有on）",function,false(不写默认)/true)
+
+在IE低版本中 attachEvent("事件类型，必须前面带着on"，function) 都是在冒泡阶段发生
+detachEvent()
+
+
+
+事件行为属性是元素的私有属性
+addEventListener是EventTarget原型上的共有属性
+-->
+<div id="box">box</div>
+<div id="box2">box</div>
+</body>
+</html>
+<script>
+var box=document.getElementById("box");
+var box2=document.getElementById("box2");
+box.onclick=function () {
+    this.innerHTML+="box";
+};
+box.addEventListener("click",function () {
+    alert("1");
+});
+box.addEventListener("click",function () {
+    alert("2");
+});
+box.addEventListener("click",function () {
+    alert("3");
+});
+box.removeEventListener("click",function () {
+    alert("1");
+});
+
+console.log(box.addEventListener === box2.addEventListener);
+
+</script>

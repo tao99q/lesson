@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/reset.min.css"/>
+    <style>
+        #news{
+            padding: 10px;
+        }
+        #news li {
+            position: relative;
+            padding: 10px 0;
+            height: 60px;
+            border-bottom: 1px dashed #ccc;
+        }
+        #news li div:nth-child(1) {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 75px;
+            height: 60px;
+            background: url("img/default.jpg") no-repeat center center;
+            background-size: 100% 100%;
+        }
+        #news li div:nth-child(1) img {
+            /*display: none;*/
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+        #news li div:last-child {
+            margin-left: 80px;
+        }
+        #news li h2 {
+            height: 20px;
+            line-height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #news li p {
+            line-height: 20px;
+            color: #999;
+        }
+
+    </style>
+</head>
+<body>
+<ul id="news">
+   <!--<li>-->
+       <!--<div>-->
+           <!--<img src="" alt=""/>-->
+       <!--</div>-->
+       <!--<div>-->
+           <!--<h2></h2>-->
+           <!--<p></p>-->
+       <!--</div>-->
+   <!--</li>-->
+</ul>
+</body>
+</html>
+<script src="js/public.js"></script>
+<script src="js/delay.js"></script>
+
+<!--
+图片延迟加载的原理:
+img标签有个src属性里面就是用来加载图片的,当浏览器看到src属性就会自动加载,那么我们不给src属性赋值,先把图片的地址存起来,存在自定义属性上,等到图片应该加载的时候(两种:首屏的一般都是给一个延迟的时间让他加载;其他屏的时候:等图片的位置完全露出来一般都是给他一张占位图,背景图片),把真实的地址再还给src属性
+还给他之前先检验一下图片的地址能否加载出来,一般都是创建一个备用 的img,让他去加载图片地址,加载成功了才把这个地址还给那个img
+
+-->

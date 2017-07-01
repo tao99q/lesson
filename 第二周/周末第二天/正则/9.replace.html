@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //replace(正则,function(){})
+    //第二个参数是个函数:替换一次就执行一次,你返回什么就替换成什么
+    var str='ie=utf-8&newi=1&mod=11&isbd=1&isid=fd9f9&wd=哈哈&rsv_spt=1';
+    //   var n=0;
+//    str=str.replace(/=/g,function(){
+//        //console.log(++n);
+//        console.log(arguments);
+//    });
+    //console.log(str);
+    // 在中括号中如果让-表示本身的意思就写在最后(只要是-后面没有东西了就表示本身的意思)
+
+
+    /*
+    * 第二个参数是个函数,默认每一次都给函数传参数
+    * arguments[0]:大正则捕获的内容
+    * arguments[1]:第一个分组捕获的内容
+    * arguments[2]:第二个分组捕获的内容
+    * ......
+    * arguments[arguments.length-2] :大正则捕获的内容首字符出现的索引就相当于index
+    * arguments[arguments.length-1] :原字符串
+    * */
+    var reg=/(\w+)=([\w\u4e00-\u9fa5-]+)&?/g;
+    str=str.replace(reg,function(){
+        //console.log(arguments)
+        return arguments[1]+":'"+arguments[2]+"',";
+    });
+    str=str.substr(0,str.length-1);
+    var obj=eval("({"+str+"})");
+    console.log(obj);
+</script>
+</body>
+</html>

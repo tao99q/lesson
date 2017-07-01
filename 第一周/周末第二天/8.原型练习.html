@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>原型练习</title>
+</head>
+<body>
+<script type="text/javascript">
+    var a=1,A=11;
+    function b() {this.a++;A++};
+    function B() {b()};
+    function F() {
+        //this->f1
+        var A=this.A;//undefined
+        this.a=A;//undefined
+        this.A=a;//11
+        this.b=b;
+        this.B=function () {
+            this.A++;
+            this.a++;
+        };
+        return this.a+this.A
+    }
+    F.prototype.a=this.a;//1
+    F.prototype.b=this.b;//
+    F.prototype.C=function () {
+        this.a++;
+        this.A++
+    };
+    var f0=F();
+    var f1=new F;
+    var f2=new F;
+    f1.B();
+    f2.B();
+    f2.C();
+    f1.C();
+    console.log(F.prototype.a);
+    F.prototype.C();
+    console.log(f0);
+    console.log(f1);
+    console.log(f2);
+    console.log(F.prototype.a);
+</script>
+<script type="text/javascript">
+    function FF() {
+        var ff="1";
+        this.x=10;
+        this.y=1;
+        this.ff=function () {
+            this.x+=ff;
+        }
+    }
+    FF.prototype.x="1";
+    FF.prototype.ff=function () {
+        this.x+=this.y;
+    };
+    var ff1=new  FF;
+    var ff2=new  FF;
+    ff1.ff();
+    ff2.ff();
+    console.log(ff1);
+    console.log(ff2);
+    ff1.__proto__.ff();
+    ff2.__proto__.ff();
+    console.log(FF.prototype);
+</script>
+<script type="text/javascript">
+    Object.prototype.x = 10;
+    Object.prototype.y = 20;
+    Object.prototype.sum = function() {
+        console.log(this.x + this.y)
+    };
+    function Fn() {
+        this.x = 100;
+        this.y = 200;
+        this.sum = function() {
+            console.log(this.x + this.y)
+        }
+    };
+    Fn.prototype.sum = function() {
+        console.log(this.x + this.y);
+    };
+    Fn.prototype.x = 1;
+    Fn.prototype.y = 2;
+    var f1 = new Fn;
+    var f2 = new Fn;
+
+    Fn.prototype.sum();//Fn.prototype.x+Fn.prototype.y=3
+
+    f1.__proto__.__proto__.sum();
+//  Fn.prototype.__proto__.sum()
+    //Object.prototype.sum()//30
+    Fn.prototype.__proto__.sum();
+    //Object.prototype.sum()//30
+
+   // f1.__proto__.sum === f2.__proto__.sum === Fn.prototype.sum;
+
+    f1.__proto__.sum==f2.__proto__.__proto__.sum//false
+
+    f1.__proto__.sum==Fn.prototype.sum;//t
+
+    f1.__proto__.sum==Fn.prototype.__proto__.sum;//f
+
+    f1.__proto__.__proto__.sum==Fn.prototype.__proto__.sum//t
+</script>
+<script type="text/javascript">
+    m="1";
+    function MM(m) {
+        //this->m1={}
+        //m="1"
+       m=this.m ;//m=m1.m=undefined
+       this.m=m;//{m:undefined}
+       this.n=isNaN(this.m);//{m:undefined,n:true}
+       if(this.n){//m1.n=true
+           this.z=function () {//{m:undefined,n:true,z:function (){}}
+               this.m=!this.n;
+           }
+       }
+    }
+    var m1=new MM(m);
+    m1.z();//this=m1,m1.m=!m1.n=false
+    console.log(m1);//{m:false,n:true,z:function}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body id="body">
+<script>
+    var Body = document.getElementById("body");
+    function on(ele,type,callback,bool) {
+        if(ele.addEventListener){
+            ele.addEventListener(type,callback,bool);
+        }else {
+            function run (e) {
+                callback.call(ele,e);
+            }
+            ele.attachEvent("on"+type,run)
+        }
+    }
+    function off(ele,type,callback,bool) {
+        if(ele.removeEventListener){
+            ele.removeEventListener(type,callback,bool)
+        }else {
+            ele.detachEvent("on"+type,callback)
+        }
+    }
+    function f1() {
+        console.log(this);
+    }
+    function f2(e) {
+        console.log(e);
+    }
+//    f1.bind(Body)();
+
+
+    on(Body,"click",f1);
+    on(Body,"click",f1);
+    on(Body,"click",f2);
+    on(Body,"mouseover",f1);
+    on(Body,"mouseover",f2);
+    on(Body,"mouseover",f2);
+</script>
+</body>
+</html>

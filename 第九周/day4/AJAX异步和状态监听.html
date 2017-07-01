@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    //    var xhr=new XMLHttpRequest();
+    //    console.log(xhr.readyState);//0
+    //    xhr.open("get","note1.txt",true);
+    //    console.log(xhr.readyState);//1
+    //    xhr.onreadystatechange=function () {
+    //        console.log(xhr.readyState);//2,3,4
+    //    };
+    //    xhr.send(null);
+    //new Date.getTime()
+//    var xhr = new XMLHttpRequest();
+//    console.log(xhr.readyState,(new Date).getTime());//0
+//    xhr.onreadystatechange = function () {
+//        console.log(xhr.readyState,(new Date).getTime());//1,2,3,4
+//    };
+//    xhr.open("get", "note1.txt", true);//1
+//    console.log(xhr.readyState,(new Date).getTime());
+//    xhr.send(null);
+    //0   --22
+    //1   --24
+    //1   --27
+    //2   --24
+    //3   --24
+    //4   --24
+    var xhr = new XMLHttpRequest();
+    console.log(xhr.readyState,(new Date).getTime());
+    xhr.open("get", "note1.txt", true);
+    console.log(xhr.readyState,(new Date).getTime());
+    xhr.send(null);
+    xhr.onreadystatechange = function () {
+        console.log(xhr.readyState,(new Date).getTime());
+    };
+
+</script>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    function fn(){console.log(this)};
+//    fn.call();//this->window
+//    fn.call.call();
+    //1.fn.__proto__-->Function.prototype
+    //2.Function.prototype.call
+    //3.Function.prototype.call.__proto__--->Function.prototype
+    //4.Function.prototype.call
+    //fn.call.call();
+    //第二个call前面的函数 fn.call,首先改变fn.call中的this->window,然后让fn.call()
+    //fn.call 这个call原来的this是fn,现在变成window了,那么现在call中那句核心代码this()就变成了window(),以内window不是一个函数,不能执行就报错了
+
+    //所以说两个call的时候第一个参数必须是个函数才可以执行,要不就报错了
+</script>
+<script type="text/javascript">
+    function fn(n){console.log(this,n)};
+    function f(n){console.log(this,n)};
+    //fn.call(null,1);
+    fn.call.call(f,1,2);
+    //fn.call.call(f,1,2);
+    // 第一个参数f就是给fn.call方法call改变this的,第二个第三个参数就是给fn.call()传参数的->fn.call(1,2)
+    // fn.call(1,2),call中的this就变成了f,核心是this()->f()
+    //参数1就是给f改变 this的,参数2就是给f(2)
+    //f(2),this->1,this-Number
+
+
+    //总结:两个及两个以上的call执行都一样
+    //fn.call.call.call(参数1,参数2,参数3,...)
+    //就相当于参数1执行,将参数1中的this变成参数2,参数3....就是给参数1执行的时候传参数的
+    //f1.call.call.call(f2,obj,1,2)-->f2.call(obj,1,2)
+    function f1(){console.log(this)};
+    function f2(m){console.log(this,m)};
+    var obj={};
+    // f1.call.call.call(f2,obj,1);
+    //f2.call(obj,1)
+    // f2.call.call.call.call(f1,1,2);
+    //f1.call(1,2)
+
+</script>
+<script type="text/javascript">
+    var ff1=function(){console.log(this)};
+    var obj={n:1};
+    function ff2(n,m){console.log(this,n+m)};
+    obj.constructor.call.call(ff1);
+    //ff1.call() this ==window
+    [].constructor.call.call.call(ff2,obj,1);
+    //ff2.call(obj,1) this=obj,n=1,m=undefined,n+m=NaN
+    ff1.call.call.call(ff2,obj,1,2,3);
+    //ff2.call(obj,1,2,3)
+    console.dir(Object.prototype.constructor);//Object
+    obj.call.call(ff1);
+    //Object.prototype
+
+
+    function Object(){}
+    function Array(){}
+    function String(){}
+    function Number(){}
+    function Date(){}
+    function RegExp(){}
+    Object.prototype={
+        constructor:Object,
+        toString:function(){}
+    };
+</script>
+</body>
+</html>

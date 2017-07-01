@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>this</title>
+</head>
+<body>
+<script type="text/javascript">
+    //this 是执行主体
+    //1.函数执行的时候看前面有没有点，没有的就是window，有的话点前面是谁就是谁
+    var a=1;
+    var obj={
+        a:10,
+        f:function () {
+            console.log(this.a)
+        }
+    };
+    function f() {
+        console.log(this.a)
+    }
+    f();//window.a=1
+    obj.f();//obj.a=10;
+    //2.自执行函数，this永远是window
+    (function (i) {
+        console.log(this.i);//window.i
+    })(2)
+    //3.当函数作为参数去执行的时候他的this是window
+
+    var a=[1,5,2,6,3];
+    a.sort(function (a,b) {
+        //console.log(this);
+        return b-a;
+    });
+    //sort()这个方法this=a，
+    a.forEach(function (item,index,input) {
+        console.log(this);
+    })
+    //4.给元素绑定事假的时候，给谁绑的谁就是this
+
+
+</script>
+</body>
+</html>

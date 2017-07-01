@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script src="js/jquery-1.11.3.js"></script>
+<script>
+    $.ajax({
+        url:"note.txt",
+        type:"get",
+        async:true,//open(type,url,async)
+        dataType:"json",
+        cache:true,
+        timeout:null,//xhr.timeout
+        data:null,
+        //get 将data转为XXX=xxx&YYY=yyy拼接到url上
+        //post send()
+        success:function (result) {
+
+        },
+        error:function (e) {
+
+        }
+    })
+</script>
+</html>

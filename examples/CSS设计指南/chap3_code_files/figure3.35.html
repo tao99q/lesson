@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 3.35 Background Repeat</title>
+<style>
+	p {font-size:14px; font-family:helvetica, arial, sans-serif; width:348px; height:40px; margin:20px auto; padding:10px; color:#000; border:2px solid #AAA; background-color:#FFF; background-image:url(images/blue_circle.png);}
+	p#x {background-repeat:repeat-x;}
+	p#y {background-repeat:repeat-y;}
+	p#space {background-repeat:space;}
+	p#none {background-repeat:no-repeat;}
+</style>
+</head>
+	
+<body>
+    <p>
+    	<code>background-repeat:repeat</code> 
+        <br/>The image tiles across and down the background area.
+    </p>
+    <p id="x">
+    	<code>background-repeat:repeat-x</code> <br/>The image tiles across the background area.
+    </p>
+    <p id="y">
+    	<code>background-repeat:repeat-y</code> <br/>The image tiles down the background area.
+    </p>
+    <p id="none">
+    	<code>background-repeat:no-repeat</code> <br/>The image displays once only.
+    </p>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

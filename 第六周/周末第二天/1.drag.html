@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html,body,div,img{
+            margin: 0;
+            padding: 0;
+        }
+        html,body{
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+        }
+        div{
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            left: 50px;
+            top:50px;
+            cursor: move;
+        }
+        div img{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #box2{
+            left: 300px;
+        }
+        #box3{
+            left: 500px;
+        }
+        #box4{
+            left: 700px;
+        }
+    </style>
+</head>
+<body>
+<div id="box1"><img src="img/1.png" alt=""></div>
+<div id="box2"><img src="img/2.png" alt=""></div>
+<div id="box3"><img src="img/3.png" alt=""></div>
+<div id="box4"><img src="img/4.png" alt=""></div>
+</body>
+</html>
+<script src="js/Event.js"></script>
+<script src="js/Drag.js"></script>
+<script>
+    var box1=document.getElementById("box1");
+    var box2=document.getElementById("box2");
+    var box3=document.getElementById("box3");
+    var box4=document.getElementById("box4");
+
+
+    var drag1=new Drag(box1);
+    console.dir(drag1);
+    //drag1.on();
+    //drag1.__proto__.__proto__.on()
+    //console.dir(drag1);
+    /*
+    function fn() {
+        console.log(this);
+    }
+    function fn1() {
+        console.log(1);
+    }
+    function fn2() {
+        console.log(2);
+    }
+    function fn3() {
+        console.log(3);
+    }
+
+    drag1.on("selfRed",fn);
+    drag1.on("selfRed",fn1);
+    drag1.on("selfRed",fn2);
+    drag1.on("selfRed",fn3);
+    drag1.on("selfRed",fn).on("selfRed",fn1).on("selfRed",fn2)
+    drag1.fire("selfRed");
+    */
+
+
+    var drag2=new Drag(box2);
+    drag2.range({minT:0,maxT:300});
+    //console.log(1 <= Number(undefined));
+    var drag3=new Drag(box3);
+    drag3.border();
+    console.dir(drag3);
+
+    var drag4=new  Drag(box4);
+    drag4.border();
+    drag4.jump();
+
+    console.dir(drag4);
+
+
+    console.log(Math.pow(5, 2));//求几次方
+    console.log(Math.sqrt(25));//算数平方根 正数
+</script>

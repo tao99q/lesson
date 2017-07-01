@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 2.10 Specialized Contextual Selectors</title>
+<style>
+	section > h2 { font-style:italic; }   /* h2 selected – is a child of section */
+	/*h2 + p { font-variant:small-caps;} /* first p selected - is first sibling of h2 */
+	/*h2 ~ a {color:red;} /* only sibling link tag is selected */
+	/*section * a {font-size:1.3em;} selects link in p only - has a tag (here, p) inbetween section and the link */
+</style>
+
+</head>
+
+<body>
+<div>
+	<section>
+		<h2>An H2 Heading</h2>
+		<p>This is paragraph 1</p>
+		<p>Paragraph 2 has <a href="#">a link</a> in it.</p>
+        <a href="#">Link</a>
+	</section>
+</div>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

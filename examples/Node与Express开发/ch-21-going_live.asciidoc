@@ -1,0 +1,214 @@
+[[ch_going_live]]
+== Going Live
+
+The big day is here: you've spent weeks or months toiling over your labor of love, and now your website or service is ready to launch.((("going live", id="ix_golive", range="startofrange")))  It's not as easy as just "flipping a switch" and then your website is live...or is it?((("websites", "launching", see="going live")))
+
+In this chapter (which you should really read _weeks_ before launch, not the day of!), you'll learn about some of the domain registration and hosting services available to you, techniques for moving from a staging environment to production, deployment techniques, and things to consider when picking production services.
+
+=== Domain Registration and Hosting
+
+People are often confused about the difference between _domain registration_ and _hosting_.  If you're reading this book, you probably aren't, but I bet you know people who are, like your clients or your manager.((("domain registration and hosting", id="ix_domreghost", range="startofrange")))((("going live", "domain registration and hosting", id="ix_golivedomreg", range="startofrange")))
+
+Every website and service on the Internet can be identified by an _Internet protocol (IP) address_ (or more than one).  These numbers are not particularly friendly to humans (and that situation will only get worse as IPv6 adoption improves), but your computer ultimately needs these numbers to show you a web page.  That's where _domain names_ come in.((("IP addresses")))((("domain names")))  They map a human-friendly name (like _google.com_) with an IP address (74.125.239.13).
+
+A real-world analogy would be the difference between a business name and a physical address.  A domain name is like your business name (Apple), and an IP address is like your physical address (1 Infinite Loop, Cupertino, CA 95014).  If you need to actually get in your car and visit Apple's headquarters, you'll need to know the physical address.  Fortunately, if you know the business name, you can probably get the physical address.  The other reason this abstraction is helpful is that an organization can move (getting a new physical address), and people can still find it even though it's moved.
+
+_Hosting_, on the other hand, describes the actual computers that run your website.((("hosting")))  To continue the physical analogy, hosting could be compared to the actual buildings you see once you reach the physical address.  What is often confusing to people is that domain registration has very little to do with hosting, and rarely do you purchase your domain from the same entity that you pay for hosting (in the same way that you usually buy land from one person and pay another person to build and maintain buildings for you).
+
+While it's certainly possible to host your website without a domain name, it's quite unfriendly: IP addresses aren't very marketable!  Usually, when you purchase hosting, you're automatically assigned a subdomain (which we'll cover in a moment), which can be thought of as something between a marketing-friendly domain name and an IP address (for example, _ec2-54-201-235-192.us-west-2.compute.amazonaws.com_).
+
+Once you have a domain, and you go live, you could reach your website with multiple URLs.  For example:
+
+* _http://meadowlarktravel.com/_
+* _http://www.meadowlarktravel.com/_
+* _http://ec2-54-201-235-192.us-west-2.compute.amazonaws.com/_
+* _http://54.201.235.192/_
+
+Thanks to domain mapping, all of these addresses point to the same website.  Once the requests reach your website, it is possible to take action based on the URL that was used.  For example, if someone gets to your website from the IP address, you could automatically redirect to the domain name, though that is not very common as there is little point to it (it is more common to redirect from _http://meadowlarktravel.com/_ to _http://www.meadowlarktravel.com/_).
+
+Most domain registrars offer hosting services (or partner with companies that do).  I've never found registrar hosting options to be particularly attractive, and I recommend separating domain registration and hosting for reasons of security and flexibility.
+
+==== Domain Name System
+
+The Domain Name System (DNS) is what's responsible for((("going live", "domain registration and hosting", "DNS (Domain Name System)")))((("DNS (Domain Name System"))) mapping domain names to IP addresses.  The system is fairly intricate, but there are some things about DNS that you should know as a website owner.
+
+==== Security
+
+You should always keep in mind that _domain names are valuable_. ((("going live", "domain registration and hosting", "security")))((("security", "domain")))((("domain registration and hosting", "security"))) If a hacker were to completely compromise your hosting service and take control of your hosting, but you retained control of your domain, you could get new hosting and redirect the domain.  If, on the other hand, your _domain_ were compromised, you could be in real trouble.  Your reputation is tied to your domain, and good domain names are carefully guarded.  People who have lost control of domains have found that it can be devastating, and there are those in the world who will actively try to compromise your domain (especially if it's a particularly short or memorable one) so they can sell it off, ruin your reputation, or blackmail you.  The upshot is that _you should take domain security very seriously_, perhaps even more seriously than your data (depending on how valuable your data is).  I've seen people spend inordinate amounts of time and money on hosting security while getting the cheapest, sketchiest domain registration they can find.  Don't make that mistake.  (Fortunately, quality domain registration is not particularly expensive.)
+
+Given the importance of protecting ownership of your domain, you should employ good security practices with respect to your domain registration.  At the very least, you should use strong, unique passwords, and employ proper password hygiene (no keeping it on a sticky note attached to your monitor).  Preferably, you should use a registrar that offers two-factor authentication.  Don't be afraid to ask your registrar pointed questions about what is required to authorize changes to your account.  The registrars I recommend are Name.com and Namecheap.com.  Both offer two-factor authentication, and I have found their support to be good and their online control panels to be easy and robust.
+
+When you register a domain, you must provide a third-party email address that's associated with that domain (i.e., if you're registering _meadowlarktravel.com_, you shouldn't use _admin@meadowlarktravel.com_ as your registrant email).  Since any security system is as strong as its weakest link, you should use an email address with good security.  It's quite common to use a Gmail or Outlook account, and if you do, you should employ the same security standards as you do with your domain registrar account (good password hygiene and two-factor authentication).
+
+==== Top-Level Domains
+
+What your domain ends with (such as _.com_ or _.net_) is called a _top-level-domain_ (TLD).  Generally speaking, ((("top-level domains (TLDs)")))((("going live", "domain registration and hosting", "top-level domains (TLDs)")))((("domain registration and hosting", "top-level domains (TLDs)")))there are two types of TLD: country code TLDs and general TLDs.  Country code TLDs (such as _.us_, _.es_, and _.uk_) are designed to provide a geographic categorization.  However, there are few restrictions on who can acquire these TLDs (the Internet is truly a global network, after all), so they are often used for "clever" domains, such as _placehold.it_ and _goo.gl_.
+
+General TLDs (gTLDs) include the familiar _.com_, _.net_, _.gov_, _.fed_, _.mil_, and _.edu_.  While anyone can acquire an available _.com_ or _.net_ domain, there are restrictions in place for the others mentioned.  For more information, see <<restrictedgtlds>>.
+
+++++
+<?hard-pagebreak?>
+++++
+
+[[restrictedgtlds]]
+.Restricted gTLDs
+[options="header"]
+|=======
+|TLD|More information|
+|_.gov_, _.fed_|https://www.dotgov.gov|
+|_.edu_|http://net.educause.edu/edudomain|
+|_.mil_|Military personnel and contractors should contact their IT department, or the http://www.disa.mil/Services/Network-Services/Service-Support[DoD Network Information Center]|
+|=======
+
+The Internet Corporation for Assigned Names and Numbers (ICANN) is ultimately responsible for management of TLDs,((("Internet Corporation for Assigned Names and Numbers (ICANN)"))) though they delegate much of the actual administration to other organizations.  Recently, the ICANN has authorized many new gTLDs, such as _.agency_, _.florist_, _.recipes_, and even _.ninja_.  For the foreseeable future, _.com_ will probably remain the "premium" TLD, and the hardest one to get real estate in.  People who were lucky (or shrewd) enough to purchase _.com_ domains in the Internet's pass:[<phrase role="keep-together">formative</phrase>] years received massive payouts for prime domains (for example, Facebook purchased _fb.com_ in 2010 for a whopping $8.5 million dollars).((("Facebook", "purchase of fb.com domain")))
+
+Given the scarcity of _.com_ domains, people are turning to alternative TLDs, or using __.com.us__ to try to get a domain that accurately reflects their organization.  When picking a domain, you should consider how it's going to be used.  If you plan on marketing primarily electronically (where people are more likely to click a link than type in a domain), then you should probably focus more on getting a catchy or meaningful domain than a short one.  If you're focusing on print advertising, or you have reason to believe people will be entering your URL manually into their devices, you might consider alternative TLDs so you can get a shorter domain name.  It's also common practice to have two domains: a short, easy-to-type one, and a longer one more suitable for marketing.
+
+==== Subdomains
+
+Where a TLD goes after your domain, a subdomain goes before it. ((("going live", "domain registration and hosting", "subdomains")))((("domain registration and hosting", "subdomains")))((("subdomains"))) By far, the most common subdomain is _www_.  I've never particularly cared for this subdomain.  After all, you're at a computer, _using_ the World Wide Web; I'm pretty sure you're not going to be confused if there isn't a _www_ to remind you of what you're doing.  For this reason, I recommend using no subdomain for your primary domain: _http://meadowlarktravel.com/_ instead of _http://www.meadowlarktravel.com/_.  It's shorter and less busy, and thanks to redirects, there's no danger of losing visits from people who automatically start everything with _www_.
+
+Subdomains are used for other purposes too.  I commonly see things like _blogs.meadowlarktravel.com_, _api.meadowlarktravel.com_, and _m.meadowlarktravel.com_ (for a mobile site).  Often this is done for technical reasons: it can be easier to use a subdomain if, for example, your blog uses a completely different server than the rest of your site.  A good proxy, though, can redirect traffic appropriately based on either subdomain or path, so the choice of whether to use a subdomain or a path should be more content-focused than technology-focused (remember what Tim Berners-Lee said about URLs expressing your information architecture, not your technical architecture).
+
+I recommend that subdomains be used to compartmentalize significantly different parts of your website or service.  For example, I think it's a good use of subdomains to make your API available at _api.meadowlarktravel.com_.  Microsites (sites that have a different appearance than the rest of your site, usually highlighting a single product or subject) are also good candidates for subdomains.  Another sensible use for subdomains is to separate admin interfaces from public interfaces (_admin.meadowlarktravel.com_, for employees only).
+
+Your domain registrar, unless you specify otherwise, will redirect all traffic to your server regardless of subdomain.  It is up to your server (or proxy), then, to take appropriate action based on the subdomain.
+
+==== Nameservers
+
+The "glue" that makes domains work are nameservers, and this is what you'll be asked to provide when you establish hosting for your website. ((("going live", "domain registration and hosting", "nameservers")))((("nameservers")))((("domain registration and hosting", "name servers"))) Usually, this is pretty straightforward, as your hosting service will do most of the work for you.  For example, let's say we choose to host _meadowlarktravel.com_ at https://www.webfaction.com[WebFaction].((("WebFaction")))  When you set up your hosting account with WebFaction, you'll be given the names of the WebFaction nameservers (there are multiple ones for redundancy).  WebFaction, like most hosting providers, calls their nameservers _ns1.webfaction.com_, _ns2.webfaction.com_, and so on.  Go to your domain registrar and set the nameservers for the domain you want to host, and you're pass:[<phrase role="keep-together">all set.</phrase>]
+
+The way the mapping works in this case is:
+
+. Website visitor navigates to _http://meadowlarktravel.com/_.
+. The browser sends the request to the computer's network system.
+. The computer's network system, which has been given an Internet IP address and a DNS server by the Internet provider, asks the DNS resolver to resolve _meadowlarktravel.com_.
+. The DNS resolver is aware that _meadowlarktravel.com_ is handled by _ns1.webfaction.com_, so it asks _ns1.webfaction.com_ to give it an IP address for _meadowlarktravel.com_.
+. The server at _ns1.webfaction.com_ receives the request and recognizes that _meadowlarktravel.com_ is indeed an active account, and returns the associated IP address.
+
+While this is the most common case, it's not the only way to configure your domain mapping.  Since the server (or proxy) that actually serves your website has an IP address, we can cut out the middleman by registering that IP address with the DNS resolvers (this effectively cuts out the middleman of the nameserver _ns1.webfaction.com_ in the previous example).((("IP addresses", "static and dynamic")))  For this approach to work, your hosting service must assign you((("static IP address"))) a _static_ IP address.  Commonly, hosting providers will give your server(s) a _dynamic_ IP address,((("dynamic IP address"))) which means it may change without notice, which would render this scheme ineffective.  It can sometimes cost extra to get a static IP address instead of a dynamic one: check with your hosting provider.
+
+If you want to map your domain to your website directly (skipping your host's nameservers), you will either be adding an _A record_ or a _CNAME record_.  An A record maps a domain name directly to an IP address, whereas a CNAME maps one domain name to another.((("CNAME records")))((("A records")))  CNAME records are usually a little less flexible, so A records are generally preferred.
+
+Whatever technique you use, domain mapping is usually aggressively cached, meaning that when you change your domain records, it can take up to 48 hours for your domain to be attached to the new server.  Keep in mind that this is also subject to geography: if you see your domain working in Los Angeles, your client in New York may see the domain attached to the previous server.  In my experience, 24 hours is usually sufficient for domains to resolve correctly in the continental US, with international resolution taking up to 48 hours.
+
+If you need something to go live precisely at a certain time, you should not rely on DNS changes.  Rather, modify your server to redirect to the "coming soon" site or page, and make the DNS changes in advance of the actual switchover.  At the appointed moment, then, you can have your server switch over to the live site, and your visitors will see the change immediately, regardless of where they are in the world.
+
+==== Hosting
+
+Choosing a hosting service can seem overwhelming at first.((("domain registration and hosting", "hosting")))((("hosting", id="ix_hosting", range="startofrange")))((("going live", "domain registration and hosting", "hosting", id="ix_golivehost", range="startofrange")))  Node has taken off in a big way, and everyone's clamoring to offer Node hosting to meet the demand.  How you select a hosting provider depends very much on your needs.  If you have reason to believe your site will be the next Amazon or Twitter, you'll have a very different set of concerns than you would if you were building a website for your local stamp collector's club.
+
+===== Traditional hosting, or cloud hosting?
+
+The term "cloud" is one of the most nebulous tech terms to crop up in recent years.((("domain registration and hosting", "hosting", "traditional or cloud")))((("hosting", "traditional or cloud")))((("cloud hosting")))  Really, it's just a fancy way to say "the Internet," or "part of the Internet."  The term is not entirely useless, though.  While not part of the technical definition of the term, hosting in the cloud usually implies a certain commoditizing of computing resources.  That is to say, we no longer think about a "server" as a distinct, physical entity: it's simply a homogeneous resource somewhere in the cloud, and one is as good as another.  I'm oversimplifying, of course: computing resources are distinguished (and priced) pass:[<phrase role="keep-together">according</phrase>] to their memory, number of CPUs, etc.  The difference is between knowing (and caring) what actual server your app is hosted on, and knowing it's hosted on _some_ server in the cloud, and it could just as easily be moved over to a different one without you knowing (or caring).
+
+Cloud hosting is also highly _virtualized_. ((("virtualization"))) That is, the server(s) your app is running on are not usually physical machines, but virtual machines running on physical servers.  This idea was not introduced by cloud hosting, but it has become synonymous with it.
+
+While cloud hosting is not really anything new, it does represent a subtle shift in thinking.  It can be a little disconcerting at first, not knowing anything about the actual physical machine your server is running on, trusting that your servers aren't going to be affected by the other servers running on the same computer.  Really, though, nothing has changed: when your hosting bill comes, you're still paying for essentially the same thing: someone taking care of the physical hardware and networking that enables your web applications.  All that's changed is that you're more removed from the hardware.
+
+I believe that "traditional" hosting (for lack of a better term) will eventually disappear altogether.  That's not to say hosting companies will go out of business (though some inevitably will); they will just start to offer cloud hosting themselves.
+
+===== XaaS
+
+When considering cloud hosting, you will come across the((("hosting", "cloud hosting", "acronyms")))((("cloud hosting", "SaaS, PaaS, and IaaS"))) acronyms SaaS, PaaS, pass:[<phrase role="keep-together">and IaaS:</phrase>]
+
+Software as a Service (SaaS)::
+	SaaS generally describes software (websites, apps) that are provided to you: you just use them.  An example would be Google Documents or Dropbox.((("Software as a Service (SaaS)")))((("SaaS (Software as a Service)")))
+
+Platform as a Service (PaaS)::
+	PaaS provides all of the infrastructure for you (operating systems, networking—all of that is handled).  All you have to do is write your applications.((("PaaS (Platform as a Service)")))((("Platform as a Service (PaaS)")))  While there is often a blurry line between PaaS and IaaS (and you will often find yourself straddling that line as a developer), this is generally the service model we're discussing in this book.  If you're running a website or web service, PaaS is probably what you're looking for.
+
+Infrastructure as a Service (IaaS)::
+	IaaS gives you the most flexibility, but at cost.((("IaaS (Infrastructure as a Service)")))((("Infrastructure as a Service (IaaS)")))  All you get are virtual machines and a basic network connecting them.  You are then responsible for installing and maintaining operating systems, databases, and network policies.  Unless you need this level of control over your environment, you will generally want to stick with PaaS.  (Note that PaaS does allow you to have control over the _choice_ of operating systems and network configuration: you just don't have to do it yourself.)
+
+===== The behemoths
+
+The companies that essentially run the Internet (or, at least, are heavily invested in the running of the Internet) have realized that with the commoditization of computing resources, they have another viable product to sell.((("hosting", "cloud hosting", "the behemoths")))((("Google", "cloud computing services")))((("Amazon, cloud computing services")))((("Microsoft", "cloud computing services")))((("cloud computing", "services")))  Microsoft, Amazon, and Google all offer cloud computing services, and their services are quite good.
+
+All of these services are priced similarly: if your hosting needs are modest, there will be minimal price difference among the three.  If you have very high bandwidth or storage needs, you will have to evaluate the services more carefully, as the cost difference could be greater, depending on your needs.
+
+While Microsoft does not normally leap to mind when we consider open source platforms, I would not overlook Azure. ((("Azure"))) Not only is the platform established and robust, but Microsoft has bent over backward to make it friendly to not just Node, but the open source community.  Microsoft offers a one-month Azure trial, which is a great way to determine if the service meets your needs; if you're considering one of the big three, I definitely recommend the free trial to evaluate Azure.  Microsoft offers Node APIs for all of their major services, including their cloud storage service.  In addition to excellent Node hosting, Azure offers Git-based deployments, an excellent cloud storage system (with a JavaScript API), as well as good support for MongoDB.  The downside to Azure is that they don't offer a pricing tier for small projects.  You can expect to spend a minimum of $80 a month for production hosting on Azure.  Keep in mind that you can easily host multiple projects for that price, so if you're looking to consolidate a bunch of websites, it can be very cost effective.
+
+Amazon offers the most comprehensive set of resources, including SMS (text message), cloud storage, email services, payment services (ecommerce), DNS, and more.  In addition, Amazon offers a free usage tier, making it very easy to evaluate.
+
+Google's cloud platform does not yet offer an option for Node hosting, though Node apps can be hosted through their IaaS service.  Google does not currently offer a free tier or trial.
+
+In addition to the "big three," it is worth considering Joyent,((("Joyent"))) who is currently heavily involved in Node development.((("Nodejitsu")))  Nodejitsu, a Joyent partner, provides Node-specific hosting and are experts in the field.  They offer a unique option for deployment: a private npm repository.  If Git-based deployment (which we will be focusing on in this book) doesn't appeal to you, I encourage you to look into Nodejitsu's npm-based deployment.
+
+===== Boutique hosting
+
+Smaller hosting services, which I'm going to call "boutique" hosting services (for lack of a better word), may not have the infrastructure or resources of Microsoft, Amazon, or Google, but that doesn't mean they don't offer something valuable.((("boutique hosting services")))((("hosting", "boutique hosting services")))
+
+Because boutique hosting services can't compete in terms of infrastructure, they usually focus on customer service and support.  If you need a lot of support, you might want to consider a boutique hosting service.  For personal projects, I've been using http://webfaction.com[WebFaction] for many years. ((("WebFaction"))) Their service is extremely affordable, and they have offered Node hosting for some time now.  If you have a hosting provider you've been happy with, don't hesitate to ask them if they offer (or plan on offering) Node hosting.((("hosting", range="endofrange", startref="ix_hosting")))((("going live", "domain registration and hosting", "hosting", range="endofrange", startref="ix_golivehost")))((("going live", "domain registration and hosting", range="endofrange", startref="ix_golivedomreg")))((("domain registration and hosting", range="endofrange", startref="ix_domreghost")))
+
+==== Deployment
+
+It still surprises me that, in 2014, many people are still using FTP to deploy their applications.  If you are, _please stop_.((("deployment", id="ix_deploy", range="startofrange")))((("going live", "deployment", id="ix_golivedeploy", range="startofrange")))  FTP is in no way secure.  Not only are all your files transmitted unencrypted, your _username and password_ are also.  If your hosting provider doesn't give you an option, find a new hosting provider.  If you really have no choice, make sure you use a unique password that you're not using for anything else.
+
+At minimum, you should be using SFTP or FTPS (not to be confused), but there's even a better way: Git-based deployment.((("Git", "deploying your application with", id="ix_Gitdeploy", range="startofrange")))
+
+The idea is simple: you use Git for version control anyway, and Git is very good at versioning, and deployment is essentially a problem of versioning, making Git a natural fit.  (This technique is not restricted to Git; you could use Mercurial or Subversion for deployment if you want to.)((("Subversion")))((("Mercurial")))
+
+To make this technique work, your development repositories need some way of synchronizing with the deployment repositories.  Git offers almost unlimited ways to do this, but the easiest by far is to use an Internet service like GitHub.((("GitHub")))  GitHub is free for public repositories, but you may not want to make the source code for your website public.  You can upgrade to a private Git repository for a fee.  Alternatively, Atlassian Bitbucket offers free private repository hosting for up to five users.
+
+While Git-based deployments can be set up on almost any service, Azure offers it out((("Azure", "Git-based deployments"))) of the box, and their implementation is excellent and demonstrates the promise of Git-based deployment.  We'll start with that excellent model, then cover how we can partially emulate this with other hosting providers.
+
+===== Git deployment
+
+Git's greatest strength (and greatest weakness) is its flexibility.  It can be adapted to almost any workflow imaginable.((("deployment", "using Git")))  For the sake of deployment, I recommend creating one or more branches _specifically for deployment_.  For example, you might have a +production+ branch and a +staging+ branch.  How you use those branches is very much up to your individual workflow.  One popular approach is to flow from +master+ to +staging+ to +production+.  So once some changes on +master+ are ready to go live, you could merge them into +staging+.  Once they have been approved on the staging server, you could then merge +staging+ into master.  While this makes logical sense, I dislike the clutter it creates (merges merges everywhere).  Also, if you have lots of features that need to be staged and pushed to production in different orders, this can get messy quickly.  I feel a better approach is to merge +master+ into +staging+ and, when you're ready to go live with changes, then merge +master+ into +production+.  In this way, +staging+ and +production+ become less associated: you can even have multiple staging branches to experiment with different features before going live (and you can merge things other than +master+ into them).  Only when something has been approved for production do you merge it into +production+.
+
+What happens when you need to roll back changes?  This is where things can get pass:[<phrase role="keep-together">complicated.</phrase>]  There are multiple techniques for undoing changes, such as applying the inverse of a commit to undo prior commits (+git revert+), but not only are these pass:[<phrase role="keep-together">techniques</phrase>] complicated, they can also cause problems down the line.  The approach I recommend is to treat +production+ (and your staging branches, if you wish) as _disposable_: they are really just reflections of your master branch at different points in time.  If you need to roll back changes, then you just do a +git reset --hard <old commit id>+ on your +production+ branch, and then +git push origin production --force+.  In essence, this is "rewriting history," which is often decried by dogmatic Git practitioners as dangerous or "advanced."  While it certainly can be, in this case, it is understood that +production+ is a _read-only_ branch; developers should never commit to it (which is where rewriting history can get you into trouble).
+
+In the end, it is up to you and your team to decide on a Git workflow.  More important than the workflow you pick is the consistency with which you use it, and the training and communication surrounding it.
+
+[TIP]
+====
+We've already discussed the value of keeping your binary assets (multimedia and documents) separate from your code repository.  Git-based deployment offers another incentive for this approach.  If you have four gigabytes of multimedia data in your repository, they're going to take forever to clone, and you have an unnecessary copy of all of your data for every production server.
+====
+
+===== Deployment to Azure
+
+With Azure, you can deploy from a GitHub or Bitbucket repository, or a local repository.((("Bitbucket")))((("deployment", "to Azure")))((("Azure", "deployment to")))  I strongly recommend you use either GitHub or Bitbucket; it will make it much easier to add people to your development team.  For the following example, we'll be using either GitHub or Bitbucket (the procedure is almost identical for both).  You'll need a repository set up in your GitHub or Bitbucket account.
+
+One important note is that Azure expects your main application file to be called pass:[<emphasis role="keep-together">server.js</emphasis>].  We've been using _meadowlarktravel.js_ for our main application file, so we'll have to rename it to _server.js_ for Azure deployment.
+
+Once you've logged into your Azure portal, you can create a new website:
+
+. Click the Website icon along the left.
+. Click New along the bottom.
+. Choose Quick Create; choose a name and a region, and click Create Web Site.
+
+Then set up source control deployment:
+
+. Click your website in the main portal window.
+. Under the "Your site has been created!" message, look for "Set up deployment from source control"; click that link.
+. Choose either GitHub or Bitbucket; if this is your first time, you will be asked to authorize Azure access to your GitHub or Bitbucket account.
+. Choose the repository you want to use and the branch (I recommend +production+).
+
+That's all you have to do...now some amazing stuff happens.  If Azure detects that there is an update to the +production+ branch, it will automatically update the code on the server (I have done this hundreds of times, and it's never taken more than 30 seconds, though it could take longer if you have very large changes, such as multimedia assets).  Even better?  If you've added any new dependencies to _package.json_, Azure will automatically install them for you.  It will also handle file deletions (unsurprisingly, since this is standard Git behavior).  In other words, you have seamless development.
+
+Not only is this the ultimate in seamless, Git-based deployment, but this technique also works well if you scale out your app.  So if you have four server instances going, they will all be updated simultaneously with a single push to the appropriate branch.
+
+If you go to the Azure control panel for your website, you will see a tab labeled Deployments.  In that tab, you will see information about the history of deployments, which can be helpful in debugging if something goes wrong with your automatic deployment system.  Also, you can redeploy previous deployments, which can be a quick way to revert if there's a problem.
+
+===== Manual Git-based deployment
+
+If your hosting service does not support any kind of automated Git-based deployment, your approach will involve additional steps.((("Git", "deploying your application with", "manual Git-based deployment")))((("deployment", "manual Git-based deployment")))  Let's say our setup is the same: we're using GitHub or Bitbucket for version control, and we have a branch called +production+, which is what we want reflected on the production servers.
+
+For each server, you will have to clone the repository, check out the +production+ branch, and then set up the infrastructure necessary to start/restart your app (which will be dependent on your choice of platform).  When you update the +production+ branch, you will have to go to each server, run +git pull --ff-only+, run +npm install+ (if you've updated any dependencies), and then restart the app.  If your deployments aren't often, and you don't have very many servers, this may not represent a terrible hardship, but if you're updating more often, this will get old fast, and you'll want to find some way to automate the system.
+
+[TIP]
+====
+The +--ff-only+ argument to +git pull+ allows only fast-forward pulls, preventing automatic merging or rebasing.  If you know the pull is fast-forward only, you may safely omit it, but if you get in the habit of doing it, you will never accidentally invoke a merge or rebase!
+====
+
+Unfortunately, automation is not a simple matter.  Git has hooks that allow you to take automated action, but not if it's a remote repository that's being updated.  If you're looking for automated deployment, the easiest approach is to run an automated job that runs +git pull --ff-only+ periodically.  If an update occurs, you can then run +npm install+ and restart the app.
+
+===== Amazon deployment with Elastic Beanstalk
+
+If you're using Amazon AWS, you can use their product _Elastic Beanstalk_ (EB) to do automated deployments with Git.((("deployment", "using Git", "Amazon deployment with Elastic Beanstalk")))((("Amazon Web Services (AWS), Elastic Beanstalk (EB)")))((("Elastic Beanstalk (EB)")))((("EB (Elastic Beanstalk)")))((("Git", "deploying your application with", "automated deployments")))  EB is a sophisticated product that offers a lot of features that may be attractive if you can't afford to ever make a mistake in deployment.  Along with those features comes increased complexity, however: setting up automated deployment with EB is fairly involved.  You can find instructions for the various ways to configure EB on the http://bit.ly/ebeanstalk[EB documentation page].((("Git", "deploying your application with", range="endofrange", startref="ix_Gitdeploy")))((("going live", "deployment", range="endofrange", startref="ix_golivedeploy")))((("deployment", range="endofrange", startref="ix_deploy")))
+
+=== Conclusion
+
+Deploying your website (especially for the first time) should be an exciting occasion.  There should be champagne and cheering, but all too often, there is sweating, cursing, and late nights.  I've seen far too many websites launched at three in the morning by an irritable, exhausted team.  Fortunately, that's changing, partly thanks to cloud deployment.  No matter what deployment strategy you choose, the most important thing you can do is to start production deployments early, before the site is ready to go live.  You don't have to hook up the domain, so the public doesn't need to know.  If you've already deployed the site to production servers half a dozen times before the day of launch, your chances of a successful launch will be much higher.  Ideally, your functioning website will already be running on the production server long before launch: all you have to do is flip the switch from the old site to the new site.
+((("going live", range="endofrange", startref="ix_golive")))

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 6.5 Drop-Down Menus</title>
+<style type="text/css">
+body {margin:50px; background:#069;} /* temp margin - remove */
+
+/* VISUAL STYLINGS - CHANGE AT WILL */
+/* add class 'vertical' to nav for vertical top level menu */
+/* font and colors*/
+.multi_drop_menu {
+	font:1em helvetica, arial, sans-serif; 	/* font color and size */
+	} 
+.multi_drop_menu a {
+	display:block;
+	color:#555; 							/* text color */
+	background-color:#eee; 					/* background color */
+	padding:.2em 1em;						/* padding around link text */
+	border-width:3px; 						/* divider width */
+	border-color:transparent; 				/* divider color - can be 'transparent' */
+	}  					
+.multi_drop_menu li:hover > a {
+	color:#fff; 							/* hover text color */
+	background-color:#aaa;					/* hover background color */
+	}
+.multi_drop_menu li a:active {
+	background:#fff; 						/* b/g hilite when clicked */
+	color:#ccc;								/* text color hilite when clicked */
+	background-clip:padding-box;			/* prevents border hiliting */
+	}	
+.multi_drop_menu li ul {width:9em;} 		/* width of 2nd, 3rd level menus */
+.multi_drop_menu li li a {   
+	border-right-style:none;				
+	border-top-style:solid;					
+	}
+.multi_drop_menu li li li a {   
+	border-left-style:solid;
+}
+/* for vertical top level meneu - add 'vertical' class to nav */
+.multi_drop_menu.vertical {width:8em;} 	/* top level menu width (vertical only) */
+.multi_drop_menu.vertical li a {
+	border-right-style:none;
+	border-top-style:solid;
+}
+.multi_drop_menu.vertical li li a {   
+	border-left-style:solid;
+}
+/* "FUNCTIONAL" STYLINGS - ADJUST WITH CARE! */
+/* level 1 */
+.multi_drop_menu * {margin:0; padding:0;}
+.multi_drop_menu ul {float:left;} /* forces ul to enclose floated li elements */
+.multi_drop_menu li {  
+	float:left; /* makes menu horizontal */
+	list-style-type:none; /* removes default bullets off lists */
+	position:relative; /* position context for child list */
+	}
+.multi_drop_menu li a {   
+	display:block; /* makes link fill li */
+	border-right-style:solid; /* adds a right border on the links */
+	background-clip:padding-box; /* background only under padding, not border */  
+	text-decoration:none; /* removes link underlining */
+	}
+.multi_drop_menu li:last-child a {   
+	border-right-style:none;
+	}
+/* level 2*/
+.multi_drop_menu li ul {
+	display:none; /* hides levels 2, 3, etc. */
+	position:absolute; /* position relative to parent menu */
+	left:0; /* aligns left of sub-menu to parent */
+	top:100%; /* aligns to bottom of parent */
+	}
+.multi_drop_menu li:hover > ul {
+	display:block; /* displays menu when parent hovered */
+	}
+.multi_drop_menu li li {
+	position:relative; /* position context for child list */
+	float:none; /* kills inherited float - makes list stack */
+	}
+	
+/* level 3 */
+.multi_drop_menu li li ul {
+	position:absolute; /* position relative to parent menu */
+	left:100%; /* aligns menu with right of parent */
+	top:0; /* aligns with parent menu choice top */
+	}
+
+/* for vertical top level, add 'vertical' class to nav */
+.multi_drop_menu.vertical ul,
+.multi_drop_menu.vertical li {
+	float:none; /* makes top level menu vertical */
+	}
+.multi_drop_menu.vertical li ul {
+	left:100%; /* aligns level 2 menu to right of level 1 */
+	top:0; /* aligns sub-menu with top of menu choice */
+	}
+</style>
+</head>
+
+<body>
+
+    <nav class="multi_drop_menu"><!-- adding class="vertical" creates a vertical (stacked) first level menu - remove for a horizontal first level -->
+    	<ul>
+            <li><a href="#">Power</a>
+                <ul><!-- drop down menu items -->
+                    <li><a href="#">Corporate</a></li>
+                    <li><a href="#">Political</a>
+                        <ul><!-- pop-out menu items -->
+                            <li><a href="#">Senator</a></li>
+                            <li><a href="#">Representative</a></li>
+                            <li><a href="#">Lobbyist</a></li>
+                            <li><a href="#">Donor</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Military</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Money</a>
+                <ul>
+                    <!-- second level pop-out menu items-->
+                    <li><a href="#">Business</a></li>
+                    <li><a href="#">Inheritence</a></li>
+                    <li><a href="#">Crime</a></li>
+                    <li><a href="#">Gambling</a></li>
+                    <li><a href="#">Marriage</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Love</a>
+                <ul>
+                    <!-- second level pop-out menu items-->
+                    <li><a href="#">Spiritual</a></li>
+                    <li><a href="#">Charitable</a></li>
+                    <li><a href="#">Romantic</a></li>
+                    <li><a href="#">Platonic</a></li>
+                    <li><a href="#">Filial</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Fame</a>
+                <ul>
+                    <!-- drop down menu items-->
+                    <li><a href="#">Sports Star</a></li>
+                    <li><a href="#">Movie Star</a></li>
+                    <li><a href="#">Rock Star</a>
+                        <ul>
+                            <!-- pop-out menu items-->
+                            <li><a href="#">Bruce Springsteen</a></li>
+                            <li><a href="#">Bono</a></li>
+                            <li><a href="#">Mick Jagger</a></li>
+                            <li><a href="#">Bob Dylan</a></li>
+                        </ul>
+                    <li><a href="#">Web Designer</a></li>
+                </ul>
+        	</li>
+    	</ul>
+	</nav>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#fff;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+
+</body>
+
+</html>
+

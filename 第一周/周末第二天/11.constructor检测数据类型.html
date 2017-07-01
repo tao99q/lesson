@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul class="box">
+    <li></li>
+</ul>
+<script type="text/javascript">
+    var ary=[1,2];
+    console.log(ary.constructor.name);
+    //ary.__proto__->Array.prototype
+    //Array.prototype.constructor->Array
+    var d=0;
+    console.log(d.constructor.name);
+
+    console.log(name);//window下默认有name（内置属性）
+    name=1;
+    //instanceof,检测这个实例是否属于某个类，能详细检测引用数据类型
+    //对于基本数据类型，用字面量创建方式检测不出来，用构造函数方式创建的可以检测，因为每一种数据类型都对应自己的所属的类，比如一个数字是Number类的一个具体的实例，所以instanceof可以来检测数据类型，
+    //console.log(null.constructor.name);
+    //console.log(undefined.constructor.name);
+
+    //注意：null，undefined所属类的原型上没有constructor
+    var oUL=document.getElementsByClassName("box");
+</script>
+</body>
+</html>

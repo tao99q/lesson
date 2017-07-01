@@ -1,0 +1,94 @@
+@charset "UTF-8";
+/* CSS Document */
+nav.menu  {
+	margin:19px auto; 
+	padding:0;
+	font-size:.8em;
+	text-align:center; 
+	}
+nav.menu > ul { /* gives menu fixed/fluid width - see pages 244-245 for details */
+	display:inline-block;
+	}
+nav.menu li {  
+	float:left; /* makes menu horizontal */
+	list-style-type:none; /* removes default bullets off lists */
+	position:relative; /* position context for child list */
+	}
+nav.menu li a {   
+	display:block; /* makes link fill li */
+	padding:.25em .8em;
+	font-family:"Source Sans Pro", helvetica, sans-serif;
+	font-style: normal;
+	font-weight:600;
+	font-size:1.2em;
+	text-align:left;  
+	color:#fff;
+	text-decoration:none; /* removes link underlining */
+	-webkit-font-smoothing: antialiased; /* prevents pop of anti-alias change at end of opacity transition */
+	}
+nav.menu li.choice1 a {
+	background:#f58c21;
+	}
+nav.menu li.choice2 a {
+	background:#4eb8ea;
+	}
+nav.menu li.choice3 a {
+	background:#d6e636;
+	}
+nav.menu li.choice4 a {
+	background:#ee4c98;
+	}
+nav.menu li.choice5 a {
+	background:#f58c21;
+	}
+nav.menu li:hover > a {
+	color:#555;
+	border-color:#fff;
+	border:0;
+}
+nav.menu li:last-child a  {
+	border-bottom-right-radius:10px;
+	}
+nav.menu li:first-child a  {border-top-left-radius:10px;}
+
+/* level 2 menus */
+nav.menu li ul { 
+	opacity:0; visibility:hidden; /* hides drop-down */	
+	position:absolute; /* position relative to parent menu */
+	width:12em;
+	left:0;   /* aligns left of sub-menu to parent */
+	top:100%; /* aligns bottom of sub-menu to parent */
+	-webkit-transition: 1s all; /* sets up transition of opacity and visibility*/
+	-moz-transition: 1s all;
+	     transition: 1s all;
+	}
+.touch nav.menu li ul { 
+/* modernizr touch screen detect */
+/*only opacity transitioned on touch screens - transitioning visibility breaks touch menus*/
+/* see page 288 for details */
+	-webkit-transition: 1s opacity; 
+	   -moz-transition: 1s opacity;
+	        transition: 1s opacity; 
+	}
+nav.menu li:hover > ul { 
+	opacity:1; 
+	visibility:visible;
+	}
+nav.menu li li {
+	float:none; /* kills inherited float - makes list stack */
+}
+nav.menu li li:first-child a {
+	border-radius:0;
+	}
+nav.menu li li:last-child a {
+	border-bottom-left-radius:10px;
+	}
+.no-csstransitions nav.menu li ul { /* for no-transitions browsers */
+	visibility:visible; /* overrides transitions version */
+	opacity:1;  /* overrides transitions version */
+	display:none; /* hides menu if no css transition capability */
+}
+.no-csstransitions nav.menu li:hover > ul {
+	display:block; /* displays menu when parent hovered */
+}
+	

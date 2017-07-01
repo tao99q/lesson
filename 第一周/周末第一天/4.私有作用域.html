@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>私有作用域</title>
+</head>
+<body>
+<!--
+内存两种：
+堆内存：来存储东西的，一般来存储引用数据类型
+栈内存：代码执行空间，作用域:
+作用域两种：
+全局：一打开浏览器就会形成
+私有：函数执行形成的作用域
+
+函数执行的时候
+1.函数一执行，形成一个私有作用域
+2.有形参数的话给形参数赋值，相当于var 一个变量，function s(a){},s(1)->var a=1;
+3.预解释
+4.代码执行
+
+
+私有变量：
+1.形参
+2.在私有作用域中声明的变量，var过和function过得
+
+记住：私有变量只能私有作用域自己使用，别人获取不到
+
+闭包：函数执行的时候形参一个私有作用域，来保护里面的私有变量不受外界干扰，这种机制叫做闭包
+-->
+<script type="text/javascript">
+    var a = 1;
+    function f1() {
+        var a = 1;
+        a++;
+    }
+    f1();
+    console.log(a);
+    //全局：预解释：var a,function f1=xxxfff000;
+    //全，执行代码：a=1,f1()
+    //f1()形成一个私有作用域，预解释：var a（私有的）
+    //私有代码执行： a=2;
+    //全局：console.log(a);这里的a是全局的a
+</script>
+</body>
+</html>
+<script type="text/javascript">
+    //例子1
+    //console.log(x);
+    x = 1;
+    function xx() {
+        console.log(xx);
+        x++;
+        return x++;
+        function xx() {
+            var x = 1;
+        }
+    }
+    var y = xx();
+    console.log(y);
+    console.log(x);
+</script>
+<!--
+1.全局：预解释： var y,function xx
+2.全执行：
+   1.x没有，就报错了
+   2.x=1
+   3.y=xx()
+
+   xx()形成私有作用域：
+   1.没参数
+   2.预解释：function xx =xxxfff111
+   3.执行：
+        1.xx=xxxfff111
+        2.x(全)++，x=2
+        3.return 2，x(全)=3；
+
+   4.全局y= 2
+   5.x(全)=3；
+-->
+<script type="text/javascript">
+    //2
+    var d;
+    var d=function () {
+        var d=0;
+        return f;
+        function f() {
+            return {d:1}
+        }
+    };
+    //d=xxxfff000
+    var b=d();//b=xxxfff111
+    var b1=d()();//b1=b(),{d:1}
+    var b2=d()().d++;//b2=b1.d++;b2=1
+
+</script>
+<script type="text/javascript">
+    //3.
+    var f="1";
+    function ff(f) {
+        f++;
+        return f++;
+    }
+    f=ff(f);//ff("1") 形参f="1"; f=2,私有的f=3,全局的f=2
+    console.log(f);//2
+    f=ff(2);
+    console.log(f);//3
+
+</script>
+<script type="text/javascript">
+    //4.
+    function ss() {
+        console.log(s);//undefined
+        if("ss" in window){
+            console.log(s);
+            var a=1;
+            function s() {
+                return a
+            }
+        }
+        console.log(a);
+        return s
+    }
+    ss();
+    console.log(ss()());//1
+</script>
+<script type="text/javascript">
+    //5.
+    var d=0;
+    var dd=function (d) {
+        d=d;//d=3
+        return  d;
+    };
+    console.log(dd(3));//3
+    if(++d){
+        dd=function () {
+            d++;
+        };
+        dd()
+    }
+    console.log(d);//2
+</script>
+

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html,body,div,img{
+            margin: 0;
+            padding: 0;
+        }
+        html,body{
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+        }
+        div{
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            left: 50px;
+            top:50px;
+            cursor: move;
+        }
+        div img{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #box2{
+            left: 300px;
+        }
+        #box3{
+            left: 500px;
+        }
+        #box4{
+            left: 700px;
+        }
+    </style>
+</head>
+<body>
+<div id="box1"><img src="img/3.jpg" alt=""></div>
+<div id="box2"><img src="img/1.jpg" alt=""></div>
+<div id="box3"><img src="img/apple_1.jpg" alt=""></div>
+<div id="box4"><img src="img/apple_2.jpg" alt=""></div>
+</body>
+</html>
+<script src="js/Events第二次封装.js"></script>
+<script src="js/Drag第一版限定范围.js"></script>
+<script>
+    var box1=document.getElementById("box1");
+    var box2=document.getElementById("box2");
+    var box3=document.getElementById("box3");
+    var box4=document.getElementById("box4");
+
+    var drag1=new Drag(box1);
+    var drag2=new Drag(box2);
+    drag2.range({minL:100,maxL:400,minT:0,maxT:1000});
+    var drag3=new Drag(box3);
+    var drag4=new Drag(box4);
+</script>

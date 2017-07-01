@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    var ary=[3,5,1,24,19,10,57];
+    //1.sort
+    ary.sort(function(a,b){
+        return a-b;
+    });
+    var n =0;
+    for(var i=1;i<ary.length-1;i++){
+        n+=ary[i]
+    }
+    n=Math.round(n/(ary.length-2));
+    console.log(n);
+    //Math.max
+    //'Math.max(3,5,1,24,19,10,57)'
+    //'Math.max('+'3,5,1,24,19,10,57'+')';
+    var max=eval("Math.max("+ary+")");
+    var max=Math.max.apply(null,ary);
+    var min=Math.min.apply(null,ary);
+    console.log(ary.join("+"));
+    var s=ary.join("+");
+    s=s.replace(max.toString(),"0").replace(min.toString(),"0");
+    console.log(eval(s)/(ary.length-2));
+</script>
+</body>
+</html>

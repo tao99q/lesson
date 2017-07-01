@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轮播图渐显</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="banner" class="banner">
+        <div class="bannerInner"></div>
+        <ul class="focusList"></ul>
+        <a  class="left" href="javascript:void 0"></a>
+        <a class="right" href="javascript:void 0"></a>
+    </div>
+    <div id="banner2" class="banner">
+        <div class="bannerInner"></div>
+        <ul class="focusList"></ul>
+        <a  class="left" href="javascript:void 0"></a>
+        <a class="right" href="javascript:void 0"></a>
+    </div>
+
+</body>
+</html>
+<script src="js/public.js"></script>
+<script src="js/animation.js"></script>
+<script src="js/bannerClass.js"></script>
+<!--<script src="js/index.js"></script>-->
+
+
+<script>
+
+    //规定一下HTML结构
+    //我们实现一个轮播的方法
+    //规定你穿三个参数
+    //参数一:执行轮播的元素 把当前元素的ID传进来
+    //参数二:数据文件的获取地址 url
+    //参数三:自动切换的那个时间
+
+
+
+
+    var b1=new Banner("banner",'data.txt',3000);
+    var b2=new Banner("banner2",'data2.txt',2000);
+//    b1.getData();
+//    b1.bindData();
+//    b1.imgDelay();
+//    b1.timer=window.setInterval(function(){
+//        b1.move();
+//    },3000);
+//    console.log(b1.data);
+    //console.log(b1);
+    //b1是个实例
+    b1.init();
+    b2.init();
+
+//    function go(){};
+//    var obj={go:go};
+//    window.setTimeout(function(){obj.go()},10000)
+</script>

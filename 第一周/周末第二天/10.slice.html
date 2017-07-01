@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>slice</title>
+</head>
+<body>
+<script type="text/javascript">
+    Array.prototype.mySlice = function (n, m) {
+        //this就是你想要查找的那个原数组
+        var ary = [];
+        //处理参数
+        n = n || 0;
+        m = m || this.length;
+        n = n < 0 ? this.length + n : n;
+        n < 0 && isNaN(n) ? n = 0 : null;
+        m < 0 ? m = this.length + m : null;
+        m > this.length ? m = this.length : null;
+        if (n > m) {
+            return [];
+        } else {
+            for (var i = n; i < m; i++) {
+                ary[ary.length] = this[i];
+            }
+            return ary;
+        }
+    };
+    var ary = [1, 2, 3, 4, 5];
+    ary.mySlice();
+
+    function fn() {
+        console.log(arguments.callee === fn.prototype.constructor);
+        console.log(fn.caller);
+        console.log(arguments.callee.caller);
+        //caller检测当前函数有没有在其他函数调用过。没有话就是null，有的话，就会把那个函数输出来；
+    }
+    function g() {
+        fn()
+    }
+    g()
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        div{
+            width: 420px;
+            height: 420px;
+            margin:10px;
+            box-shadow: 0 0 10px #333;
+            float: left;
+            overflow: hidden;
+            position: relative;
+        }
+        #l{
+            background: url("img/1.jpg") no-repeat center;
+        }
+        #m{
+            width: 220px;
+            height: 220px;
+            background:yellow;
+            opacity: 0.5;
+            filter:alpha(opacity:50);
+            position: absolute;
+            left:0;
+            top:0;
+            display: none;
+        }
+        #r{
+            display: none;
+        }
+        #r img{
+            position: absolute;
+            left:0;
+            top:0;
+        }
+    </style>
+</head>
+<body>
+<div id="l">
+    <p id="m"></p>
+</div>
+<div id="r">
+    <img src="img/2.jpg" alt="">
+</div>
+
+</body>
+</html>

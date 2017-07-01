@@ -1,0 +1,398 @@
+[[ch_sending_email]]
+== Sending Email
+
+One of the primary ways your website can communicate with the world is email.  From user registration to password reset instructions to promotional emails to problem notification, the ability to send email is an important feature.((("email", id="ix_email", range="startofrange")))
+
+Neither Node or Express has any built-in way of sending email, so we have to use a third-party module.  The package I recommend is Andris Reinman's excellent https://npmjs.org/package/nodemailer[_Nodemailer_].  Before we dive into configuring Nodemailer, let's get some email basics out of the way.
+
+=== SMTP, MSAs, and MTAs
+
+The lingua franca for sending email is the Simple Mail Transfer Protocol (SMTP).((("email", "sending", "SMTP, MSAs, and MTAs")))((("SMTP (Simple Mail Transfer Protocol)")))  While it is possible to use SMTP to send an email directly to the recipient's mail server, this is generally a very bad idea: unless you are a "trusted sender" like Google or Yahoo!, pass:[<phrase role="keep-together">chances</phrase>] are your email will be be tossed directly into the spam bin. ((("MSAs (Mail Submission Agents)")))((("Mail Submission Agents (MSAs)"))) Better to use a Mail Submission Agent (MSA), which will deliver the email through trusted channels, reducing the chance that your email will be marked as spam.  In addition to ensuring that your email arrives, MSAs handle nuisances like temporary outages and bounced emails.  The final piece of the equation is the Mail Transfer Agent (MTA), which is the service that actually sends the email to its final destination.((("MTAs (Mail Transfer Agents)")))((("Mail Transfer Agents (MTAs)")))  For the purposes of this book, MSA, MTA, and "SMTP server" are essentially equivalent.
+
+So you'll need access to an MSA.  The easiest way to get started is to use a free email service, such as Gmail, Hotmail, iCloud, SendGrid, or Yahoo!.  This is a short-term solution: in addition to having limits (Gmail, for example, allows only 500 emails in any 24-hour period, and no more than 100 recipients per email), it will expose your personal email.  While you can specify how the sender should appear, such as __joe@meadowlarktravel.com__, a cursory glance at the email headers will reveal that it was delivered by __joe@gmail.com__; hardly professional.  Once you're ready to go to production, you can switch to a professional MSA such as((("SendGrid"))) Sendgrid or Amazon Simple Email Service (SES).((("Amazon Simple Email Service (SES)")))
+
+If you're working for an organization, the organization itself may have an MSA; you can contact your IT department and ask them if there's an SMTP relay available for sending automated emails.
+
+=== Receiving Email
+
+Most websites only need the ability to _send_ email, like password reset instructions and promotional emails.((("email", "receiving")))  However, some applications need to receive email as well.  A good example is an issue tracking system that sends out an email when someone updates an issue: if you reply to that email, the issue is automatically updated with your response.
+
+Unfortunately, receiving email is much more involved and will not be covered in this book.  If this is functionality you need, you should look into Andris Reinman's http://bit.ly/simplesmtp[SimpleSMTP] or http://haraka.github.com[Haraka].((("SimpleSMTP")))((("Haraka")))
+
+=== Email Headers
+
+An email message consists of two parts: the header((("email", "headers"))) and the body (very much like an HTTP request).((("headers", "email")))  The header contains information about the email: who it's from, who it's addressed to, the date it was received, the subject, and more.  Those are the headers that are normally displayed to the user in an email application, but there are many more headers.  Most email clients allow you to look at the headers; if you've never done so, I recommend you take a look.  The headers give you all the information about how the email got to you; every server and MTA that the email passed through will be listed in the header.
+
+It often comes as a surprise to people that some headers, like the "from" address, can be set arbitrarily by the sender.  When you specify a "from" address other than the account from which you're sending, it's often referred to as "spoofing."((("spoofing")))  There is nothing preventing you from sending an email with the from address Bill Gates <__billg@microsoft.com__>.  I'm not recommending that you try this, just driving home the point that you can set certain headers to be whatever you want.  Sometimes there are legitimate reasons to do this, but you should never abuse it.
+
+An email you send _must_ have a "from" address, however.  This can sometimes cause problems when sending automated email, which is why you often see email with a return addresses like DO NOT REPLY <__do-not-reply@meadowlarktravel.com__>.  Whether you want to take this approach, or have automated emails come from an address like Meadowlark Travel <__info@meadowlarktravel.com__> is up to you; if you take the latter approach, though, you should be prepared to respond to emails that come to __info@meadowlarktravel.com__.
+
+=== Email Formats
+
+When the Internet was new, all email was simply ASCII text.((("email", "formats")))  The world has changed a lot since then, and people want to send email in different languages, and do crazy things like include formatted text, images, and attachments.  This is where things start to get ugly: email formats and encoding are a horrible jumble of techniques and standards.  Fortunately, we won't really have to address these complexities: Nodemailer will handle that for us.
+
+What's important for you to know is that your email can either be plaintext (Unicode) or HTML.
+
+Almost all modern email applications support HTML email, so it's generally pretty safe to format your emails in HTML.  Still, there are "text purists" out there who eschew HTML email, so I recommend always including both text and HTML email.  If you don't want to have to write text and HTML email, Nodemailer supports a shortcut that will automatically generate the plaintext version from the HTML.
+
+=== HTML Email
+
+HTML email is a topic that could fill an entire book.((("HTML", "email")))((("email", "HTML")))  Unfortunately, it's not as simple as just writing HTML like you would for your site: most mail clients support only a small subset of HTML.  Mostly, you have to write HTML like it was still 1996; it's not much fun.  In particular, you have to go back to using tables for layout (cue sad music).
+
+If you have experience with browser compatibility issues with HTML, you know what a headache it can be.  Email compatibility issues are much worse.  Fortunately, there are some things that can help.
+
+First, I encourage you to read MailChimp's excellent http://bit.ly/writing_html_email[article about writing HTML email].((("MailChimp", "article on writing HTML email")))  It does a good job covering the basics and explaining the things you need to keep in mind when writing HTML email.
+
+The next is a real time saver: http://htmlemailboilerplate.com[HTML Email Boilerplate]. ((("HTML Email Boilerplate"))) It's essentially a very well-written, rigorously tested template for HTML email.
+
+Finally, there's testing....  You've read up on how to write HTML email, and you're using HTML Email Boilerplate, but testing is the only way to know for sure your email is not going to explode on Lotus Notes 7 (yes, people still use it).  Feel like installing 30 different mail clients to test one email?  I didn't think so.  Fortunately, there's a great service that does it for you: https://litmus.com/email-testing[Litmus].((("Litmus, email testing")))  It's not an inexpensive service: plans start at about $80 a month.  But if you send a lot of promotional emails, it's hard to beat.
+
+On the other hand, if your formatting is modest, there's no need for an expensive testing service like Litmus.  If you're sticking to things like headers, bold/italic text, horizontal rules, and some image links, you're pretty safe.
+
+=== Nodemailer
+
+First, we need to install((("email", "Nodemailer")))((("Nodemailer"))) the Nodemailer package:
+
+----
+npm install --save nodemailer
+----
+
+Then, require the +nodemailer+ package and create a Nodemailer instance (a "transport" in Nodemailer parlance):
+
+[source,js]
+----
+var nodemailer = require('nodemailer');
+
+var mailTransport = nodemailer.createTransport('SMTP',{
+	service: 'Gmail',
+	auth: {
+		user: credentials.gmail.user,
+		pass: credentials.gmail.password,
+	}
+});
+----
+
+Notice we're using the credentials module we set up in <<ch_cookies_and_sessions>>.  You'll need to update your _credentials.js_ file accordingly:
+
+[source,js]
+----
+module.exports = {
+        cookieSecret: 'your cookie secret goes here',
+        gmail: {
+                user: 'your gmail username',
+                password: 'your gmail password',
+        }
+};
+----
+
+Nodemailer offers shortcuts for most popular email services: Gmail, Hotmail, iCloud, Yahoo!, and many more.  If your MSA isn't on this list, or you need to connect to an SMTP server directly, that is supported:
+
+[source,js]
+----
+var mailTransport = nodemailer.createTransport('SMTP',{
+	host: 'smtp.meadowlarktravel.com',
+	secureConnection: true,		// use SSL
+	port: 465,
+	auth: {
+		user: credentials.meadowlarkSmtp.user,
+		pass: credentials.meadowlarkSmtp.password,
+	}
+});
+----
+
+==== Sending Mail
+
+Now that we have our mail transport instance, we can send mail.((("email", "sending", "using Nodemailer")))((("Nodemailer", "sending email")))  We'll start with a very simple example that sends text mail to only one recipient:
+
+[source,js]
+----
+mailTransport.sendMail({
+	from: '"Meadowlark Travel" <info@meadowlarktravel.com>',
+	to: 'joecustomer@gmail.com',
+	subject: 'Your Meadowlark Travel Tour',
+	text: 'Thank you for booking your trip with Meadowlark Travel.  ' +
+		'We look forward to your visit!',
+}, function(err){
+	if(err) console.error( 'Unable to send email: ' + error );
+});	
+----
+
+You'll notice that we're handling errors here, but it's important((("errors", "sending email using Nodemailer")))((("Mail Submission Agents (MSAs)", "errors sending email")))((("MSAs (Mail Submission Agents)", "errors sending email"))) to understand that no errors doesn't necessarily mean your email was delivered successfully to the _recipient_: the callback's +error+ parameter will be set only if there was a problem communicating with the MSA (such as a network or authentication error).  If the MSA was unable to deliver the email (for example, due to an invalid email address or an unknown user), you will get a failure email delivered to the MSA account (for example, if you're using your personal Gmail as an MSA, you will get a failure message in your Gmail inbox).
+
+If you need your system to automatically determine if the email was delivered successfully, you have a couple of options.  One is to use an MSA that supports error reporting.((("Amazon Simple Email Service (SES)")))  Amazon's Simple Email Service (SES) is one such service, and email bounce notices are delivered through their Simple Notification Service (SNS), which you can configure to call a web service running on your website.  The other option is to use direct delivery, bypassing the MSA.  I do not recommend direct delivery, as it is a complex solution, and your email is likely to be flagged as spam.  Neither of these options is simple, and thus they are beyond the scope of this book.
+
+==== Sending Mail to Multiple Recipients
+
+Nodemail supports sending mail to multiple ((("Nodemailer", "sending email", "to multiple recipients")))((("email", "sending", "to multiple recipients")))recipients simply by separating recipients with commas:
+
+[source,js]
+----
+mailTransport.sendMail({
+	from: '"Meadowlark Travel" <info@meadowlarktravel.com>',
+	to: 'joe@gmail.com, "Jane Customer" <jane@yahoo.com>, ' +
+		'fred@hotmail.com',
+	subject: 'Your Meadowlark Travel Tour',
+	text: 'Thank you for booking your trip with Meadowlark Travel.  ' +
+		'We look forward to your visit!',
+}, function(err){
+	if(err) console.error( 'Unable to send email: ' + error );
+});	
+----
+
+Note that, in this example, we mixed plain email addresses (__joe@gmail.com__) with email addresses specifying the recipient's name ("Jane Customer" <__jane@yahoo.com__>).  This is allowed syntax.
+
+When sending email to multiple recipients, you must be careful to observe the limits of your MSA.  Gmail, for example, limits the number of recipients to 100 per email.  Even more robust services, like SendGrid, recommend limiting the number of recipients (SendGrid recommends no more than a thousand in one email).((("SendGrid", "limits on number of email recipients")))  If you're sending bulk email,((("bulk email, sending"))) you probably want to deliver multiple messages, each with multiple recipients:
+
+[source,js]
+----
+// largeRecipientList is an array of email addresses
+var recipientLimit = 100;
+for(var i=0; i<largeRecipientList.length/recipientLimit; i++){
+	mailTransport.sendMail({
+		from: '"Meadowlark Travel" <info@meadowlarktravel.com>',
+		to: largeRecipientList
+			.slice(i*recipientLimit, i*(recipientLimit+1)).join(','),
+		subject: 'Special price on Hood River travel package!',
+		text: 'Book your trip to scenic Hood River now!',
+	}, function(err){
+		if(err) console.error( 'Unable to send email: ' + error );
+	});	
+}
+----
+
+=== Better Options for Bulk Email
+
+While you can certainly send bulk email with Nodemailer and an appropriate MSA, you should think carefully before going this route.((("email", "sending", "bulk email")))  A responsible email campaign must provide a way for people to unsubscribe from your promotional emails, and that is not a trivial task.  Multiply that by every subscription list you maintain (perhaps you have a weekly newsletter and a special announcements campaign, for example).  This is an area in which it's best not to reinvent the wheel.((("MailChimp", "bulk email service")))((("Campaign Monitor")))  Services like http://mailchimp.com[MailChimp] and http://www.campaignmonitor.com[Campaign Monitor] offer everything you need, including great tools for monitoring the success of your email campaigns.  They're very affordable, and I highly recommend using them for promotional emails, newsletters, etc.
+
+=== Sending HTML Email
+
+So far, we've just been sending plaintext email, but most people these days expect something a little prettier.((("email", "sending", "HTML email")))((("HTML", "email", "sending")))((("Nodemailer", "HTML or plaintext email")))  Nodemailer allows you to send both HTML and plaintext versions in the same email, allowing the email client to choose which version is displayed (usually HTML):
+
+[source,js]
+----
+mailTransport.sendMail({
+	from: '"Meadowlark Travel" <info@meadowlarktravel.com>',
+	to: 'joecustomer@gmail.com, "Jane Customer" ' +
+		'<janecustomer@gyahoo.com>, frecsutomer@hotmail.com',
+	subject: 'Your Meadowlark Travel Tour',
+	html: '<h1>Meadowlark Travel</h1>\n<p>Thanks for book your trip with ' +
+		'Meadowlark Travel.  <b>We look forward to your visit!</b>',
+	text: 'Thank you for booking your trip with Meadowlark Travel.  ' +
+		'We look forward to your visit!',
+}, function(err){
+	if(err) console.error( 'Unable to send email: ' + error );
+});	
+----
+
+This is a lot of work, and I don't recommend this approach.  Fortunately, Nodemailer will automatically translate your HTML into plaintext if you ask it to:
+
+[source,js]
+----
+mailTransport.sendMail({
+	from: '"Meadowlark Travel" <info@meadowlarktravel.com>',
+	to: 'joecustomer@gmail.com, "Jane Customer" ' +
+		'<janecustomer@gyahoo.com>, frecsutomer@hotmail.com',
+	subject: 'Your Meadowlark Travel Tour',
+	html: '<h1>Meadowlark Travel</h1>\n<p>Thanks for book your trip with ' +
+		'Meadowlark Travel.  <b>We look forward to your visit!</b>',
+	generateTextFromHtml: true,
+}, function(err){
+	if(err) console.error( 'Unable to send email: ' + error );
+});	
+----
+
+==== Images in HTML Email
+
+While it is possible to embed images in HTML email, I strongly discourage it: they bloat your email messages, and it isn't generally considered good practice.((("HTML", "email", "images in")))((("email", "sending", "images in HTML email")))((("images", "in HTML email")))  Instead, you should make images you want to use in email available on your web server, and link appropriately from the email.
+
+It is best to have a dedicated location in your static assets folder for email images.  You should even keep assets that you use both on your site and in emails (like your log) separate: it reduces the chance of negatively affecting the layout of your emails.
+
+Let's add some email resources in our Meadowlark Travel project.  In your __public__ directory, create a subdirectory called __email__.  You can place your __logo.png__ in there, and any other images you want to use in your email.  Then, in your email, you can use those images directly:
+
+[source,html]
+----
+<img src="//meadowlarktravel.com/email/logo.png" alt="Meadowlark Travel">
+----
+
+[NOTE]
+====
+It should be obvious that you do not want to use __localhost__ when sending out email to other people; they probably won't even have a server running, much less on port 3000!  Depending on your mail client, you might be able to use __localhost__ in your email for testing purposes, but it won't work outside of your computer.  In <<ch_static_content>>, we'll discuss some techniques to smooth the transition from development to production.
+====
+
+==== Using Views to Send HTML Email
+
+So far, we've been putting our HTML in strings((("email", "sending", "using views to send HTML email")))((("views", "using to send HTML email")))((("HTML", "email", "using views to send"))) in JavaScript, a practice you should try to avoid.  So far, our HTML has been simple enough, but take a look at http://htmlemailboilerplate.com[HTML Email Boilerplate]: do you want to put all that boilerplate in a string?  Absolutely not.
+
+Fortunately, we can leverage views to handle this.  Let's consider our "Thank you for booking your trip with Meadowlark Travel" email example, which we'll expand a little bit.  Let's imagine that we have a shopping cart object that contains our order information.  That shopping cart object will be stored in the session.  Let's say the last step in our ordering process is a form that's processed by _/cart/chckout_, which sends a confirmation email.  Let's start by creating a view for the "thank you" page, __views/cart-thank-you.handlebars__:
+
+[source,html]
+----
+<p>Thank you for booking your trip with Meadowlark Travel, {{cart.billing.name}}!</p>
+<p>Your reservation number is {{cart.number}}, and an email has been
+sent to {{cart.billing.email}} for your records.</p>
+----
+
+Then we'll create an email template for the email.  Download HTML Email Boilerplate, and put in __views/email/cart-thank-you.handlebars__.((("HTML Email Boilerplate")))  Edit the file, and modify the body:
+
+[source,html]
+----
+<body>
+<table cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
+    <tr>
+        <td valign="top"> 
+            <table cellpadding="0" cellspacing="0" border="0" align="center">
+                <tr>
+                    <td width="200" valign="top"><img class="image_fix" 
+                    	src="http://meadowlarktravel.com/email/logo.png" 
+                    	alt="Meadowlark Travel" title="Meadowlark Travel" 
+                    	width="180" height="220" /></td>
+                </tr>
+                <tr>
+                    <td width="200" valign="top"><p>
+                    	Thank you for booking your trip with Meadowlark Travel,
+                    	{{cart.billing.name}}.</p><p>Your reservation number
+                    	is {{cart.number}}.</p></td>
+                </tr>
+                <tr>
+                    <td width="200" valign="top">Problems with your reservation?
+                    Contact Meadowlark Travel at 
+                    <span class="mobile_link">555-555-0123</span>.</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>  
+</body>
+----
+
+[TIP]
+====
+Because you can't use __localhost__ addresses in email, if your site isn't live yet, you can use a placeholder service for any graphics.  For pass:[<phrase role="keep-together">example,</phrase>] __http://placehold.it/100x100__ dynamically serves a 100-pixel-square graphic you can use.  This technique is used quite often for for-placement-only (FPO) images and layout purposes.
+====
+
+Now we can create a route for our cart "Thank you" page:
+
+[source,js]
+----
+app.post('/cart/checkout', function(req, res){
+	var cart = req.session.cart;
+	if(!cart) next(new Error('Cart does not exist.'));
+	var name = req.body.name || '', email = req.body.email || '';
+	// input validation
+	if(!email.match(VALID_EMAIL_REGEX)) 
+		return res.next(new Error('Invalid email address.'));
+	// assign a random cart ID; normally we would use a database ID here
+	cart.number = Math.random().toString().replace(/^0\.0*/, '');
+	cart.billing = {
+		name: name,
+		email: email,
+	};
+    res.render('email/cart-thank-you', 
+    	{ layout: null, cart: cart }, function(err,html){
+	        if( err ) console.log('error in email template');
+	        mailTransport.sendMail({
+	            from: '"Meadowlark Travel": info@meadowlarktravel.com',
+	            to: cart.billing.email,
+	            subject: 'Thank You for Book your Trip with Meadowlark',
+	            html: html,
+	            generateTextFromHtml: true
+	        }, function(err){
+	        	if(err) console.error('Unable to send confirmation: ' 
+	        		+ err.stack);
+	        });
+	    }
+    );
+    res.render('cart-thank-you', { cart: cart });
+});
+----
+
+Note that we're calling +res.render+ twice. ((("res.render method"))) Normally, you call it only once (calling it twice will display only the results of the first call).  However, in this instance, we're circumventing the normal rendering process the first time we call it: notice that we provide a callback.  Doing that prevents the results of the view from being rendered to the browser.  Instead, the callback receives the rendered view in the parameter +html+: all we have to do is take that rendered HTML and send the email!  We specify +layout: null+ to prevent our layout file from being used, because it's all in the email template (an alternate approach would be to create a separate layout file for emails and use that instead).  Lastly, we call +res.render+ again.  This time, the results will be rendered to the HTML response as normal.
+
+==== Encapsulating Email Functionality
+
+If you're using email a lot throughout your site, you may want to encapsulate the email functionality.  Let's assume you always want your site((("email", "sending", "encapsulating email functionality"))) to send email from the same sender ("Meadowlark Travel" <__info@meadowlarktravel.com__>) and you always want the email to be sent in HTML with automatically generated text.  Create a module called __lib/email.js__:
+
+[source,js]
+----
+var nodemailer = require('nodemailer');
+
+module.exports = function(credentials){
+
+	var mailTransport = nodemailer.createTransport('SMTP',{
+		service: 'Gmail',
+		auth: {
+			user: credentials.gmail.user,
+			pass: credentials.gmail.password,
+		}
+	});
+
+	var from = '"Meadowlark Travel" <info@meadowlarktravel.com>';
+	var errorRecipient = 'youremail@gmail.com';
+
+	return {
+		send: function(to, subj, body){
+		    mailTransport.sendMail({
+		        from: from,
+		        to: to,
+		        subject: subj,
+		        html: body,
+		        generateTextFromHtml: true
+		    }, function(err){
+		        if(err) console.error('Unable to send email: ' + err);
+		    });
+		}),
+
+		emailError: function(message, filename, exception){
+			var body = '<h1>Meadowlark Travel Site Error</h1>' +
+				'message:<br><pre>' + message + '</pre><br>';
+			if(exception) body += 'exception:<br><pre>' + exception
+				+ '</pre><br>';
+			if(filename) body += 'filename:<br><pre>' + filename
+				+ '</pre><br>';
+		    mailTransport.sendMail({
+		        from: from,
+		        to: errorRecipient,
+		        subject: 'Meadowlark Travel Site Error',
+		        html: body,
+		        generateTextFromHtml: true
+		    }, function(err){
+		        if(err) console.error('Unable to send email: ' + err);
+		    });
+		},
+}
+----
+
+Now all we have to do to send an email is:
+
+[source,js]
+----
+var emailService = require('./lib/email.js')(credentials);
+
+emailService.send('joecustomer@gmail.com', 'Hood River tours on sale today!', 
+	'Get \'em while they\'re hot!');
+----
+
+You'll notice we also added a method +emailError+, which we'll discuss in the next section.
+
+=== Email as a Site Monitoring Tool
+
+If something goes wrong with your site, wouldn't you rather know about it before your client does?  Or before your boss does?((("email", "using as site monitoring tool")))  One great way to accomplish that is to have your site email you distress messages when something goes wrong.((("errors", "monitoring for your site, using email")))  In the previous example, we added just such a method, so that when there's an error in your site, you can do the following:
+
+[source,js]
+----
+if(err){
+	email.sendError('the widget broke down!', __filename);
+	// ... display error message to user
+}
+
+// or
+
+try {
+	// do something iffy here....
+} catch(ex) {
+	email.sendError('the widget broke down!', __filename, ex);
+	// ... display error message to user
+}
+----
+
+This is not a substitute for logging, and in <<ch_production_concerns>>, we will consider a more robust logging and notification mechanism.((("email", range="endofrange", startref="ix_email")))

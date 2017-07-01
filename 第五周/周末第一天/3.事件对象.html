@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+</head>
+<body>
+<!--
+我们给一个事件行为绑定了一个方法function，当我们去触发这个是事件行为的时候会执行这个方法function，浏览器会默认给这个方法function传一个参数，里面记录了你触发事件那一瞬间的信息，这个参数就是事件对象
+-->
+<div id="box">
+    111111
+    <p>pppppppp</p>
+</div>
+<input id="input1" type="text"/>
+</body>
+</html>
+<script>
+    var box = document.getElementById("box");
+    var p = box.getElementsByTagName("p")[0];
+    box.onclick = function (e) {
+        //console.log(arguments[0]);
+        console.log(0);
+        //e：事件对象
+        //MouseEvent
+        //事件对象中存储的信息
+        e.clientX;//鼠标距离浏览器左边的距离
+        e.clientY;//鼠标距离浏览器上边的距离
+        e.pageX;//鼠标距离整个网页左边的距离
+        e.pageY;//鼠标距离整个网页上边的距离
+        e.target;//事件源 触发事件的源头
+        e.type;//事件类型
+    };
+    box.addEventListener("click", function (e) {
+        //这里面的事件对象跟上面的是一个
+        console.log(1);
+        console.log(e);
+        console.log(e.target);
+    });
+    p.onclick = function (e) {
+        console.log(e);
+        //我们的鼠标就一个，你点击的一瞬间事件对象就是一个，浏览器给每一个函数传的对象都是同一个对象
+        //这里面的事件对象跟上面的是一个
+        console.log(e.target);
+    }
+
+</script>

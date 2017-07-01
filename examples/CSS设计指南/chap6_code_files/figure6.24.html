@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 6.24 Popup Overlay</title>
+<style>
+* {margin:0; padding:0; font-family:helvetica, arial, sans-serif;}
+figure {
+	width:144px; height:153px; /* sizing of image box */
+	margin:20px 20px;			/* space between boxes */
+	border:1px solid #666;		/* image border */
+	position:relative; /* positioning context for popups */
+	float:left; /* makes images sit side by side */
+	}
+img {display:block;}/* remove baseline spacing from under image */
+figcaption {
+	display:none; /* hides popups */
+	position:absolute; /* relative to images */
+	left:74%; top:14px; /* positions popup on right side of image */
+	width:130px; /* width of popup */
+	padding:10px; /* space around popup content */
+	background:#f2eaea;
+	border:3px solid red; border-radius:6px;
+	}
+figure:hover figcaption {display:block; z-index:2;} /* displays popup when image is hovered */
+figcaption h3 { /* popup content */
+	font-size:14px;
+	color:#666;
+	margin-bottom:6px;
+	}
+figcaption a { /* popup content */
+	display:block;
+	text-decoration:none;
+	font-size:12px;
+	color:#000;
+	}
+figcaption:after { /* red triangle box*/
+	content:""; /* some content required - using empty text string */
+	position:absolute; /* relative to popup */
+	border:12px solid;
+	border-color:transparent red transparent transparent; 
+	right:100%; top:17px;
+	height:0px; width:0px; /* collapses box to create triangle */ 
+	}
+</style>
+</head>
+
+<body>
+	<figure>
+    	<img src="images/pink_heels.jpg" alt="pink heels" />
+    	<figcaption>
+        	<h3>Pink Platforms</h3>
+        	<a href="#">More info</a>
+        </figcaption>
+    </figure>
+    <figure class="click_me">
+    	<img src="images/leopard_heels.jpg" alt="leopard heels" />
+    	<figcaption>
+        	<h3>Leopard Platforms</h3>
+        	<a href="#">More info</a>
+        </figcaption>
+    </figure>
+    <figure class="click_me">
+    	<img src="images/red_heels.jpg" alt="red heels" />
+    	<figcaption>
+        	<h3>Red Platforms</h3>
+        	<a href="#">More info</a>
+        </figcaption>
+    </figure>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<!-- Please note that the watermarked image/images in this code example is/are provided only for the purpose of displaying the code example in your browser. Licensing rights to this image/images is/are not conveyed to you. If you would like to purchase licensing rights for the images in this book, please visit the following url: --> 
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>To purchase the stock images in this book and other great stock images, go to <a href="http://www.bigstockphoto.com/?refid=PEECNmwgKb">bigstockphoto.com</a></p>
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+</html>

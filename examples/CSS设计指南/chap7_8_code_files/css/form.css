@@ -1,0 +1,86 @@
+form.signin {
+	width:19em; /* overall width of form */
+	float:right;
+	background:#fff;
+	border-radius:10px 0 10px 0;
+	box-shadow: 0 12px 8px -9px #555;
+	}
+.signin fieldset {
+	border:0; /* removes default fieldset border */
+	margin:10px 14px;
+	}
+.signin legend span {
+	font-family:Lato, helvetica, sans-serif;
+	font-weight:700; font-size:1.3em; line-height:1.1em;
+	color:#4eb8ea;
+	letter-spacing:-.05em;
+	}
+.signin section {
+	overflow:hidden; /* encloses the form control and label */
+	padding:.25em 0; /* spacing between form elements */
+}
+.signin section label {
+	font-family:"Source Sans Pro", helvetica, sans-serif;
+	font-weight:400;
+	float:left;
+	width:5em; /* width of label column */
+	margin:.5em .3em 0 0; /* right margin pads text from input */
+	line-height:1.1;
+	color:#555;
+	font-size:1em;	}
+.signin section input {
+	float:right;
+	width:10.5em; /* width of input column */
+	margin:.2em 0 0 .5em;
+	padding:3px 10px 2px; /* creates space around input text */
+	color:#555;
+	font-size:.8em;
+	outline:none; /* removes default blue focus outline */
+	/*border:1px solid;*/
+	border-radius:10px 0 10px 0;
+	color:#888;
+	/*border-color:#333 #aaa #aaa #333;*/
+	}
+input:-webkit-autofill { /* removes yellow background in webkit */
+    color:#fff !important;
+}
+.signin section input[type=submit] {
+	float:right; /* aligns button at right edge of inputs */
+	width:auto; /* resets width setting from fields */
+	margin:0 2px 3px 0;
+	padding:0px 8px 3px;
+	font-size:1em;
+	font-weight:800;
+	color:#fff;
+	border:none;
+	background-color:#d6e636;
+	box-shadow:1px 1px 2px #888;
+	}
+/*.signin section input:focus{ /* hilight when user click in field */
+	/*border-color:#4eb8ea;
+	outline:none;
+	box-shadow:1px 1px 1px 1px #d6d6d6;
+	}*/
+.signin section p{ /* not signed up? text */
+	float:right;
+	clear:both;
+	margin:.2em 0 0;
+	text-align:right;
+	font-size:.8em;
+	line-height:1;
+	color:#555;
+	}
+.signin section p a {
+	color:#333;
+	}
+.signin section p a:hover {
+	color:#777;
+	text-decoration:none;
+}
+.signin section p.direction.error {
+	display:block;
+	color:#f00;  /* colors direction text red when error class added */
+	}
+.signin section p.direction {
+	display:none;;  /* colors direction text red when error class added */
+	}

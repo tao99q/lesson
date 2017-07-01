@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //search(正则) 返回正则匹配的字符,首字符的索引 没有返回的是-1;
+    var　reg=/\d+/g;
+    var str="http://www.baidu.com/";
+    console.log(str.search(reg));//-1
+    var str="http://www.baidu.com/?1=1";
+    console.log(str.search(reg));
+    //split(正则) 按照正则匹配的字符拆分为数组
+    var str="https://www.baidu.com/s?ie=utf-8&newi=1&mod=1&isbd=1";
+    var ary=str.split(/\?|&/g);
+    console.log(ary);
+    var obj={};
+    for(var i=1;i<ary.length;i++){
+        var a= ary[i].split("=");
+        obj[a[0]]=a[1];
+    }
+    console.log(obj);
+
+
+
+    var str="https://www.baidu.com/s?ie=utf-8&newi=1&mod=11&isbd=1&isid=fd9f9c6600045c30&wd=%E5%93%88%E5%93%88&rsv_spt=1";
+    str =window.decodeURI(str);
+    //https://www.baidu.com/s?ie=utf-8&newi=1&mod=11&isbd=1&isid=fd9f9c6600045c30&wd=哈哈&rsv_spt=1
+
+    //replace(正则,str)将正则匹配的内容替换成str,如果想一次性全都替换完就给正则加一个g
+    var s=str.split("?")[1];
+    //ie=utf-8&newi=1&mod=11&isbd=1&isid=fd9f9c6600045c30&wd=哈哈&rsv_spt=1
+    s= s.replace(/=/g,":'");
+    s= s.replace(/&/g,"',");
+    obj=eval("({"+s+"'})");
+    console.log(obj);
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+[[ch_debugging]]
+== Debugging
+
+"Debugging" is perhaps an unfortunate term, what with its association with defects.((("debugging", id="ix_debug", range="startofrange")))  The fact is, what we refer to as "debugging" is an activity you will find yourself doing all the time, whether you're implementing a new feature, learning how something works, or actually fixing a bug.  A better term might be "exploring," but we'll stick with "debugging," since the activity it refers to is unambiguous, regardless of the motivation.
+
+Debugging is an oft-neglected skill: it seems to be that most programmers are expected to be born knowing how to do it.  Perhaps computer science professors and book authors see debugging as such an obvious skill that they overlook it.
+
+The fact is, debugging is a skill that can be taught, and it is an important way by which programmers come to understand not just the framework they are working in, but also their own code and that of their team.
+
+In this chapter, we'll discuss some of the tools and techniques you can use for debugging Node and Express applications effectively.
+
+=== The First Principle of Debugging
+
+As the name implies, "debugging" often refers to the process of finding and eliminating defects.  Before we talk about tools, let's consider some general debugging principles.((("debugging", "first principle of")))((("Doyle, Arthur Conan")))
+
+[quote, Sir Authur Conan Doyle]
+____
+How often have I said to you that when you have eliminated the impossible, whatever remains, however improbable, must be the truth?
+____
+
+The first and most important principle of debugging is the process of _elimination_. ((("elimination"))) Modern computer systems are incredibly complicated, and if you had to hold the _whole system_ in your head, and pluck the source of a single problem out of that vast cloud, you probably wouldn't even know where to start.  Whenever you're confronted with a problem that isn't immediately obvious, your _very first thought_ should be "What can I _eliminate_ as the source of the problem?"  The more you can eliminate, the fewer places you have to look.
+
+Elimination can take many forms.  Here are some common examples:
+
+* Systematically commenting out or disabling blocks of code.
+* Writing code that can be covered by unit tests; the unit tests themselves provide a framework for elimination.
+* Analyzing network traffic to determine if the problem is on the client or server side.
+* Testing a different part of the system that has similarities to the first.
+* Using input that has worked before, and changing that input one piece at a time until the problem exhibits.
+* Using version control to go back in time, one step at a time, until the problem disappears.
+* "Mocking" functionality to eliminate complex subsystems.
+
+Elimination is not a silver bullet, though.  Often, problems are due to complex pass:[<phrase role="keep-together">interactions</phrase>] between two or more components: eliminate (or mock) any one of the components, and the problem could go away, but the problem can't be isolated to any single component.  Even in this situation, though, elimination can help narrow down the problem, even if it doesn't light up a neon sign over the exact location.
+
+Elimination is most successful when it's careful and methodical.  It's very easy to miss things when you just wantonly eliminate components without considering how those components affect the whole.  Play a game with yourself: when you consider a component to eliminate, walk through how the removal of that component will affect the system.  This will inform you about what to expect and whether or not removing the component tells you anything useful.
+
+=== Take Advantage of REPL and the Console
+
+Both Node and your browser offer you a read-eval-print loop (REPL); this is basically just a way to write JavaScript interactively.((("read-eval-print loop (REPL)")))((("debugging", "using REPL and the console")))((("consoles", "using REPL and the console in debugging")))  You type in some JavaScript, press Enter, and immediately see the output.  It's a great way to play around, and is often the quickest and most intuitive way to locate an error in small bits of code.
+
+In a browser, all you have to do is pull up your JavaScript console, and you have a REPL.  In Node, all you have to do is type +node+ without any arguments, and you enter REPL mode; you can require packages, create variables and functions, or do anything else you could normally do in your code (except create packages: there's no meaningful way to do that in the REPL).
+
+Console logging is also your friend.((("logging", "console")))  It's a crude debugging technique, perhaps, but an easy one (both easy to understand and easy to implement).  Calling +console.log+ in Node will output the contents of an object in an easy-to-read format, so you can easily spot problems.  Keep in mind that some objects are so large that logging them to the console will produce so much output that you'll have a hard time finding any useful information.  For example, try +console.log(req)+ in one of your path handlers.
+
+=== Using Node's Built-in Debugger
+
+Node has a built-in debugger that allows you to step through your application, as if you were going on a ride-along with the JavaScript interpreter.((("Node", "debugger")))((("debugging", "using Node's built-in debugger")))  All you have to do to start debugging your app is use the +debug+ argument:
+
+----
+node debug meadowlark.js
+----
+
+When you do, you'll immediately notice a couple of things.  First, on your console you will see +debugger listening on port 5858+; this is because the Node debugger works by creating its own web server, which allows you to control the execution of the application being debugged.  This may not be impressive right now, but the usefulness of this approach will be clear when we discuss Node Inspector.
+
+When you're in the console debugger, you can type +help+ to get a list of commands.  The commands you will use most often are +n+ (next), +s+ (step in), and +o+ (step out).  +n+ will step "over" the current line: it will execute it, but if that instruction calls other functions, they will be executed before control is returned to you.  +s+, in contrast, will step _into_ the current line: if that line invokes other functions, you will be able to step through them.  +o+ allows you to step out of the currently executing function.  (Note that "stepping in" and "stepping out" refer only to _functions_; they do not step into or out of +if+ or +for+ blocks or other flow-control statements.)
+
+The command-line debugger has more functionality, but chances are, you won't want to use it that often.  The command line is great for many things, but debugging isn't one of them.  It's good that it's available in a pinch (for example, if all you have is SSH access to the server, or if your server doesn't even have a GUI installed).  More often, you'll want to use a graphical debugger like Node Inspector.
+
+=== Node Inspector
+
+While you probably won't want to use the command-line debugger except in a pinch, the fact that Node exposes its debugging controls through a web service gives you other options.((("debugging", "using Node Inspector", id="ix_debugNodeIns", range="startofrange")))((("Node Inspector", id="ix_NodeInspect", range="startofrange")))((("Coates, Danny")))  In particular, Danny Coates's excellent _Node Inspector_ (now maintained by StrongLoop) allows you to debug Node applications with the same interface you use to debug client-side JavaScript.
+
+Node Inspector utilizes the Chromium project's Blink engine, which powers Chrome.((("Chromium project, Blink engine")))  If you're already familiar with Chrome's debugger, you will feel right at home.  If you're completely new to debugging, buckle up: the first time you see a debugger in action is revelatory.((("Opera")))((("Chrome")))
+
+Obviously, you'll need Chrome (or Opera; the latest versions also use the Blink engine).  Go ahead and install one of those browsers if you haven't already.  Once you've done that, install Node Inspector:
+
+----
+sudo npm install -g node-inspector
+----
+
+Once you've installed it, you'll need to start it.  You can run it in a separate window if you like, but aside from a helpful startup message, it doesn't log much to the console, so I generally just run it in the background and forget about it:
+
+----
+node-inspector&
+----
+
+[TIP]
+====
+On Linux or OS X, putting an ampersand at the end of a command will run it in the background.  If you need to bring it back to the foreground, simply type +fg+.((("Mac OS X", "running commands in background or foreground")))((("Linux", "commands in background and foreground")))  If you start something without putting it in the background, you can pause it by pressing Ctrl-Z, then resume it in the background by typing +bg+.
+====
+
+When you start Node Inspector, you will see the following message: "Visit __http://127.0.0.1:8080/debug?port=5858__ to start debugging."  In addition to telling you how to get started with the debugging, it's telling you that it's expecting the debugging interface to be on port 5858 (which is the default).
+
+Now that Node Inspector is running (and you can just leave it running...on my dev server, it's pretty much constantly running and will automatically attach to whatever app you have running in debug mode), you can start your app in debug mode:
+
+----
+node --debug meadowlark.js
+----
+
+Note that we used +--debug+ instead of just +debug+; this runs your program in debug mode without invoking the command-line debugger (which we don't need because we'll be using Node Inspector).  Then, before any console output from your application, you'll see +debugger listening on port 5858+ again, and now we have the whole picture: your app is exposing its debugging interface on port 5858, and Node Inspector is running on port 8080, listening to port 5858.  You have three different applications running on three different ports!  It may seem dizzying at first, but each server is performing an important function.
+
+Now the fun begins: connect to _http://localhost:8080/debug?port=5858_ (remember that _localhost_ is an alias for 127.0.0.1).  Along the top of your browser, you'll see a menu with Sources and Console.  If you select Sources you'll see a small arrow right beneath it.  Click that, and you'll see all of the source files that make up your application.  Go ahead and navigate to your main app file (_meadowlark.js_); you'll see the source in your browser.
+
+Unlike our previous experience with the commnad-line debugger, your application is already running: all of the middleware has been linked in, and the app is listening.  So how do we step through our code?  The easiest way (and the method you'll probably use the most often), is to set a _breakpoint_.  This just tells the debugger to stop execution on a specific line so you can step through the code.  All you have to do to set a breakpoint is click the line number (in the left column); a little blue arrow will appear, indicating there's a breakpoint on that line (click again to turn it off).  Go ahead and set a breakpoint inside one of your route handlers.  Then, in another browser window, visit that route.  You'll find that your browser just spins...that's because the debugger has heeded your breakpoint.
+
+Switch back to the debugger window, and now you can step through the program in a much more visual manner than we did with the command-line debugger.  You'll see that the line you set a breakpoint on is highlighted in blue.  That means that's the current execution line (which is actually the next line that will execute).  From here, you have access to the same commands as we did in the command-line debugger.((("Node Inspector", "available actions")))  Similar to the command-line debugger, we have the following actions available to us:
+
+Resume script execution (F8)::
+	This will simply "let it fly"; you will no longer be stepping through the code, unless you stop on another breakpoint.  You usually use this when you've seen what you need to see, or you want to skip ahead to another breakpoint.
+
+Step over next function call (F10)::
+	If the current line invokes a function, the debugger will not descend into that function.  That is, the function will be executed, and the debugger will advance to the next line after the function invocation.  You'll use this when you're on a function call that you're not interested in the details of.
+
+Step into next function call (F11)::
+	This will descend into the function call, hiding nothing from you.  If this is the only action you ever used, you would eventually see everything that gets executed--which sounds fun at first, but after you've been at it for an hour, you'll have a newfound respect for what Node and Express are doing for you!
+
+Step out of current function (Shift-F11)::
+	Will execute the rest of the function you're currently in and resume debugging on the next line of the _caller_ of this function.  Most commonly, you'll use this when you either accidentally step into a function or have seen as much as you need of the function.
+
+In addition to all of the control actions, you have access to a console: that console is executing in the _current context of your application_.((("consoles", "Node Inspector")))  So you can inspect variables and even change them, or invoke functions....  This can be incredibly handy for trying out really simple things, but it can quickly get confusing, so I don't encourage you to dynamically modify your running application too much in this manner; it's too easy to pass:[<phrase role="keep-together">get lost.</phrase>]
+
+On the right, you have some useful data.  Starting at the top are _watch expressions_; these are JavaScript expressions you can define that will be updated in real time as you step through the application.((("watch expressions")))  For example, if there was a specific variable you wanted to keep track of, you could enter it here.
+
+Below watch expressions is the _call stack_; this shows you how you got where you are.((("call stack")))  That is, the function you're in was called by some function, and that function was called by some function...the call stack lists all of those functions.  In the highly asynchronous world of Node, the call stack can be very difficult to unravel and understand, especially when anonymous functions are involved.  The topmost entry in that list is where you are now.  The one right below it is the function that called the function that you're in now, and so on.  If you click any entry in this list, you will be magically transported to that context: all of your watches and your console context will now be in that context.  It can be very confusing!  It's a great way to learn at a really deep level how your app is working, but it's not for the faint of heart.  Because the call stack can be so confusing to unravel, I look at it as a last resort when trying to solve a problem.
+
+Below the call stack are the scope variables.((("scope variables")))  As the name implies, these are the variables that are currently in scope (which includes variables in the parent scope that are visible to us).  This section can often provide you a lot of information about the key variables you're interested in at a glance.  If you have a lot of variables, this list will become unwieldy, and you might be better off defining just the variables you're interested in as watch expressions.
+
+Next, there is a list of all breakpoints, which is really just bookkeeping: it's handy to have if you're debugging a hairy problem and you have a lot of breakpoints set.((("breakpoints")))  Clicking one will take you directly there (but it won't change the context, like clicking something in the call stack; this makes sense because not every breakpoint will represent an active context, whereas everything in the call stack does).
+
+Finally, there are DOM, XHR, and event listener breakpoints.  These apply only to JavaScript running in the browers, and you can ignore when debugging Node apps.((("Node Inspector", "setting breakpoints")))
+
+Sometimes, what you need to debug is your application setup (when you're linking middleware into Express, for example).  Running the debugger as we have been, that will all happen in the blink of an eye before we can even set a breakpoint.  Fortunately, there's a way around that.  All we have to do is specify +--debug-brk+ instead of simply +--debug+:
+
+----
+node --debug-brk meadowlark.js
+----
+
+The debugger will break on the very first line of your application, and then you can step through or set breakpoints as you see fit.
+
+For more information on Node Inspector (and some additional tips and tricks), see the https://github.com/node-inspector/node-inspector[project home page].((("debugging", "using Node Inspector", range="endofrange", startref="ix_debugNodeIns")))((("Node Inspector", range="endofrange", startref="ix_NodeInspect")))
+
+=== Debugging Asynchronous Functions
+
+One of the most common frustrations people have when being exposed to asynchronous programming for the first time is in debugging.((("debugging", "asynchronous functions")))((("asynchronous functions, debugging")))  Consider the following code, for pass:[<phrase role="keep-together">example:</phrase>]
+
+[source,js]
+----
+1 console.log('Baa, baa, black sheep,');
+2 fs.readFile('yes_sir_yes_sir.txt', function(err, data){
+3	console.log('Have you any wool?');
+4	console.log(data);
+5 });
+6 console.log('Three bags full;');
+----
+
+If you're new to asynchronous programming, you might expect to see:
+
+----
+Baa, baa, black sheep,
+Have you any wool?
+Yes, sir, yes, sir,
+Three bags full;
+----
+
+But you won't; instead you'll see:
+
+----
+Baa, baa, black sheep,
+Three bags full;
+Have you any wool?
+Yes, sir, yes, sir,
+----
+
+If you're confused about this, debugging probably won't help. You'll start on line 1, then step over it, which puts you on line 2.  You then step in, expecting to enter the function, ending up on line 3, but you actually end up on line 5! ((("fs.readFile function"))) That's because +fs.readFile+ executes the function only _when it's done reading the file_, which won't happen until your application is idle.  So you step over line 5, and you land on line 6...you then keep trying to step, but never get to line 3 (you eventually will, but it could take a while).
+
+If you want to debug lines 3 or 4, all you have to do is set a breakpoint on line 3, and then let the debugger run.  When the file is read and the function is invoked, you'll break on that line, and hopefully all will be clear.
+
+=== Debugging Express
+
+If, like me, you've seen a lot of overengineered frameworks in your career, the idea of stepping through the framework source code might sound like madness (or torture) to you.((("Express", "debugging")))((("debugging", "Express")))  And exploring the Express source code is not child's play, but it _is_ well within the grasp of anyone with a good understanding of JavaScript and Node.  And sometimes, when you are having problems with your code, debugging those problems can best be solved by stepping through the Express source code itself (or third-party middleware).
+
+This section will be a brief tour of the Express source code so that you can be more effective in debugging your Express applications.  For each part of the tour, I will give you the filename with respect to the Express root (which you can find in your _node_modules/express_ directory), and the name of the function.  I'm not using line numbers, because of course they may differ depending on what exact version of Express you're using.
+
+Express app creation (_lib/express.js_, +function createApplication()+)::
+	This is where your Express app begins its life.  This is the function that's being invoked when you call `var app = express()` in your code.((("createApplication function")))
+
+Express app initialization (_lib/application.js_, +app.defaultConfiguration+)::
+	This is where Express gets initialized: it's a good place to see all the defaults Express starts out with. ((("app.defaultConfiguration"))) It's rarely necessary to set a breakpoint in here, but it is useful to step through it at least once to get a feel for the default Express settings.
+
+Add middleware (_lib/application.js_, +app.use+)::
+	Every time Express links middleware in (whether you do it explicitly, or it's explicitly done by Express or any third parties),((("app.use")))((("middleware", "adding in Express"))) this function gets called.  It's deceptively simple, but really understanding it takes some effort.  It's sometimes useful to put a breakpoint in here (you'll want to use +--debug-brk+ when you run your app; otherwise, all the middleware will be added before you can set a breakpoint), but it can be overwhelming: you'll be surprised at how much middleware is linked in in a typical application.
+
+Render view (_lib/application.js_, +app.render+)::
+	This is another pretty meaty function, but a useful one if you need to debug tricky view-related issues.((("app.render")))  If you step through this function, you'll see how the view engine is selected and invoked.
+
+Request extensions (_lib/request.js_)::
+	You will probably be surprised at how sparse and easy to understand this file is.  Most of the methods Express adds to the request objects are very simple convenience functions.((("request and response objects", "request extensions")))  It's rarely necessary to step through this code or set breakpoints because of the simplicity of the code.  It is, however, often helpful to look at this code to understand how some of the Express convenience methods work.
+
+Send response (_lib/response.js_, +res.send+)::
+	It almost doesn't matter how you construct a response—++.send++, +.render+, +.json+, or ++.jsonp++—it will eventually get to this function (the exception is +.sendFile+).((("request and response objects", "sending a response")))((("res.send method")))  So this is a very handy place to set a breakpoint, because it should be called for every response.  You can then use the call stack to see how you got there, which can be very handy in figuring out where there might be a problem.
+
+Response extensions (_lib/response.js_)::
+	While there is some meat in +res.send+, most of the other methods in the response object are pretty straightforward.((("request and response objects", "response extensions")))  It's occasionally useful to put breakpoints in these functions to see exactly how your app is responding to the request.
+
+Static middleware (_node_modules/serve-static/index.js_, +function staticMiddleware+)::
+	Generally, if static files aren't being served as you expect, the problem is with your routing, not with the static middleware: routing takes precedence over the static middleware.((("static middleware")))((("middleware", "static")))  So if you have a file _public/test.jpg_, and a route _/test.jpg_, the static middleware will never even get called in deference to the route.  However, if you need specifics about how headers are set differently for static files, it can be useful to step through the static middleware.
+
+If you're scratching your head wondering where all the middleware is...that's because there is very little middleware in Express (the static middleware and the router being the notable exceptions).  Most of the middleware actually comes from Connect, which is what we'll discuss next.
+
+Since Express 4.0 no longer bundles Connect, you will have Connect installed separately, so you will find the Connect source code (including all its middleware) in _node_modules/connect_.  Connect has also been shedding some of its middleware into standalone packages.  Here are the locations of some of the more important ones:
+
+Session middleware (_node_modules/express-session/index.js_, +function session+)::
+	A lot goes into making sessions work, but the code is pretty straightforward.((("middleware", "session")))((("sessions", "middleware")))  You may want to set a breakpoint in this function if you're having issues that are related to sessions.  Keep in mind that it is up to you to provide the storage engine for the session middleware.
+
+Logger middleware (_node_modules/morgan/index.js_, +function logger+)::
+	The logger middleware is really there for you as a debugging aid, not to be debugged itself.  However, there's some subtlety to the way logging works that((("middleware", "logger")))((("logging", "logger middleware"))) you'll get only by stepping through the logger middleware once or twice.  The first time I did it, I had a lot of "aha" moments, and found myself using logging more effectively in my applications, so I recommend taking a tour of this middleware at least once.
+
+URL-encoded body parsing (_node_modules/body-parser/index.js_, +function+ pass:[<literal role="keep-together">urlencoded</literal>])::
+	The manner in which request bodies are parsed is often a mystery to people.((("URL-encoded body parsing")))  It's not really that complicated, and stepping through this middleware will help you understand the way HTTP requests work.  Aside from a learning experience, you won't find that you need to step into this middleware for debugging very often.
+
+We've discussed a _lot_ of middleware in this book.  I can't reasonably list every landmark you might want to look at on your tour of Express internals, but hopefully these highlights take away some of Express's mystery, and embolden you to explore the framework source code whenever needed.  Middleware vary greatly not just in quality but in accessibility: some middleware are wickedly difficult to understand, while some are as clear as a pool of water.  Whatever the case, don't be afraid to look: if it's too complicated, you can move on (unless you really need to understand it, of course), and if not, you might learn something.((("debugging", range="endofrange", startref="ix_debug")))
+
+
+

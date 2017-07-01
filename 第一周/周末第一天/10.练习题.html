@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<script type="text/javascript">
+    //1
+    a=21;
+    var obj1={f1:f1,a:12};
+    function f1() {
+        f1=this.a;
+        this.a++;
+        console.log(f1);
+    }
+    obj1.f1();//12
+    console.log(f1);//21
+    //2.
+    var n=1;
+    var obj2={n:1};
+    var obj3=(function (n) {
+        n=this.n;
+        var obj2={n:7};
+        function f1() {
+            this.n++
+        }
+        f1();
+        obj2.f1=f1;
+        return {
+            n:this.n,
+            f1:f1
+        }
+    })(++n);
+    obj3.f1();
+    obj2.f1();
+    console.log(n,obj2.n,obj3.n);
+    //3.
+    g="1";
+    if(!("gg" in window)){
+        (function gg (g) {
+            g=this.g+1;
+            console.log(g);
+            g=g+1;
+            console.log(g);
+            return function (g) {
+                g++
+                console.log(g--)
+            }
+        })(g)(g++)
+    }
+    //4.
+    var pp=0;
+    function d() {
+        return this
+    }
+    function dd() {
+        s=this.d();
+        return {
+            s:s.pp,
+            pp:++this.pp
+        }
+    }
+    console.log(dd());
+
+
+</script>
+</body>
+</html>

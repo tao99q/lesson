@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script src="js/public.js"></script>
+
+<script type="text/javascript">
+    //1. 创建一个ajax对象(异步对象)
+    var xhr=new  XMLHttpRequest();
+    var jsonObj=null;
+    //2. 打开一个url地址,并请求(get,post).第三个参数:是否异步true/false
+    xhr.open("GET","json/product.json",false);
+    //3. 绑定事件onreadystatechange
+    xhr.onreadystatechange=function(){
+        //必须满足 xhr.readyState===4&& xhr.status===200才算成功
+        if(xhr.readyState===4&&xhr.status===200){
+            //xhr.responseText//存着返回给你的数据,一般是json字符串,你要转为json对象来用
+            jsonObj=public.toJsonObj(xhr.responseText);
+        }
+    };
+    //4.发送send(传给后台的数据)
+    xhr.send(null);
+    console.log(jsonObj);
+
+</script>
+</body>
+</html>

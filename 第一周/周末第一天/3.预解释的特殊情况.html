@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script type="text/javascript">
+    //1.解释的首行遇到变量名相同的情况，变量名已经被声明过了不需要重新声明但是需要重新定义，一般注意var的变量名和function变量名相同的情况
+    s=s();//s=xxxfff000
+    var s=0;//s=0
+    function s() {
+        return s
+    }
+    console.log(s);//0
+    //预解释： var s，s=xxxfff000
+    //2.等号右边不进行预解释
+    console.log(ff);
+    var ff=function ff() {};
+    console.log(ff);
+    //3.return 出来的内容执行但不进行预解释，return后面的内容不执行但是需要预解释
+    var  s=0;
+    function f1() {
+        console.log(f2);
+        return ++s;
+        function f2() {
+            s++
+        }
+        f2()
+    }
+    console.log(f1());
+    console.log(s);
+
+    function f3() {
+        console.log(f4);
+        return function f4(){return 1};
+    }
+    f3();//1
+    //4.自执行函数不进行预解释
+    //console.log(f6)
+    (function f6() {
+
+    })();
+    //5.函数作为参数的时候不进行预解释
+    [1,2,0].sort(function (a,b) {
+        return a-b
+    })
+    //6.条件中，不管条件如何，{}的代码需要预解释，注意：var function只声明，不定义，生命的时候当遇到变量名已经被声明过了，就会报错 'a' has already been declared("a" 变量已经被声明过了),代码执行的时候，条件一旦成立，上来第一步先是给函数赋值（函数定义），然后再去执行代码
+
+    console.log(a);
+    if ("a" in window){
+        //var a=1;报错
+        console.log(a);
+        a=1;
+        function a() {}
+        console.log(a);
+    }
+    //预解释：function a  -->就相当于给window增加一个“a”属性
+    //"a" in window 就是true
+    //条件成立第一步先给function a赋值=xxxfff000
+    //代码执行：console.log(a);xxxfff000-》function a() {}
+    // a=1,重新给a赋值
+
+//    function dd() {
+//        return a0
+//    }
+//    var a0=dd();//a0=undefined
+//    if(a0){
+//        console.log(a0);
+//        console.log(bb);
+//        function bb() {a0++}
+//    }
+//    console.log(a0);
+//    console.log(bb);
+    //预解释：var a0=undefined，function dd=xxxfff000,bb=undefined
+    //
+
+    function dd() {
+        return a0
+    }
+    var a0=dd();//a0=undefined
+    if(!a0){
+        //第一步：bb=xxxfff111
+        console.log(a0);//a0=undefined
+        console.log(bb());//undefined
+        function bb() {a0++}
+    }
+    console.log(a0);//NaN
+    console.log(bb);
+    //预解释：var a0=undefined，function dd=xxxfff000,bb=undefined
+</script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Moving Boxes Menu with jQuery</title>
+    <meta charset=utf-8>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+</head>
+<body>
+<div id="mb_background" class="mb_background">
+    <img class="mb_bgimage" src="images/default.jpg" alt="Background"/>
+    <div class="mb_overlay"></div>
+    <div class="mb_loading"></div>
+</div>
+<div id="mb_pattern" class="mb_pattern"></div>
+<div class="mb_heading">
+    <h1>Lack of Color</h1>
+</div>
+<div id="mb_menu" class="mb_menu">
+    <a href="#" data-speed="1000" data-easing="easeOutBack">About</a>
+</div>
+<div id="mb_content_wrapper" class="mb_content_wrapper">
+    <span class="mb_close"></span>
+    <div class="mb_content">
+        <h2>About</h2>
+        <div class="mb_content_inner">
+            <p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a
+                horrible vermin.</p>
+            <p>He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly
+                domed and divided by arches into stiff sections.</p>
+            <p>The bedding was hardly able to cover it and seemed ready to slide off any moment.</p>
+            <p>His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he
+                looked. "What's happened to me? " he thought. It wasn't a dream. His room, a proper human</p>
+        </div>
+    </div>
+</div>
+
+<!-- The JavaScript -->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="js/jquery.jscrollpane.min.js"></script>
+<script type="text/javascript" src="js/jquery.transform-0.9.3.min_.js"></script>
+<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var $menu = $('#mb_menu'),
+            $menuItems = $menu.children('a'),
+            $mbWrapper = $('#mb_content_wrapper'),
+            $mbClose = $mbWrapper.children('.mb_close'),
+            $mbContentItems = $mbWrapper.children('.mb_content'),
+            $mbContentInnerItems = $mbContentItems.children('.mb_content_inner');
+        $mbPattern = $('#mb_pattern'),
+            $works = $('#mb_imagelist > li'),
+            $mb_bgimage = $('#mb_background > img'),
+
+            Menu = (function () {
+
+                var init = function () {
+                        preloadImages();
+                        initPlugins();
+                        initPattern();
+                        initEventsHandler();
+                    },
+                    //preloads the images for the work area (data-bgimg attr)
+                    preloadImages = function () {
+                        $works.each(function (i) {
+                            $('<img/>').attr('src', $(this).children('img').data('bgimg'));
+                        });
+                    },
+                    //initialise the jScollPane (scroll plugin)
+                    initPlugins = function () {
+                        $mbContentInnerItems.jScrollPane({
+                            verticalDragMinHeight: 40,
+                            verticalDragMaxHeight: 40
+                        });
+                    },
+                        /*
+                         draws 16 boxes on a specific area of the page.
+                         we randomly calculate the top, left, and rotation angle for each one of them
+                         */
+                    initPattern = function () {
+                        for (var i = 0; i < 16; ++i) {
+                            //random opacity, top, left and angle
+                            var o = 0.1,
+                                t = Math.floor(Math.random() * 196) + 5, // between 5 and 200
+                                l = Math.floor(Math.random() * 696) + 5, // between 5 and 700
+                                a = Math.floor(Math.random() * 101) - 50; // between -50 and 50
+
+                            $el = $('<div>').css({
+                                opacity: o,
+                                top: t + 'px',
+                                left: l + 'px'
+                            });
+
+                            if (!$.browser.msie)
+                                $el.transform({'rotate': a + 'deg'});
+
+                            $el.appendTo($mbPattern);
+                        }
+                        $mbPattern.children().draggable(); //just for fun
+                    },
+                        /*
+                         when the User closes a content item, we move the boxes back to the original place,
+                         with new random values for top, left and angle though
+                         */
+                    disperse = function () {
+                        $mbPattern.children().each(function (i) {
+                            //random opacity, top, left and angle
+                            var o = 0.1,
+                                t = Math.floor(Math.random() * 196) + 5, // between 5 and 200
+                                l = Math.floor(Math.random() * 696) + 5, // between 5 and 700
+                                a = Math.floor(Math.random() * 101) - 50; // between -50 and 50
+                            $el = $(this),
+                                param = {
+                                    width: '50px',
+                                    height: '50px',
+                                    opacity: o,
+                                    top: t + 'px',
+                                    left: l + 'px'
+                                };
+
+                            if (!$.browser.msie)
+                                param.rotate = a + 'deg';
+
+                            $el.animate(param, 1000, 'easeOutExpo');
+                        });
+                    },
+                    initEventsHandler = function () {
+                        /*
+                         click a link in the menu
+                         */
+                        $menuItems.bind('click', function (e) {
+                            var $this = $(this),
+                                pos = $this.index(),
+                                speed = $this.data('speed'),
+                                easing = $this.data('easing');
+                            //if an item is not yet shown
+                            if (!$menu.data('open')) {
+                                //if current animating return
+                                if ($menu.data('moving')) return false;
+                                $menu.data('moving', true);
+                                $.when(openItem(pos, speed, easing)).done(function () {
+                                    $menu.data({
+                                        open: true,
+                                        moving: false
+                                    });
+                                    showContentItem(pos);
+                                    $mbPattern.children().fadeOut(500);
+                                });
+                            }
+                            else
+                                showContentItem(pos);
+                            return false;
+                        });
+
+                        /*
+                         click close makes the boxes animate to the top of the page
+                         */
+                        $mbClose.bind('click', function (e) {
+                            $menu.data('open', false);
+                            /*
+                             if we would want to show the default image when we close:
+                             changeBGImage('images/default.jpg');
+                             */
+                            $mbPattern.children().fadeIn(500, function () {
+                                $mbContentItems.hide();
+                                $mbWrapper.hide();
+                            });
+
+                            disperse();
+                            return false;
+                        });
+
+                        /*
+                         click an image from "Works" content item,
+                         displays the image on the background
+                         */
+                        $works.bind('click', function (e) {
+                            var source = $(this).children('img').data('bgimg');
+                            changeBGImage(source);
+                            return false;
+                        });
+
+                    },
+                        /*
+                         changes the background image
+                         */
+                    changeBGImage = function (img) {
+                        //if its the current one return
+                        if ($mb_bgimage.attr('src') === img || $mb_bgimage.siblings('img').length > 0)
+                            return false;
+
+                        var $itemImage = $('<img src="' + img + '" alt="Background" class="mb_bgimage" style="display:none;"/>');
+                        $itemImage.insertBefore($mb_bgimage);
+
+                        $mb_bgimage.fadeOut(1000, function () {
+                            $(this).remove();
+                            $mb_bgimage = $itemImage;
+                        });
+                        $itemImage.fadeIn(1000);
+                    },
+                        /*
+                         This shows a content item when there is already one shown:
+                         */
+                    showContentItem = function (pos) {
+                        $mbContentItems.hide();
+                        $mbWrapper.show();
+                        $mbContentItems.eq(pos).show().children('.mb_content_inner').jScrollPane();
+                    },
+                        /*
+                         moves the boxes from the top to the center of the page,
+                         and shows the respective content item
+                         */
+                    openItem = function (pos, speed, easing) {
+                        return $.Deferred(
+                            function (dfd) {
+                                $mbPattern.children().each(function (i) {
+                                    var $el = $(this),
+                                        param = {
+                                            width: '100px',
+                                            height: '100px',
+                                            top: 154 + 100 * Math.floor(i / 4),
+                                            left: 200 + 100 * (i % 4),
+                                            opacity: 1
+                                        };
+
+                                    if (!$.browser.msie)
+                                        param.rotate = '0deg';
+
+                                    $el.animate(param, speed, easing, dfd.resolve);
+                                });
+                            }
+                        ).promise();
+                    };
+
+                return {
+                    init: init
+                };
+
+            })();
+
+        Menu.init();
+    });
+</script>
+</body>
+</html>

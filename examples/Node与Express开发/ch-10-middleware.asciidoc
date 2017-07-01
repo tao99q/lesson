@@ -1,0 +1,259 @@
+[[ch_middleware]]
+== Middleware
+
+By now, we've already had some exposure to ((("middleware", id="ix_middleware10", range="startofrange")))middleware: we've used existing middleware (+body-parser+, +cookie-parser+, +static+, and +connect-session+, to name a few), and we've even written some of our own (when we check for the presence of +&test=1+ in the querystring, and our 404 handler).  But what is middleware, exactly?
+
+Conceptually, middleware is a way to encapsulate functionality: specifically, functionality that operates on an HTTP request to your application.((("middleware", "defined")))  Practically, a middleware is simply a function that takes three arguments: a request object, a response object, and a "next" function, which will be explained shortly.  (There is also a form that takes four arguments, for error handling, which will be covered at the end of this chapter.)
+
+Middleware is executed in what's known as a _pipeline_.((("pipeline")))  You can imagine a physical pipe, carrying water.  The water gets pumped in at one end, and then there are gauges and valves before the water gets where it's going.  The important part about this analogy is that _order matters_: if you put a pressure gauge before a valve, it has a different effect than if you put the pressure gauge after the valve.  Similarly, if you have a valve that injects something into the water, everything "downstream" from that valve will contain the added ingredient.  In an Express app, you insert middleware into the pipeline by calling +app.use+.((("app.use")))
+
+Prior to Express 4.0, the pipeline was((("routers", "explicit linking into the pipeline"))) complicated by your having to link the _router_ in explicitly.  Depending on where you linked in the router, routes could be linked in out of order, making the pipeline sequence less clear when you mixed middleware and route handlers.  In Express 4.0, middleware and route handlers are invoked in the order in which they were linked in, making it much clearer what the sequence is.
+
+It's common practice to have the very last middleware in your pipeline be a "catch all" handler for any request that doesn't match any other routes.  This middleware usually returns a status code of 404 (Not Found).
+
+So how is a request "terminated" in the pipeline?  ((("next function")))That's what the +next+ function passed to each middleware does: if you don't call +next()+, the request terminates with that middleware.
+
+Learning how to think flexibly about middleware and route handlers is key to understanding how Express works. ((("middleware", "important points about middleware and route handlers"))) Here are the things you should keep in mind:
+
+* Route handlers (+app.get+, +app.post+, etc.—often referred to collectively as +app.VERB+) ((("app.get")))((("app.post")))can be thought of as middleware ((("route handlers")))that handle only a specific HTTP verb (++GET++, ++POST++, etc.).((("HTTP verbs", "route handlers for")))  Conversely, middleware can be thought of as a route handler that handles all HTTP verbs (this is essentially((("app.all"))) equivalent to +app.all+, which handles any HTTP verb; there are some minor differences with exotic verbs such as +PURGE+, but for the common verbs, the effect is the same).
+
+* Route handlers require a path as their first parameter.  If you want that path to match any route, simply use +/\*+.  Middleware can also take a path as its first parameter, but it is optional (if it is omitted, it will match any path, as if you had specified +/\*+).
+
+* Route handlers and middleware take a callback function that takes two, three, or four parameters (technically, you could also have zero or one parameters, but there is no sensible use for these forms).  If there are two or three parameters, the first two parameters are the request and response objects, and the third paramater is the +next+ function.  If there are four parameters, it becomes an _error-handling_ middleware,((("error-handling middleware"))) and the first parameter becomes an error object, followed by the request, response, and next objects.
+
+* If you don't call +next()+, the pipeline will be terminated, and no more route handlers or middleware will be processed.  If you don't call +next()+, you should send a response to the client (+res.send+, +res.json+, +res.render+, etc.); if you don't, the client will hang and eventually time out.
+
+* If you do call +next()+, it's generally inadvisable to send a response to the client.  If you do, middleware or route handlers further down the pipeline will be executed, but any client responses they send will be ignored.
+
+++++
+<?hard-pagebreak?>
+++++
+
+If you want to see this in action, let's try some really simple middlewares:
+
+[source,js]
+----
+app.use(function(req, res, next){
+	console.log('processing request for "' + req.url + '"....');
+	next();
+});
+
+app.use(function(req, res, next){
+	console.log('terminating request');
+	res.send('thanks for playing!');	
+	// note that we do NOT call next() here...this terminates the request
+});
+
+app.use(function(req, res, next){
+	console.log('whoops, i\'ll never get called!');
+});
+----
+
+Here we have three middlewares.  The first one simply logs a message to the console before passing on the request to the next middleware in the pipeline by calling +next()+.  Then the next middleware actually handles the request.  Note that if we omitted the +res.send+ here,((("res.send method"))) no response would ever be returned to the client.  Eventually the client would time out.  The last middleware will never execute, because all requests are terminated in the prior middleware.
+
+Now let's consider a more complicated, complete example:
+
+[source,js]
+----
+var app = require('express')();
+
+app.use(function(req, res, next){ 
+	console.log('\n\nALLWAYS');
+	next(); 
+});
+
+app.get('/a', function(req, res){ 
+	console.log('/a: route terminated'); 
+	res.send('a'); 
+});
+app.get('/a', function(req, res){ 
+	console.log('/a: never called'); 
+});
+app.get('/b', function(req, res, next){ 
+	console.log('/b: route not terminated');
+	next();
+});
+app.use(function(req, res, next){
+	console.log('SOMETIMES');
+	next();
+});
+app.get('/b', function(req, res, next){
+	console.log('/b (part 2): error thrown' );
+	throw new Error('b failed');
+});
+app.use('/b', function(err, req, res, next){
+	console.log('/b error detected and passed on');
+	next(err);
+});
+app.get('/c', function(err, req){
+	console.log('/c: error thrown');
+	throw new Error('c failed');
+});
+app.use('/c', function(err, req, res, next){
+	console.log('/c: error deteccted but not passed on');
+	next();
+});
+
+app.use(function(err, req, res, next){
+	console.log('unhandled error detected: ' + err.message);
+	res.send('500 - server error');
+});
+
+app.use(function(req, res){
+	console.log('route not handled');
+	res.send('404 - not found');
+});
+
+app.listen(3000, function(){ 
+	console.log('listening on 3000');
+});
+----
+
+Before trying this example, try to imagine what the result will be.  What are the different routes?  What will the client see?  What will be printed on the console?  If you can correctly answer all of those questions, then you've got the hang of routes in Express!  Pay particular attention to the difference between a request to _/b_ and a request to _/c_; in both instances, there was an error, but one results in a 404 and the other results in a 500.
+
+Note that middleware _must_ be a function.((("middleware", "requirement to be a function")))  Keep in mind that in JavaScript, it's quite easy (and common) to return a function from a function.  For example, you'll note that +express.static+ is a function, but we actually invoke it, so it must return another function.  Consider:
+
+[source,js]
+----
+app.use(express.static);        // this will NOT work as expected
+console.log(express.static());  // will log "function", indicating
+				// that express.static is a function
+				// that itself returns a function
+----
+
+Note also that a module can export a function, which can in turn be used directly as middleware.((("middleware", "function exported by a module")))  For example, here's a module called __lib/tourRequiresWaiver.js__ (Meadowlark Travel's rock climbing packages require a liability waiver):
+
+[source,js]
+----
+module.exports = function(req,res,next){
+	var cart = req.session.cart;
+	if(!cart) return next();
+	if(cart.some(function(item){ return item.product.requiresWaiver; })){
+		if(!cart.warnings) cart.warnings = [];
+		cart.warnings.push('One or more of your selected tours' +
+			'requires a waiver.');
+	}
+	next();
+}
+----
+
+We could link this middleware in like so:
+
+[source,js]
+----
+app.use(require('./lib/requiresWaiver.js'));
+----
+
+More commonly, though, you would export an object that contains properties that are middleware.((("middleware", "module exporting an object containing properties")))  For example, let's put all of our shopping cart validation code in pass:[<emphasis role="keep-together">lib/cartValidation.js</emphasis>]:
+
+[source,js]
+----
+module.exports = {
+	checkWaivers: function(req, res, next){
+		var cart = req.session.cart;
+		if(!cart) return next();
+		if(cart.some(function(i){ return i.product.requiresWaiver; })){
+			if(!cart.warnings) cart.warnings = [];
+			cart.warnings.push('One or more of your selected ' +
+				'tours requires a waiver.');
+		}
+		next();
+	},
+
+	checkGuestCounts: function(req, res, next){
+		var cart = req.session.cart;
+		if(!cart) return next();
+		if(cart.some(function(item){ return item.guests >
+				item.product.maximumGuests; })){
+			if(!cart.errors) cart.errors = [];
+			cart.errors.push('One or more of your selected tours ' +
+				'cannot accommodate the number of guests you ' +
+				'have selected.');
+		}
+		next();
+	}
+}
+----
+
+Then you could link the middleware in like this:
+
+[source,js]
+----
+var cartValidation = require('./lib/cartValidation.js');
+
+app.use(cartValidation.checkWaivers);
+app.use(cartValidation.checkGuestCounts);
+----
+
+[NOTE]
+====
+In the previous example, we have a middleware aborting early with the statement +return next()+.  Express doesn't expect middleware to return a value (and it doesn't do anything with any return values), so this is just a shortened way of writing +next(); return;+.
+====
+
+=== Common Middleware
+
+Prior to Express 4.0, Express bundled Connect, which is the component that contains most of the most common middleware.((("middleware", "common")))((("Connect library", "common middleware in")))  Because of the way Express bundled it, it appeared as if the middleware was actually part of Express (for example, you would link in the body parser like so: +app.use(express.bodyParser)+).  This osbscured the fact that this middleware was actually part of Connect.  With Express 4.0, Connect was removed from Express.((("Express", "removal of middleware from")))  Along with this change, some Connect middleware (+body-parser+ is an example) has itself moved out of Connect into its own project.  The only middleware Express retains is +static+.((("static middleware")))  Removing middleware from Express frees Express from having to manage so many dependencies, and allows the individual projects to progress and mature independent of Express.
+
+Much of the middleware previously bundled with Express is quite fundamental, so it's important to know "where it went" and how to get it. ((("Connect library", "installing and having available in applications"))) You will almost always want Connect, so it's recommended that you always install it alongside Express (+npm install --save connect+), and have it available in your application (+var connect = require('connect');+).
+
++basicAuth+ (+app.use(connect.basicAuth)();+)::
+	Provides basic access authorization.  Keep in mind that basic auth offers only the most basic security, and you should use basic ((("basicAuth middleware")))auth _only_ over HTTPS (otherwise, usernames and passwords are transmitted in the clear).  You should use basic auth only when you need something very quick and easy _and_ you're using HTTPS.
+
++body-parser+ (+npm install --save body-parser+, +app.use(require('bbody-parser')());+)::
+	Convenience middleware that simply links in +json+ and +urlencoded+.  This pass:[<phrase role="keep-together">middleware</phrase>] is also still available in Connect,((("body-parser middleware"))) but will be removed in 3.0, so it's recommended that you start using this package instead.  Unless you have a specific reason to use +json+ or +urlencoded+ individually, I recommend using this package.
+
++json+ (see +body-parser+)::
+	Parses JSON-encoded request bodies.((("json (middleware)")))  You'll need this middleware if you're writing an API that's expecting a JSON-encoded body.  This is not currently very common (most APIs still use +application/x-www-form-urlencoded+, which can be parsed by the +urlencoded+ middleware), but it does make your application robust and future-proof.
+
++urlencoded+ (see +body-parser+)::
+	Parses request bodies with Internet media type +application/x-www-form-urlencoded+.((("urlencoded (middleware)")))  This is the most common way to handle forms and AJAX requests.
+
++multipart+ (DEPRECATED)::
+	Parses request bodies with Internet media type +multipart/form-data+.((("multipart middleware (deprecated)")))  This middleware is deprecated and will be removed in Connect 3.0.  You should be using Busboy or Formidable instead (see <<ch_form_handling>>).
+
++compress+ (+app.use(connect.compress);+)::
+	Compresses response data with gzip.  This is a good thing, and your users will thank you, especially those on slow or mobile connections.  It should be linked in early, before any middleware that might send a response.  The only thing that I recommend linking in before +compress+ is debugging or logging middleware (which do not send responses).
+
++cookie-parser+ (+npm install --save cookie-parser+, pass:[<literal>app.use(require(</literal><replaceable>cookie-parser</replaceable><literal>)(</literal><replaceable>your secret goes here</replaceable>]+);+::
+	Provides cookie((("cookie-parser middleware"))) support.  See <<ch_cookies_and_sessions>>.
+
++cookie-session+ (+npm install --save cookie-session+, +app.use(require('cookie-session')());+)::
+	Provides cookie-storage session support.((("cookie-session middleware")))  I do not generally recommend this approach to sessions.  Must be linked in after +cookie-parser+.  See <<ch_cookies_and_sessions>>.
+
++express-session+ (+npm install --save express-session+, +app.use(require('express-session')());+)::
+	Provides session ID (stored in a cookie) session support.((("express-session middleware")))  Defaults to a memory store, which is not suitable for production, and can be configured to use a database store.  See Chapters pass:[<xref linkend="ch_cookies_and_sessions" xrefstyle="select: labelnumber" />] and pass:[<xref linkend="ch_persistence" xrefstyle="select: labelnumber" />].
+
++csurf+ (+npm install --save csurf+, +app.use(require('csurf')());+::
+	Provides protection against cross-site request forgery (CSRF) attacks.((("csurf middleware")))  Uses sessions, so must be linked in after +express-session+ middleware.  Currently, this is identical to the +connect.csrf+ middleware.  Unfortunately, simply linking this middleware in does not magically protect against CSRF attacks; see <<ch_security>> for more pass:[<phrase role="keep-together">information.</phrase>]
+
++directory+ (+app.use(connect.directory());+)::
+	Provides directory listing support for static files.((("directory middleware")))  There is no need to include this middleware unless you specifically need directory listing.
+
++errorhandler+ (+npm install --save errorhandler+, +app.use(require('errorhandler')());+::
+	Provides stack traces and error messages to the client.((("errorhandler middleware")))  I do not recommend linking this in on a production server, as it exposes implementation details, which can have security or privacy consequences.  See <<ch_debugging>> for more information.
+
++static-favicon+ (+npm install --save static-favicon+, pass:[<literal>app.use(require(</literal><replaceable>static-favicon</replaceable><literal>)(</literal><replaceable>path_to_favicon</replaceable>]+));+::
+	Serves the "favicon" (the icon that appears in the title bar of your browser).((("static-favicon middleware")))  This is not strictly necessary: you can simply put a __favicon.ico__ in the root of your static directory, but this middleware can improve performance.  If you use it, it should be linked in very high in the middleware stack.  It also allows you to designate a filename other than __favicon.ico__.
+
++morgan+ (previously +logger+, +npm install --save morgan+, +app.use(require('morgan')());+::
+	Provides automated logging support: all requests will be logged.((("morgan middleware")))  See <<ch_debugging>> for more information.
+
++method-override+ (+npm install --save method-override+, +app.use(require('method-override')());+::
+	Provides support for the +x-http-method-override+ request header, which allows browsers to "fake" using HTTP methods other than +GET+ and +POST+.((("HTTP verbs", "method-override middleware")))((("method-override middleware")))  This can be useful for debugging.  Only needed if you're writing APIs.
+
++query+::
+	Parses the querystring and makes((("query middleware"))) it available as the +query+ property on the request object.  This middleware is linked in implicitly by Express, so do not link it in pass:[<phrase role="keep-together">yourself.</phrase>]
+
++response-time+ (+npm install --save response-time+, +app.use(require('response-time')());+::
+	Adds the +X-Response-Time+ header to the response,((("response-time middleware"))) providing the response time in milliseconds.  You usually don't need this middleware unless you are doing performance tuning.
+
++static+ (+app.use(express.static('path_to_static_files')());+::
+	Provides support for serving static (public) files.((("static middleware")))  You can link this middleware in multiple times, specifying different directories.  See <<ch_static_content>> for more details.
+
++vhost+ (+npm install --save vhost+, +var vhost = require('vhost');+::
+	Virtual hosts (vhosts), a term borrowed ((("vhost middleware")))from Apache, makes subdomains easier to manage in Express.  See <<ch_routing>> for more information.
+
+=== Third-Party Middleware
+
+Currently, there is no "store" or index for third-party middleware.((("middleware", "third-party")))  Almost all Express middleware, however, will be available on npm, so if you search npm for "Express," "Connect," and "Middleware," you'll get a pretty good list.
+((("middleware", range="endofrange", startref="ix_middleware10")))

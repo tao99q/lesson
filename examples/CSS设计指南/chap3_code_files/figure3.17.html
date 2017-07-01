@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 3.17 Flowing Text Around an Image</title>
+<style>
+	p {float:left; width:200px; margin:0; border:1px solid red; font-family:Helvetica, Arial, sans-serif; font-size:1em;}
+	img {float:left; margin:0 4px 4px 0;}
+</style>
+</head>
+
+<body>
+	<img src="images/rubber_duck.jpg">
+    <p class="clearfix">This paragraph element now has a width setting and is floated left, just like the image. This causes the element to form a column next to the image. This behavior is the basis of creating layouts using floated columns.</p>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<!-- Please note that the watermarked image/images in this code example is/are provided only for the purpose of displaying the code example in your browser. Licensing rights to this image/images is/are not conveyed to you. If you would like to purchase licensing rights for the images in this book, please visit the following url: --> 
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>To purchase the stock images in this book and other great stock images, go to <a href="http://www.bigstockphoto.com/?refid=PEECNmwgKb">bigstockphoto.com</a></p>
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+</html>

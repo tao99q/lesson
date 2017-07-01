@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 6.19a and 6.19b A Search Form</title>
+<style>
+* {margin:0; padding:0;}
+header {
+	font-family:helvetica, arial, sans-serif;
+	width:500px;
+	display:block;
+	overflow:hidden;
+	margin:30px;
+	border-radius:6px;
+	background-color:#ddd;
+	}
+form.stylin_form_search1 {
+	float:right;
+	padding:5px;
+	width:200px;
+	margin:5px;
+	}
+.stylin_form_search1 input {
+	float:right;
+	width:70px;
+	outline:none; /* removes default border hilite */
+	font-size:.8em;
+	padding:2px 0 3px 5px;
+	border-color:#eee #ccc #ccc #eee;
+	border-radius:10px;
+	-webkit-transition:2s width;
+	}
+.stylin_form_search1 input:focus {
+	width:200px;
+	}
+.stylin_form_search1 label{
+	display:none; 
+	}
+</style>	
+</head>
+
+<body>
+    <header>
+    <form class="stylin_form_search1" action="#" method="post"> 
+            <label for="user_name">search</label> <!-- the for attribute ties the label to its control - same as contol's ID -->
+            <input type="text" id="user_name" name="user_name" placeholder="search" /> 
+    </form>
+    </header>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

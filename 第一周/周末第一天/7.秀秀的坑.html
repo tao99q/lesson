@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script type="text/javascript">
+    //秀秀的题目
+    console.log('a' in window);
+    if ('a' in window){
+        var a=1;
+        function b() {
+            console.log(a++);
+            return function u() {
+                console.log(u++);
+                //console.log(u);
+                return a;
+            };
+        }
+    }
+    console.log(b());//1
+    console.log(b()());//2
+
+    //b()形成的作用域下，return出来的内容不进行预解释，那么久出现了一个问题，如果return出来的是一个有名字的函数，什么时候进行预解释呢，是在他执行的时候，先预解释这个函数名，而且还是私有的
+    function  g() {}
+</script>

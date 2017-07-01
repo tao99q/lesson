@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html,body,div{
+            margin: 0;
+            padding: 0;
+        }
+        #box{
+            width: 100%;
+            height: 200px;
+            background-color: #008dc1;
+        }
+    </style>
+</head>
+<body>
+<div id="box"></div>
+<script src="js/Events第一次封装.js"></script>
+<script>
+    var box=document.getElementById("box");
+    function fn1() {
+       this.style.backgroundColor="red"
+    }
+    box.on("click",fn1,false);
+
+</script>
+<script>
+    var box=document.getElementById("box");
+    box=new Event();
+    console.dir(box);
+</script>
+</body>
+</html>

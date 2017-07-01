@@ -1,0 +1,35 @@
+:bookseries: animal
+
+= Web Development with Node and Express
+
+include::dedication.asciidoc[]
+include::foreword.asciidoc[]
+include::ch-00-preface.asciidoc[]
+
+include::ch-01-introduction.asciidoc[]
+include::ch-02-getting_started_with_node.asciidoc[]
+include::ch-03-saving_time_with_express.asciidoc[]
+include::ch-04-tidying_up.asciidoc[]
+include::ch-05-qa.asciidoc[]
+include::ch-06-the_request_and_response_objects.asciidoc[]
+include::ch-07-templating.asciidoc[]
+include::ch-08-form_handling.asciidoc[]
+include::ch-09-cookies_and_sessions.asciidoc[]
+include::ch-10-middleware.asciidoc[]
+include::ch-11-sending_email.asciidoc[]
+include::ch-12-production_concerns.asciidoc[]
+include::ch-13-persistence.asciidoc[]
+include::ch-14-routing.asciidoc[]
+include::ch-15-rest_apis_and_json.asciidoc[]
+include::ch-16-static_content.asciidoc[]
+include::ch-17-implementing_mvc_in_express.asciidoc[]
+include::ch-18-security.asciidoc[]
+include::ch-19-third_party_apis.asciidoc[]
+include::ch-20-debugging.asciidoc[]
+include::ch-21-going_live.asciidoc[]
+include::ch-22-maintenance.asciidoc[]
+include::ch-23-additional_resources.asciidoc[]
+
+include::index.asciidoc[]
+
+include::colo.asciidoc[]

@@ -1,0 +1,472 @@
+[[ch_the_request_and_response_objects]]
+== The Request and Response Objects
+
+When you're building a web server with Express, most of what you'll be doing starts with a request object and ends with a response object.((("request and response objects", id="ix_reqres", range="startofrange")))((("HTTP", "requests and responses", see="request and response objects")))  These two objects originate in Node and are extended by Express.  Before we delve into what these objects offer us, let's establish a little background on how a client (a browser, usually) requests a page from a server, and how that page is returned.
+
+=== The Parts of a URL
+
+image::images/bwne_06in01.png["Parts of a URL"]
+
+Protocol::
+	The protocol determines how the request will be transmitted.((("request and response objects", "URLs")))((("URLs", "protocol")))((("protocol in URLs")))  We will be dealing exclusively with _http_ and _https_.  Other common protocols include _file_ and _ftp_.
+
+Host::
+	The host identifies the server.((("URLs", "host")))((("hosts, hostname in URLs")))  Servers on your computer (localhost) or a local network may simply be one word, or it may be a numeric IP address.((("top-level domains (TLDs)")))  On the Internet, the host will end in a top-level domain (TLD) like _.com_ or _.net_.  Additionally, there may be _subdomains_, which prefix the hostname. _www_ is a very common subdomain, though it can be anything.((("subdomains")))  Subdomains are optional.
+
+Port::
+	Each server has a collection of numbered ports.((("URLs", "port")))((("ports", "port in URLs")))  Some port numbers are "special," like 80 and 443.  If you omit the port, port 80 is assumed for HTTP and 443 for HTTPS.  In general, if you aren't using port 80 or 443, you should use a port number greater than 1023.footnote:[http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers[Ports 0-1023 are "well-known ports."]]  It's very common to use easy-to-remember port numbers like 3000, 8080, and 8088.
+
+Path::
+	The path is generally the first part of the URL that your app cares about (it is possible to make decisions based on protocol, host, and port, but it's not good practice).((("URLs", "path")))((("path in URLs")))  The path should be used to uniquely identify pages or other resources in your app.
+
+Querystring::
+	The querystring is an optional collection of name/value pairs.((("URLs", "querystring")))((("querystring in URLs")))  The querystring starts with a question mark (_?_), and name/value pairs are separated by ampersands (_&_).  Both names and values should be _URL encoded_.  JavaScript provides a built-in function to do that: +encodeURIComponent+.  For example, spaces will be replaced with plus signs (_+_).  Other special characters will be replaced with numeric character references.
+
+Fragment::
+	The _fragment_ (or _hash_) is not passed to the server at all: it is strictly for use by the browser. ((("URLs", "fragment (or hash)")))((("hash in URLs")))((("fragment in URLs"))) It is becoming increasingly common for single-page applications or AJAX-heavy applications to use the fragment to control the application.  Originally, the fragment's sole purpose was to cause the browser to display a specific part of the document, marked by an anchor tag (+<a id="chapter06">+).
+
+=== HTTP Request Methods
+
+The HTTP protocol defines a collection of _request methods_ (often referred to as _HTTP verbs_) that a client uses to communicate with a server. ((("HTTP verbs")))((("request and response objects", "HTTP request methods"))) Far and away, the most common methods are +GET+ and +POST+.((("GET method")))
+
+When you type a URL into a browser (or click a link), the browser issues an HTTP +GET+ request to the server.  The important information passed to the server is the URL path and querystring.  The combination of method, path, and querystring is what your app uses to determine how to respond.
+
+For a website, most of your pages will respond to +GET+ requests.  +POST+ requests are usually reserved for sending information back to the server (form processing, for example).((("POST method")))  It's quite common for +POST+ requests to respond with the same HTML as the corresponding +GET+ request after the server has processed any information included in the request (like a form).  Browsers will exclusively use the +GET+ and +POST+ methods when communicating with your server (if they're not using AJAX).
+
+Web services, on the other hand, often get more creative with the HTTP methods used.  For example, there's an HTTP method called +DELETE+ that is((("DELETE method"))) useful for, well, an API call that deletes things.
+
+With Node and Express, you are fully in charge of what methods you respond to (though some of the more esoteric ones are not very well supported).  In Express, you'll usually be writing handlers for specific methods.
+
+=== Request Headers
+
+The URL isn't the only thing that's passed to the server when you navigate to a page.((("browsers", "information passed in request headers")))((("request and response objects", "request headers")))((("headers", "HTTP requests")))  Your browser is sending a lot of "invisible" information every time you visit a website.  I'm not talking about spooky personal information (though if your browser is infected by malware, that can happen).  The browser will tell the server what language it prefers to receive the page in (for example, if you download Chrome in Spain, it will request the Spanish version of pages you visit, if they exist).  It will also send information about the "user agent" (the browser, operating system, and hardware) and other bits of information.  All this information is sent as a request header, which is made available to you through the request object's +headers+ property.((("headers property (request object)")))  If you're curious to see the information your browser is sending, you can create a very simple Express route to display that information:
+
+[source,js]
+----
+app.get('/headers', function(req,res){
+    res.set('Content-Type','text/plain');
+    var s = '';
+    for(var name in req.headers) s += name + ': ' + req.headers[name] + '\n';
+    res.send(s);
+});
+----
+
+=== Response Headers
+
+Just as your browser sends hidden information to the server in the form of request headers, when the server responds, it also sends information back that is not necessarily rendered or displayed by the browser.((("servers", "information passed in response headers")))((("request and response objects", "response headers")))((("headers", "HTTP responses")))  The information typically included in response headers is metadata and server information.   We've already seen the +Content-Type+ header, which((("Content-Type header"))) tells the browser what kind of content is being transmitted (HTML, an image, CSS, JavaScript, etc.).((("HTML", "in Content-Type response header")))  Note that the browser will respect the +Content-Type+ header regardless of what the URL path is.  So you could serve HTML from a path of pass:[<emphasis role="keep-together">/image.jpg</emphasis>] or an image from a path of _/text.html_.  (There's no legitimate reason to do this; it's just important to understand that paths are abstract, and the browser uses +Content-Type+ to determine how to render content.)  In addition to +Content-Type+, headers can indicate whether the response is compressed and what kind of encoding it's using.  Response headers can also contain hints for the browser about how long it can cache the resource.  This is an important consideration for optimizing your website, and we'll be discussing that in detail in <<ch_static_content>>.  It is also common for response headers to contain some information about the server, indicating what type of server it is, and sometimes even details about the operating system.  The downside about returning server information is that it gives hackers a starting point to compromise your site.  Extremely security-conscious servers often omit this information, or even provide false information. ((("Express", "disabling X-Powered-By response header"))) pass:[<phrase role="keep-together">Disabling</phrase>] Express's default +X-Powered-By+ header is easy:
+
+[source,js]
+----
+app.disable('x-powered-by');
+----
+
+If you want to see the response headers, they can be found in your browser's developer tools.((("browsers", "viewing response headers")))  To see the response headers in Chrome, ((("Chrome", "viewing response headers")))for example:
+
+. Open the JavaScript console.
+. Click the Network tab.
+. Reload the page.
+. Pick the HTML from the list of requests (it will be the first one). 
+. Click the Headers tab; you will see all response headers.
+
+=== Internet Media Types
+
+The +Content-Type+ header is critically important: without it, the client would have to painfully guess how to render the content.((("request and response objects", "Internet media types")))((("Internet media types")))((("Content-Type header", "Internet media types")))  The format of the +Content-Type+ header is an _Internet media type_, which consists of a type, subtype, and optional parameters.  For example, +text/html; charset=UTF-8+ specifies a type of "text," a subtype of "html," and a character encoding of UTF-8.  The Internet Assigned Numbers Authority maintains an http://www.iana.org/assignments/media-types/media-types.xhtml[official list of Internet media types].  Often, you will hear "content type," "Internet media type," and "MIME type" used interchangeably.((("MIME (Multipurpose Internet Mail Extensions) types")))  MIME (Multipurpose Internet Mail Extensions) was a precursor of Internet media types and, for the most part, is equivalent.
+
+=== Request Body
+
+In addition to the request headers, a request can have a _body_ (just like the body of a response is the actual content that's being returned).((("request and response objects", "request body")))  Normal +GET+ requests don't have bodies, but +POST+ requests usually do.((("POST method", "bodies of POST requests")))  The most common media type for +POST+ bodies is +application/x-www-form-urlencoded+, which is simply encoded name/value pairs separated by ampersands (essentially the same format as a querystring).  If the +POST+ needs to support file uploads, the media type is +multipart/form-data+, which is a more complicated format.  Lastly, AJAX requests can use +application/json+ for the body.
+
+=== Parameters
+
+The word "parameters" can mean a lot of things, and is often a source of confusion.((("request and response objects", "parameters")))((("parameters, request object")))  For any request, parameters can come from the querystring, the session (requiring cookies; see <<ch_cookies_and_sessions>>), the request body, or the named routing parameters (which we'll learn more about in <<ch_routing>>).  In Node applications, the +param+ method of the request object ((("Node", "param method of request object")))munges all of these parameters together.  For this reason, I encourage you to avoid it.  This commonly causes problems when a parameter is set to one thing in the querystring and another one in the +POST+ body or the session: which value wins?  It can produce maddening bugs.  PHP is largely to blame for this confusion: in an effort to be "convenient," it munged all of these parameters into a variable called +$_REQUEST+, and for some reason, people have thought it was a good idea ever since.  We will learn about dedicated properties that hold the various types of parameters, and I feel that that is a much less confusing approach.
+
+=== The Request Object
+
+The request object (which is normally passed to a callback, meaning you can name it whatever you want: it is common to name it +req+ or +request+) starts its life as an instance of +http.IncomingMessage+, a core Node object.((("http.IncomingMessage object")))((("Node", "request object")))((("request and response objects", "request object")))((("Express", "request object")))  Express adds additional functionality.  Let's look at the most useful properties and methods of the request object (all of these methods are added by Express, except for +req.headers+ and +req.url+, which originate in Node):
+
++req.params+::
+	An array containing the _named route parameters_.  We'll learn more about this in <<ch_routing>>.
+
++req.param(name)+::
+	Returns the named route parameter, or +GET+ or +POST+ parameters.  I recommend avoiding this method.
+
++req.query+::
+	An object containing querystring parameters (sometimes called +GET+ parameters) as name/value pairs.((("req.query")))
+
++req.body+::
+	An object containing +POST+ parameters.  It is so named because +POST+ parameters are passed in the body of the +REQUEST+, not in the URL like querystring parameters.  To make +req.body+ available, you'll need middleware that can parse the body content type, which we will learn about in <<ch_middleware>>.
+
++req.route+::
+	Information about the currently matched route.  Primarily useful for route pass:[<phrase role="keep-together">debugging.</phrase>]
+
++req.cookies+/+req.signedCookies+::
+	Objects containing containing cookie values passed from the client.  See <<ch_cookies_and_sessions>>.
+
++req.headers+::
+	The request headers received from the client.
+
++req.accepts([types])+::
+	A convenience method to determine whether the client accepts a given type or types (optional +types+ can be a single MIME type, such as +application/json+, a comma-delimited list, or an array).  This method is of primary interest to those writing public APIs; it is assumed that browsers will always accept HTML by default.
+
++req.ip+::
+	The IP address of the client.
+
++req.path+::
+	The request path (without protocol, host, port, or querystring).
+
++req.host+::
+	A convenience method that returns the hostname reported by the client.  This information can be spoofed and should not be used for security purposes.
+
++req.xhr+::
+	A convenience property that returns +true+ if the request originated from an AJAX call.
+
++req.protocol+::
+	The protocol used in making this request (for our purposes, it will either be +http+ or +https+).
+
++req.secure+::
+	A convenience property that returns +true+ if the connection is secure.  Equivalent to +req.protocol===\'https'+.
+
++req.url+/+req.originalUrl+::
+	A bit of a misnomer, these properties return the path and querystring (they do not include protocol, host, or port).  +req.url+ can be rewritten for internal routing pass:[<phrase role="keep-together">purposes</phrase>], but +req.originalUrl+ is designed to remain the original request and querystring.
+
++req.acceptedLanguages+::
+	A convenience method that returns an array of the (human) languages the client prefers, in order.  This information is parsed from the request header.
+
+=== The Response Object
+
+The response object (which is normally passed to a callback, meaning you can name it whatever you want: it is common to name it +res+, +resp+, or +response+) starts its life as an instance of +http.ServerResponse+, a core Node object.((("http.ServerResponse object")))((("request and response objects", "response object")))((("Node", "response object")))((("Express", "response object")))  Express adds additional functionality.  Let's look at the most useful properties and methods of the response object (all of these are added by Express):
+
++res.status(code)+::
+	Sets the HTTP status code.  Express defaults to 200 (OK), so you will have to use this method to return a status of 404 (Not Found) or 500 (Server Error), or any other status code you wish to use.  For redirects (status codes 301, 302, 303, and 307), there is a method +redirect+, which is preferable.
+
++res.set(name, value)+::
+	Sets a response header.  This is not something you will normally be doing manually.
+
++res.cookie(name, value, [options])+, +res.clearCookie(name, [options])+::
+	Sets or clears cookies that will be stored on the client.  This requires some middleware support; see <<ch_cookies_and_sessions>>.
+
++res.redirect([status], url)+::
+	Redirects the browser.  The default redirect code is 302 (Found).  In general, you should minimize redirection unless you are permanently moving a page, in which case you should use the code 301 (Moved Permanently).
+
++res.send(body)+, +res.send(status, body)+::
+	Sends a response to the client, with an optional status code.  Express defaults to a content type of +text/html+, so if you want to change it to +text/plain+ (for example), you'll have to call +res.set(\'Content-Type\', \'text/plain\')+ before calling +res.send+.  If +body+ is an object or an array, the response is sent as JSON instead (with the content type being set appropriately), though if you want to send JSON, I recommend doing so explicitly by calling +res.json+ instead.
+
++res.json(json)+, +res.json(status, json)+::
+	Sends JSON to the client with an optional status code.
+
++res.jsonp(json)+, +res.jsonp(status, json)+::
+	Sends JSONP to the client with an optional status code.
+
++res.type(type)+::
+	A convenience method to set the +Content-Type+ header.  Essentially equivalent to +res.set(\'Content-Type', type)+, except that it will also attempt to map file extensions to an Internet media type if you provide a string without a slash in it.  For example, +res.type(\'txt')+ will result in a +Content-Type+ of +text/plain+.  There are areas where this functionality could be useful (for example, automatically serving disparate multimedia files), but in general, you should avoid it in favor of explicitly setting the correct Internet media type.
+
++res.format(object)+::
+	This method allows you to send different content depending on the +Accept+ request header.  This is of primary use in APIs, and we will discuss this more in <<ch_rest_apis_and_json>>.  Here's a very simple example: +res.format({\'text/plain\': \'hi there\', \'text/html\': \'<b>hi there</b>'})+.
+
++res.attachment([filename])+, +res.download(path, [filename], [callback])+::
+	Both of these methods set a response header called +Content-Disposition+ to +attachment+; this will prompt the browser to download the content instead of displaying it in a browser.  You may specify +filename+ as a hint to the browser.  With +res.download+, you can specify the file to download, whereas +res.attachment+ just sets the header; you still have to send content to the client.
+
++res.sendFile(path, [options], [callback])+::
+	This method will read a file specified by +path+ and send its contents to the client.  There should be little need for this method; it's easier to use the +static+ middleware, and put files you want available to the client in the _public_ directory.  However, if you want to have a different resource served from the same URL depending on some condition, this method could come in handy.
+
++res.links(links)+::
+	Sets the +Links+ response header.  This is a specialized header that has little use in most applications.
+
++res.locals+, +res.render(view, [locals], callback)+::
+	+res.locals+ is an object((("res.locals object"))) containing _default_ context for rendering views.  +res.render+ will render a view using the configured templating engine ((("context, view engine/Handlebars")))((("views", "rendering using configured templating engine")))(the +locals+ parameter to +res.render+ shouldn't be confused with +res.locals+: it will override the context in +res.locals+, but context not overridden will still be available).  Note that +res.render+ will default to a response code of 200; use +res.status+ to specify a different response code.  Rendering views will be covered in depth in <<ch_templating>>.
+
+=== Getting More Information
+
+Because of JavaScript's prototypal inheritance, knowing exactly what you're dealing with can be challenging sometimes. ((("request and response objects", "getting more information"))) Node provides you with objects that Express extends, and packages that you add may also extend those.  Figuring out exactly what's available to you can be challenging sometimes.  In general, I would recommend working pass:[<phrase role="keep-together">backward:</phrase>] if you're looking for some functionality, first check the http://expressjs.com/api.html[Express API documentation].((("Express", "Express API documentation")))  The Express API is pretty complete, and chances are, you'll find what you're looking for there.
+
+If you need information that isn't documented, sometimes you have to dive into the https://github.com/visionmedia/express/tree/master[Express source].((("Express", "source code")))  I encourage you to do this!  You'll probably find that it's a lot less intimidating than you might think.  Here's a quick roadmap to where you'll find things in the Express source:
+
+_lib/application.js_::
+	The main Express interface. ((("lib/application.js (Express source code)"))) If you want to understand how middleware is linked in, or how views are rendered, this is the place to look.
+
+_lib/express.js_::
+	This is a relatively short shell that extends ((("lib/express.js (Express source code)")))Connect with the functionality in __lib/application.js__, and returns a function that can be used with +http.createServer+ to actually run an Express app.
+
+_lib/request.js_::
+	Extends Node's +http.IncomingMessage+ object to provide a robust request object.((("lib/request.js (Express source code)")))  For information about all the request object properties and methods, this is where to look.
+
+_lib/response.js_::
+	Extends Node's +http.ServerResponse+ object to provide the response object.  For information about response object properties and methods, this is where to look.((("lib/response.js (Express source code)")))
+
+_lib/router/route.js_::
+	Provides basic routing support.((("lib/router/route.js (Express source code)")))((("routing", "lib/router/route.js in Express source")))  While routing is central to your app, this file is less than 200 lines long; you'll find that it's quite simple and elegant.
+
+As you dig into the Express source code, you'll probably want to refer to the http://nodejs.org/api/http.html[Node documentation], especially the section on the +HTTP+ module.((("HTTP module")))((("Node", "documentation")))
+
+=== Boiling It Down
+
+This chapter has tried to provide an overview of the request and response objects, which are the meat and potatoes of an Express application.((("request and response objects", "most frequently used functionality in Express")))  However, the chances are that you will be using a small subset of this functionality most of the time.  So let's break it down by functionality you'll be using most frequently.
+
+==== Rendering Content
+
+When you're rendering content, you'll be using +res.render+ most often, which renders views within layouts, providing maximum value.((("rendering content")))((("res.render method")))((("request and response objects", "most frequently used functionality in Express", "rendering content")))  Occasionally, you may wish to write a quick test page, so you might use +res.send+ if you just want a test page.((("res.send method")))((("req.query")))((("req.session")))  You may use +req.query+ to get querystring values, +req.session+ to get session values, or +req.cookie+/+req.signedCookies+ to get cookies.((("req.signedCookies")))((("req.cookie method")))  Examples pass:[<xref linkend="rendering_content_1" xrefstyle="select: labelnumber" />] to pass:[<xref linkend="rendering_content_8" xrefstyle="select: labelnumber" />] demonstrate common content rendering tasks:
+
+[[rendering_content_1]]
+.Basic usage
+====
+[source,js]
+----
+// basic usage
+app.get('/about', function(req, res){
+	res.render('about');
+});
+----
+====
+
+[[rendering_content_2]]
+.Response codes other than 200
+====
+[source,js]
+----
+app.get('/error', function(req, res){
+	res.status(500);
+	res.render('error');
+});
+// or on one line...
+app.get('/error', function(req, res){
+	res.status(500).render('error');
+});
+----
+====
+
+[[rendering_content_3]]
+.Passing a context to a view, including querystring, cookie, and session values
+====
+[source,js]
+----
+app.get('/greeting', function(req, res){
+	res.render('about', {
+		message: 'welcome',
+		style: req.query.style,
+		userid: req.cookie.userid,
+		username: req.session.username,
+	});
+});
+----
+====
+
+[[rendering_content_4]]
+.Rendering a view without a layout
+====
+[source,js]
+----
+// the following layout doesn't have a layout file, so views/no-layout.handlebars
+// must include all necessary HTML
+app.get('/no-layout', function(req, res){
+	res.render('no-layout', { layout: null });
+});
+----
+====
+
+[[rendering_content_5]]
+.Rendering a view with a custom layout
+====
+[source,js]
+----
+// the layout file views/layouts/custom.handlebars will be used
+app.get('/custom-layout', function(req, res){
+	res.render('custom-layout', { layout: 'custom' });
+});
+----
+====
+
+++++
+<?hard-pagebreak?>
+++++
+
+[[rendering_content_6]]
+.Rendering plaintext output
+====
+[source,js]
+----
+app.get('/test', function(req, res){
+	res.type('text/plain');
+	res.send('this is a test');
+});
+----
+====
+
+[[rendering_content_7]]
+.Adding an error handler
+====
+[source,js]
+----
+// this should appear AFTER all of your routes
+// note that even if you don't need the "next"
+// function, it must be included for Express
+// to recognize this as an error handler
+app.use(function(err, req, res, next){
+	console.error(err.stack);
+	res.status(500).render('error');
+});
+----
+====
+
+[[rendering_content_8]]
+.Adding a 404 handler
+====
+[source,js]
+----
+// this should appear AFTER all of your routes
+app.use(function(req, res){
+	res.status(404).render('not-found');
+});
+----
+====
+
+==== Processing Forms
+
+When you're processing forms, the information from the forms will usually be in +req.body+ (or occasionally in +req.query+).((("request and response objects", "most frequently used functionality in Express", "processing forms")))((("forms", "processing")))((("processing forms")))  You may use +req.xhr+ to determine if the request was an AJAX request or a browser request (this will be covered in depth in <<ch_form_handling>>). See Examples pass:[<xref linkend="ajax_or_browser_1" xrefstyle="select: labelnumber" />] and pass:[<xref linkend="ajax_or_browser_2" xrefstyle="select: labelnumber" />].
+
+[[ajax_or_browser_1]]
+.Basic form processing
+====
+[source,js]
+----
+// body-parser middleware must be linked in
+app.post('/process-contact', function(req, res){
+	console.log('Received contact from ' + req.body.name + 
+		' <' + req.body.email + '>');	
+	// save to database....
+	res.redirect(303, '/thank-you');
+});
+----
+====
+
+[[ajax_or_browser_2]]
+.More robust form processing
+====
+[source,js]
+----
+// body-parser middleware must be linked in
+app.post('/process-contact', function(req, res){
+	console.log('Received contact from ' + req.body.name + 
+		' <' + req.body.email + '>');	
+	try {
+		// save to database....
+
+		return res.xhr ?
+			res.render({ success: true }) :
+			res.redirect(303, '/thank-you');
+	} catch(ex) {
+		return res.xhr ?
+			res.json({ error: 'Database error.' }) :
+			res.redirect(303, '/database-error');
+	}
+});
+----
+====
+
+==== Providing an API
+
+When you're providing an API, much like processing forms, the parameters will usually be in +req.query+, though you can also use +req.body+.((("APIs", "providing")))((("req.body")))((("req.query")))((("request and response objects", "most frequently used functionality in Express", "providing an API")))  What's different about APIs is that you'll usually be returning JSON, XML, or even plaintext, instead of HTML, and you'll often be using less common HTTP methods like +PUT+, +POST+, and +DELETE+.  Providing an API will be covered in <<ch_rest_apis_and_json>>.  Examples pass:[<xref linkend="products_array_2" xrefstyle="select: labelnumber" />] and pass:[<xref linkend="products_array_3" xrefstyle="select: labelnumber" />] use the following "products" array (which would normally be retrieved from a database):
+
+[source,js]
+----
+var tours = [
+	{ id: 0, name: 'Hood River', price: 99.99 },
+	{ id: 1, name: 'Oregon Coast', price: 149.95 },
+];	
+----
+
+[NOTE]
+====
+The term "endpoint" is often used to describe a single function in an API.((("GET method", "GET endpoints")))((("endpoint")))
+====
+
+[[products_array_2]]
+.Simple GET endpoint returning only JSON
+====
+[source,js]
+----
+app.get('/api/tours'), function(req, res){
+	res.json(tours);	
+});
+----
+====
+
+<<products_array_3>> uses the +res.format+ method in Express to respond according to the preferences of the client.
+
+[[products_array_3]]
+.GET endpoint that returns JSON, XML, or text
+====
+[source,js]
+----
+app.get('/api/tours', function(req, res){
+	var toursXml = '<?xml version="1.0"?><tours>' +
+		products.map(function(p){
+			return '<tour price="' + p.price + 
+				'" id="' + p.id + '">' + p.name + '</tour>';
+		}).join('') + '</tours>'';
+	var toursText = tours.map(function(p){
+			return p.id + ': ' + p.name + ' (' + p.price + ')';
+		}).join('\n');
+	res.format({
+		'application/json': function(){
+			res.json(tours);
+		},
+		'application/xml': function(){
+			res.type('application/xml');
+			res.send(toursXml);
+		},
+		'text/xml': function(){
+			res.type('text/xml');
+			res.send(toursXml);
+		}
+		'text/plain': function(){
+			res.type('text/plain');
+			res.send(toursXml);
+		}
+	});
+});
+----
+====
+
+In <<products_array_4>>, the PUT endpoint updates a product and returns JSON.  Parameters are passed in the querystring (the "+:id+" in the route string tells Express to add an +id+ property to +req.params+).((("PUT method", "PUT endpoint")))
+
+[[products_array_4]]
+.PUT endpoint for updating
+====
+[source,js]
+----
+// API that updates a tour and returns JSON; params are passed using querystring
+app.put('/api/tour/:id', function(req, res){
+	var p = tours.some(function(p){ return p.id == req.params.id });
+	if( p ) {
+		if( req.query.name ) p.name = req.query.name;	
+		if( req.query.price ) p.price = req.query.price;
+		res.json({success: true});
+	} else {
+		res.json({error: 'No such tour exists.'});	
+	}
+});
+----
+====
+
+Finally, <<products_array_5>> shows a DEL((("DELETE method", "DEL endpoint"))) endpoint.
+
+[[products_array_5]]
+.DEL endpoint for deleting
+====
+[source,js]
+----
+// API that deletes a product
+api.del('/api/tour/:id', function(req, res){
+	var i;
+	for( var i=tours.length-1; i>=0; i-- )
+		if( tours[i].id == req.params.id ) break;
+	if( i>=0 ) {
+		tours.splice(i, 1);
+		res.json({success: true});
+	} else {
+		res.json({error: 'No such tour exists.'});
+	}
+});
+----
+====
+((("request and response objects", range="endofrange", startref="ix_reqres")))

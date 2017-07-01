@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html,body{
+            width: 100%;
+            height: 500%;
+        }
+    </style>
+</head>
+<body>
+<!--只有原生中才有this,不管this代表的是谁肯定是个原生对象-->
+<div id="box" photo="123">1234567890</div>
+<ul id="oUl">
+    <li class="li1">1</li>
+    <li class="li2">2</li>
+    <li class="li3">3</li>
+</ul>
+</body>
+</html>
+<script src="js/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    //1.回调函数集合
+    function f1(a){console.log("f1:"+a)}
+    function f2(a,b){console.log("f2:"+a+b)}
+    //f1(1,2,3,4);
+    //f2(1,1);
+    var $call=$.Callbacks();//回调函数集合
+    console.log($call);
+//    $call.add(f1);
+//    $call.add(f2);
+    $call.add(f1,f2);//add向回调函数集合中增加方法名
+    $call.fire(1,2);//fire去依次执行里面的函数,可以传参数,函数执行的时候会自动获取想要的参数
+    $call.fire(1);
+    $call.remove(f1);//remove删除回调函数集合中的方法
+    console.log($call.has(f1));//false
+    //has判断回调函数集合中有没有这个函数
+    $call.empty();//empty清空里面的函数
+
+    //2.属性
+    //attr(),获取/设置属性 一般都是自定义属性,会显示在HTML标签上
+    //一个参数是获取
+    //二个参数:设置,
+    // 批量设置:参数是个对象
+    console.log($("#box").attr("photo"));
+    $("#box").attr("p","p");
+    $("#box").attr({a:"a",b:"b"});
+
+    //removeAttr():移除属性
+    $("#box").removeAttr("a");
+    $("#box").removeAttr("a b");
+    //批量删除
+
+    //prop 获取/设置属性(一般都是天生自带的 内置属性)
+    //如果设置的是内置属性就会显示在HTML结构上,如果是自定义属性不会显示
+
+    //class
+    //addClass/removeClass/toggleClass/hasClass
+    $("#box").addClass("box1 box2    box");
+
+    //3.关于JQ中遍历的方法
+    //each()遍历JQ集合的(数组中forEach很像)
+    //参数是个函数,这个函数默认执行的时候给他传了2个参数,第一个参数是索引,第二参数是当前的那一项而且是个原生对象
+    $("#oUl>li").each(function(index,item){
+        //this==item
+        console.log(this);
+        //item 原生对象
+        //给每个li增加一个class名"JQ"
+//        $(item).addClass("JQ");
+        $(this).addClass("JQ");
+//        item.innerHTML++;
+        this.innerHTML++;
+        //item.className+=" JQ";
+    });
+    //map 跟each一样只是他有返回值
+
+    var $map=$("#oUl>li").map(function(index,item){
+    });
+    console.log($map.length);//0
+
+    //4 css()样式,获取/设置,批量设置
+    console.log($("#box").css("color"));
+    $("#box").css("color","red");
+    $("#box").css({"color":"yellow","fontSize":"40px"});
+
+    //5.offset()   当前元素距离body 的偏移量
+    $("#box").offset().left;
+    $("#box").offset().top;
+
+    //scrollTop()/scrollLeft() 不穿参数是获取,传参数是修改 没有单位
+    console.log($("body").scrollTop());
+    $("body").scrollTop(1000);
+    console.log($("body").scrollTop());
+
+    //width()/height()
+    console.log($("#oUl>li").height());
+    $("#oUl>li").height(50);
+
+    //innerWidth()/innerHeight() 这个跟 原生的clientWidth/clientHeight系列一样
+    //不穿参数是获取,传参数是修改(没有单位)  修改的时候padding不变改变宽高
+
+    //outerWidth()/outerHeight() 相当于offsetWidth/offsetHeight系列
+    //不穿参数是获取,传参数是修改(没有单位) 修改的时候padding+border不变改变宽高
+    //注意 outerWidth(true)/outerHeight(true),是获取并且加上margin
+</script>

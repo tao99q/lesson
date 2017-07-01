@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: -webkit-radial-gradient(50px 200px, #aeaeff, #587980, #282423, #807c7f);
+        }
+
+        div {
+            position: absolute;
+            border-radius: 50%;
+            background-color: #fff;
+            filter: blur(1px);
+            -webkit-filter: blur(1px);
+            opacity: 0;
+        }
+
+        .heart-shape {
+            display: none;
+            left: 50%;
+            top: 50%;
+            margin-left: -100px;
+            margin-top: -100px;
+            opacity: 0.4;
+            position: relative;
+            width: 200px;
+            height: 200px;
+            -webkit-transform: rotate(45deg);
+            -moz-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+            background-color: rgb(250, 26, 37);
+        }
+
+        .heart-shape:before,
+        .heart-shape:after {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            content: '';
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            -o-border-radius: 50%;
+            border-radius: 50%;
+            background-color: rgb(250, 26, 37);
+        }
+
+        .heart-shape:before {
+            bottombottom: 0px;
+            left: -90px;
+        }
+
+        .heart-shape:after {
+            top: -90px;
+            rightright: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="heart-shape"></div>
+</body>
+</html>
+<script src="js/public.js"></script>
+<script src="js/animate.js"></script>
+<script>
+    var heart = document.getElementsByClassName("heart-shape")[0];
+    var strHtml = '';
+    var winW = public.win("clientWidth") - 10;
+    var winH = public.win("clientHeight") - 10;
+    for (var i = 0; i < 300; i++) {
+        strHtml += "<div></div>";
+    }
+    document.body.innerHTML = strHtml;
+    var oDis = document.getElementsByTagName("div");
+    for (var i = 0; i < oDis.length; i++) {
+        var wh = Math.round(Math.random() * (8 - 2) + 2);
+        var l = Math.round(Math.random() * (winW));
+        var t = Math.round(Math.random() * (winH));
+        var time = Math.round(Math.random() * (500 - 200) + 200);
+        public.css(oDis[i], {width: wh, height: wh, left: l, top: t});
+        function show(ele) {
+            animate(ele, {opacity: 1}, time, function () {
+                hide(this);
+            })
+        }
+
+        function hide(ele) {
+            animate(ele, {opacity: 0}, time, function () {
+                show(this);
+            })
+        }
+
+        show(oDis[i]);
+    }
+    document.body.onclick = function () {
+        for (var i = 0; i < oDis.length; i++) {
+            if (i % 3 == 0) {
+                var l = public.css(oDis[i], "left");
+                var t = public.css(oDis[i], "top");
+                var ln = Math.round(Math.random() * (winW));
+                var tn = Math.round(Math.random() * (winH - t) + t);
+                animate(oDis[i], {left: ln, top: tn}, 400, function () {
+                    this.style.display = "none";
+                })
+            }
+        }
+    };
+
+    document.body.ondblclick = function () {
+        for (var i = 0; i < oDis.length; i++) {
+            animate(oDis[i], {left: 600, top: 400}, 100, function () {
+                document.body.style.background = "-webkit-radial-gradient(50px 50px,#fff, #e4deff, #8a9cdd, #766d80";
+                document.body.removeChild(this);
+            })
+        }
+        var heart = document.createElement("div");
+        heart.className = "heart-shape";
+        heart.style.display = "block";
+    }
+
+
+</script>

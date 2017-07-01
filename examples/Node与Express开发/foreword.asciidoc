@@ -1,0 +1,16 @@
+[preface]
+[[foreword]]
+[au="Steve Rosenbaum", auaffil="President and CEO, Pop Art, Inc."]
+== Foreword
+
+The combination of JavaScript, Node, and Express is an ideal choice for web teams that want a powerful, quick-to-deploy technology stack that is widely respected in the development community and large enterprises alike.
+
+Building great web applications and finding great web developers isn't easy.  Great apps require great functionality, user experience, and business impact: delivered, deployed, and supported quickly and cost effectively. The lower total cost of ownership and faster time-to-market that Express provides is critical in the business world. If you are a web developer, you have to use at least some JavaScript. But you also have the option of using a _lot_ of it. In this book, Ethan Brown shows you that you can use a lot of it, and it’s not that hard thanks to Node and Express.
+
+Node and Express are like machine guns that deliver upon the silver-bullet promise of JavaScript.
+
+JavaScript is the most universally accepted language for client-side scripting. Unlike Flash, it's supported by all major web browsers. It's the fundamental technology behind many of the attractive animations and transitions you see on the Web.  In fact, it's almost impossible not to utilize JavaScript if you want to achieve modern client-side pass:[<phrase role="keep-together">functionality.</phrase>]
+
+One problem with JavaScript is that it has always been vulnerable to sloppy programming. The Node ecosystem is changing that by providing frameworks, libraries, and tools that speed up development and encourage good coding habits. This helps us bring better apps to market faster.
+
+We now have a great programming language that is supported by large enterprises, is easy-to-use, is designed for modern browsers, and is supplemented with great frameworks and libraries on both client-side and server-side.  I call that revolutionary.

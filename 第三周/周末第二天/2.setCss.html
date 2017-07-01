@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div id="box">哈哈哈</div>
+<script>
+    var box=document.getElementById("box");
+    box.style.color="red";
+    box.style.opacity=0.7;
+    box.style.filter="alpha(opacity=70)";
+    box.style.cssFloat="left";
+    box.style.styleFloat="left";
+
+    function setCss(curEle,attr,val){
+        if(attr=="opacity"){
+            curEle.style["opacity"]=val;
+            curEle.style["filter"]="alpha(opacity="+val*100+")";
+            return;
+        }
+        if(attr=="float"){
+            curEle.style.cssFloat=val;
+            curEle.style.styleFloat=val;
+            return;
+        }
+        //width,height,left,top,bottom,right,margin(Top/Bottom/Right/Left),padding(Top/Bottom/Right/Left)
+        var reg=/^(width|height|left|right|top|bottom|(margin|padding)(Top|Bottom|Left|Right)?)$/;
+        if(reg.test(attr)){
+           val= !isNaN(val)?val+"px":val;
+           //!isNaN(val)?val+="px":null;
+        }
+        curEle.style[attr]=val;
+    }
+    setCss(box,"color","red");
+    setCss(box,"width",100);
+    setGroupCss(box,{height:"120px",margin:"12px",backgroundColor:"yellow"});
+
+    function setGroupCss(curEle,cssObj){
+        cssObj=cssObj||[];
+        if(cssObj.toString()=="[object Object]"){
+            for(var key in cssObj){
+            //for in循环既能遍历私有属性也能得到所属类原型上的公用属
+            // 判断私有属性才给当前元素赋值
+                if(cssObj.hasOwnProperty(key)){
+                    setCss(curEle,key,cssObj[key])
+                }
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

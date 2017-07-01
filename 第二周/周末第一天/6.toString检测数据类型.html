@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //1.typeof
+    //2.instanceof
+    //3.constructor
+
+    //4.Object.prototype.toString,我们利用对象Object类的原型的上的方法toString可以实现监测数据类,那么我们利用call将其关键字this改为我们要检测的那个数据就可以来检测到我们的具体数据类型了
+    console.dir(Object.prototype);
+    var obj={a:1};
+    console.log(obj.toString());//[object Object]
+    var ary=[1,2];
+    console.log(Object.prototype.toString.call(ary));//[object Array]
+    var str="1";
+    console.log(Object.prototype.toString.call(str));//[object String]
+    var s=Object.prototype.toString.call(str);//
+    //'[object String]'->String
+    var ss=s.split(" ")[1].replace("]",'');//'String'
+    console.log(ss);
+
+    function getType(type){
+        return Object.prototype.toString.call(type).split(" ")[1].replace("]",'');
+
+    }
+    console.log(getType(ary));//Array
+</script>
+</body>
+</html>

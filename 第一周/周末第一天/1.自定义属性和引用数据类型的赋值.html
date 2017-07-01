@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div ID="box"></div>
+<script type="text/javascript">
+    //自定义属性：一般都是给某些元素增加一个 自己起的属性名（不能是内置属性），来存储一些值的，比如说我们在选项卡中用自定义属性来存储他的索引值，不用全局变量的好处：只有自己可以修改  元素.自定义属性名=值
+    var box=document.getElementById("box");
+    //box 是一个元素,
+    console.dir(box);
+    console.log(box.className);
+    //
+    function fn() {
+        console.log("fn")
+    }
+    fn.sum="和";
+    console.dir(fn);
+    console.log(fn.sum);
+
+    //只要是引用数据类型都可以增加自定义属性  特别注意：函数也可以加
+    var a=1+2;
+    function ff() {
+        return 1+2
+    }
+    a=ff;
+    a=ff();
+    //对于引用数据类型的赋值过程
+    //对象：1.浏览器先看是什么数据类型的，是对象的话 浏览器就给他开辟一个堆内存
+    //2.把所有的 键值对（属性名：属性值）放到这个堆内存里，如果属性值遇到变量名，是把变量代表得值存起来
+    //3.把这个地址赋给对象
+
+    var obj1={a:1,b:2};///obj1=xxxfff000   a:1,b:2
+    obj1={
+        a:obj1.a,
+        b:1
+    };
+    //xxxfff111:  a:xxxfff000.a=1,b:1
+    //obj1=xxxfff111
+    console.log(obj1);
+//    a=1;
+//    a=a+1;
+
+    //函数的赋值过程：
+    //1.浏览器检测他是什么数据类型，是函数的话，浏览器就给他开辟一个堆内存
+    //2.将函数 当做字符串存起来
+    //3.将地址赋值给函数名
+    function ffn(i) {
+        var a=i;
+        return a
+    }
+    ffn
+    //注意在写自执行函数的时候最好在前面加上分号，以免出错;
+    ;(function (i) {
+        return i
+    })(1)
+</script>
+</body>
+</html>

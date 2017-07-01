@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        div{
+            width:900px;
+            margin:50px auto;
+            position: relative;
+        }
+        div img{
+            float: left;
+            width: 200px;
+            margin:10px;
+        }
+        #bigger{
+            position: absolute;
+            left:0;
+            top:0;
+            width:600px ;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <img src="img/apple_1.jpg" realImg="img/apple_1_bigger.jpg" alt="">
+    <img src="img/apple_2.jpg" realImg="img/apple_2_bigger.jpg" alt="">
+    <img src="img/apple_3.jpg" realImg="img/apple_3_bigger.jpg" alt="">
+    <img src="img/apple_4.jpg" realImg="img/apple_4_bigger.jpg" alt="">
+    <div class="boxImg">
+        <img src="img/apple_1_bigger.jpg" alt="" id="bigger">
+    </div>
+</div>
+<script src="js/jquery-3.2.1.min.js"></script>
+<script>
+    var $box=$('#box');
+    var $pos=$box.offset();
+    var $img=$box.children('img');
+    var $big=$('#bigger');
+    $img.mouseover(function(){
+        //1.让大图显示，并且地址正确；
+        $big.show().attr('src',$(this).attr('realImg'))
+        //2.当鼠标移动的时候，让大图跟着鼠标一起走，并且，移到不同的地方，大图跟着切换；
+        $box.mousemove(function(e){
+            $big.css({
+                left: e.clientX-$pos.left,
+                top: e.clientY-$pos.top
+            })
+        });
+        //3.移出大图隐藏；
+        $box.mouseout(function(){
+            $big.hide();
+        })
+    })
+</script>
+</body>
+</html>

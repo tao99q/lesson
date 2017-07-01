@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 4.5 Text-Indent Property</title>
+<style type="text/css">
+/* font-size:120%; */
+body {font-family:helvetica, arial, sans-serif; font-size:1em;}
+p.indent {border:1px solid red; line-height: 1.1; text-indent:3em;}
+p.outdent_wrong {border:1px solid red; line-height: 1.1; text-indent:-1.5em;}
+p.outdent_right {border:1px solid red; line-height: 1.1; text-indent:-1.5em; margin-left:1.65em;}
+p.outdent_right2 {line-height: 1.1; text-indent:-1.5em; margin:0 0 0 1.65em;}
+</style>
+</head>
+
+<body>
+    <p class="indent">This is example 1. This paragraph of text has an indent of 3 ems. Because its value is positive (greater than 0), all the text stays within the element. Things get more complicated if I start using negative margins to make the first line "outdent" instead.</p>
+    <p class="outdent_wrong">This is example 2. This paragraph of text has a negative indent. Because this element does not have enough space to its left, 
+     the hanging text is clipped by the edge of the browser window. The 
+     border of this element is displayed to help you see the nature of the problem.</p>
+     <p class="outdent_right">This is example 3. This paragraph of text has the same negative indent as the example above, but because this element has a left margin value greater than the negative indent value, the hanging text is not clipped by the edge of the browser window. The 
+     border of this element is displayed to help you see how a potential problem is avoided.</p>
+     <p class="outdent_right2">This is example 4. Here is the same styling as the previous paragraph, but without the element border so you can clearly see the effect. Indents provide a visual indication of the start of paragraphs when you don't want to use space to separate them.</p>
+     <p class="outdent_right2">Here is a second paragraph with no space between it and the previous one. The negative value indent makes it clear that this is a new paragraph. Positive value indents can serve the same purpose.</p>
+    <!--end footer--> 
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>
+<!--end sample doc-->

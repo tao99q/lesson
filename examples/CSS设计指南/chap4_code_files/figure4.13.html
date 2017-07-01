@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 4.13 Vertical-Align Property</title>
+<style type="text/css">
+body {font-family:helvetica, arial, sans-serif; font-size:100%; background-color:#FFF;}
+h4 {margin: 1.4em 20px .5em; color:#069;}
+p {margin: 0 20px;}
+p.custom sub {vertical-align:-.4em; font-size:60%;}
+p.custom sup {vertical-align:.65em; font-size:65%;}
+p.customsmall {font-size:.8em; vertical-align:1em}
+code {font-size:1.35em;}
+</style>
+</head>
+
+<body>
+    <h4>Default <code>sub</code> and <code>sup</code> styles</h4>
+    <p>Enjoy mountain spring H<sub>2</sub>O. It's 10<sup>5</sup> times better than tap<sup>&dagger;</sup> water!</p> 
+    <p class="customsmall"><sup>&dagger;</sup><em>This means water provided through a municipal distribution system</em></p>
+      
+    <h4>Custom <code>sub</code> and <code>sup</code> styles</h4>
+    <p class="custom">Enjoy mountain spring H<sub>2</sub>O. It's 10<sup>5</sup> times better than tap<sup>&dagger;</sup> water!</p> 
+    <p class="customsmall"><sup>&dagger;</sup><em>This means water provided through a municipal distribution system</em></p>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+</body>
+
+</html>

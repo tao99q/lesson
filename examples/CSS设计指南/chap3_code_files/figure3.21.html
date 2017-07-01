@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 3.21 Using Clear Without a Containing Element</title>
+<style>
+	section {width:300px; border:1px solid red;}
+	img {float:left; margin:0 4px 4px 0;}
+	p {font-family:helvetica, arial, sans-serif; margin:0 0 5px 0;}
+</style>
+</head>
+
+<body>
+	<section>
+    <img src="images/rubber_duck3.jpg">
+    <p>This text sits next to the image and because the text extends below the bottom of the image, the next image positions itself correctly under the previous image.</p>
+    <img src="images/beach_ball.jpg">
+    <p>This text is short, so the next image can float up beside this one.</p>
+    <img src="images/yellow_float.jpg">
+    <p>Because the previous image's text does not extend below it, this image and text move up next to the previous image. This problem can be solved by the use of the clear property.</p>
+    </section>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<!-- Please note that the watermarked image/images in this code example is/are provided only for the purpose of displaying the code example in your browser. Licensing rights to this image/images is/are not conveyed to you. If you would like to purchase licensing rights for the images in this book, please visit the following url: --> 
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>To purchase the stock images in this book and other great stock images, go to <a href="http://www.bigstockphoto.com/?refid=PEECNmwgKb">bigstockphoto.com</a></p>
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,542 @@
+[[ch_persistence]]
+== Persistence
+
+All but the simplest websites and web applications are going to require _persistence_ of some kind; that is, some way to store data that's((("persistence", id="ix_persist", range="startofrange"))) more permanent than volatile memory, so that your data will survive server crashes, power outages, upgrades, and relocations.  In this chapter, we'll be discussing the options available for persistence, with a focus on document databases.
+
+=== Filesystem Persistence
+
+One way to achieve persistence is to simply save data to so-called "flat files" ("flat" because there's no inherent structure in a file: it's just a sequence of bytes).((("flat files")))((("persistence", "filesystem")))((("filesystem persistence")))  Node makes filesystem persistence possible through the +fs+ (filesystem) module.((("Node", "filesystem persistence")))((("fs (filesystem) module")))
+
+Filesystem persistence has some drawbacks.  In particular, it doesn't scale well: the minute you need more than one server to meet traffic demands, you will run into problems with filesystem persistence, unless all of your servers have access to a shared filesystem.  Also, because flat files have no inherent structure, the burden of locating, sorting, and filtering data will be on your application.  For these reasons, you should favor databases over filesystems for storing data.  The one exception is storing binary files, such as images, audio files, or videos.  While many databases can handle this type of data, they rarely do so more efficiently than a filesystem (though information _about_ the binary files is usually stored in a database to enable searching, sorting, and filtering).
+
+If you do need to store binary data, keep in mind that filesystem storage still has the problem of not scaling well.((("scaling, filesystem persistence and")))  If your hosting doesn't have access to a shared filesystem (which is usually the case), you should consider storing binary files in a database (which usually requires some configuration so the database doesn't grind to a stop), or a cloud-based storage service, like Amazon S3 or Microsoft Azure Storage.((("cloud computing", "storage services")))
+
+Now that we've got the caveats out of the way, let's look at Node's filesystem support.  We'll revisit the vacation photo contest from <<ch_form_handling>>.  In our application file, let's fill in the handler that ((("forms", "form handler for vacation photo contest (example)")))processes that form:
+
+[source,js]
+----
+// make sure data directory exists
+var dataDir = __dirname + '/data';
+var vacationPhotoDir = dataDir + '/vacation-photo';
+fs.existsSync(dataDir) || fs.mkdirSync(dataDir); 
+fs.existsSync(vacationPhotoDir) || fs.mkdirSync(vacationPhotoDir);
+
+function saveContestEntry(contestName, email, year, month, photoPath){
+    // TODO...this will come later
+}
+
+app.post('/contest/vacation-photo/:year/:month', function(req, res){
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files){
+        if(err) return res.redirect(303, '/error');
+        if(err) {
+            res.session.flash = {
+                type: 'danger',
+                intro: 'Oops!',
+                message: 'There was an error processing your submission. ' +
+                    'Pelase try again.',
+            };
+            return res.redirect(303, '/contest/vacation-photo');
+        }
+        var photo = files.photo;
+        var dir = vacationPhotoDir + '/' + Date.now();
+        var path = dir + '/' + photo.name;
+        fs.mkdirSync(dir);
+        fs.renameSync(photo.path, dir + '/' + photo.name);
+        saveContestEntry('vacation-photo', fields.email,
+            req.params.year, req.params.month, path);
+        req.session.flash = {
+            type: 'success',
+            intro: 'Good luck!',
+            message: 'You have been entered into the contest.',
+        };
+        return res.redirect(303, '/contest/vacation-photo/entries');
+    });
+});
+----
+
+There's a lot going on there, so let's break it down.  We first create a directory to store the uploaded files (if it doesn't already exist).((("filesystem persistence", "storing files from photo contest (example)")))  You'll probably want to add the _data_ directory to your _.gitignore_ file so you don't accidentally commit uploaded files.  We then create a new instance of Formidable's +IncomingForm+ and call its +parse+ method, passing in the +req+ object.  The callback provides all the fields and the files that were uploaded.  Since we called the upload field ++photo++, there will be a +files.photo+ object containing information about the uploaded files.  Since we want to prevent collisions, we can't just use the filename (in case two users both upload __portland.jpg__).  To avoid this problem, we create a unique directory based on the timestamp: it's pretty unlikely that two users will both upload __portland.jpg__ in the same millisecond!  Then we rename (move) the uploaded file (Formidable will have given it a temporary name, which we can get from the +path+ property) to our constructed name.
+
+Finally, we need some way to associate the files that users upload with their email addresses (and the month and year of the submission).  We could encode this information into the file or directory names, but we are going to prefer storing this information in a database.  Since we haven't learned how to do that yet, we're going to encapsulate that functionality in the +vacationPhotoContest+ function and complete that function later in this chapter.
+
+[NOTE]
+====
+In general, you should never trust anything that the user uploads: it's a possible vector for your website to be attacked.((("user uploads, never trusting")))  For example, a malicious user could easily take a harmful executable, rename it with a __.jpg__ extension, and upload it as the first step in an attack (hoping to find some way to execute it at a later point).  Likewise, we are taking a little risk here by naming the file using the +name+ property pass:[<phrase role="keep-together">provided</phrase>] by the browser: someone could also abuse this by inserting special characters into the filename.  To make this code completely safe, we would give the file a random name, taking only the extension (making sure it consists only of alphanumeric characters).
+====
+
+=== Cloud Persistence
+
+Cloud storage is becoming increasingly popular, and I highly recommend you take advantage of one of these inexpensive, easy-to-use services.((("Amazon S3 account, saving files to")))((("cloud persistence")))((("persistence", "cloud storage")))  Here's an example of how easy it is to save a file to an Amazon S3 account:
+
+[source,js]
+----
+var filename = 'customerUpload.jpg';
+
+aws.putObject({
+    ACL: 'private',
+    Bucket: 'uploads',
+    Key: filename,
+    Body: fs.readFileSync(__dirname + '/tmp/ + filename)
+});
+----
+
+See the http://aws.amazon.com/sdkfornodejs[AWS SDK documentation] for more pass:[<phrase role="keep-together">information</phrase>]. 
+
+And an example of how to do the same thing with((("Microsoft", "Azure cloud storage, saving files to"))) Microsoft Azure:
+
+[source,js]
+----
+var filename = 'customerUpload.jpg';
+
+var blobService = azure.createBlobService();
+blobService.putBlockBlobFromFile('uploads', filename, __dirname +
+    '/tmp/' + filename);
+----
+
+See the http://bit.ly/azure_documentation[Microsoft Azure documentation] for more information.
+
+=== Database Persistence
+
+All except the simplest websites and web applications require a database.((("persistence", "database")))((("database persistence")))  Even if the bulk of your data is binary, and you're using a shared filesystem or cloud storage, the chances are you'll want a database to help catalog that binary data.
+
+Traditionally, the world "database" is shorthand((("relational database management system (RDBMS)"))) for "relational database management system" (RDBMS).((("databases", "relational")))  Relational databases, such as Oracle, MySQL, PostgreSQL, or SQL Server are based on decades of research and formal database theory.  It is a technology that is quite mature at this point, and the power of these databases is unquestionable.  However, unless you are Amazon or Facebook, you have the luxury of expanding your ideas of what constitutes a database.  "NoSQL" databases have come into vogue in recent years, and they're challenging the status quo of Internet data storage.((("NoSQL databases")))
+
+It would be foolish to claim that NoSQL databases are somehow better than relational databases, but they do have certain advantages (and vice versa).  While it is quite easy to integrate a relational database with Node apps, there are NoSQL databases that seem almost to have been designed for Node.
+
+The two most popular types of NoSQL databases are _document databases_ and pass:[<emphasis role="keep-together">key-value</emphasis>] databases.  Document databases excel at storing objects,((("key-value databases")))((("document databases"))) which makes them a natural fit for Node and JavaScript.  Key-value databases, as the name implies, are extremely simple, and are a great choice for applications with data schemas that are easily mapped into key-value pairs.
+
+I feel that document databases represent the optimal compromise between the constraints of relational databases and the simplicity of key-value databases, and for that reason, we will be using a document database for our examples.((("MongoDB")))  MongoDB is the leading document database, and is very robust and established at this point.
+
+==== A Note on Performance
+
+The simplicity of NoSQL databases is a double-edged sword.((("persistence", "database", "performance and NoSQL databases")))((("database persistence", "performance and")))((("performance", "databases, NoSQL versus relational")))((("relational databases", "performance")))((("databases", "performance, NoSQL versus relational databases")))  Carefully planning a relational database can be a very involved task, but the benefit of that careful planning is databases that offer excellent performance.  Don't be fooled into thinking that because NoSQL databases are generally more simple, that there isn't an art and a science to tuning them for maximum performance.
+
+Relational databases have traditionally relied on their rigid data structures and decades of optimization research to achieve high performance.  NoSQL databases, on the other hand, have embraced the distributed nature of the Internet and, like Node, have instead focused on concurrency to scale performance (relational databases also support concurrency, but this is usually reserved for the most demanding applications).
+
+Planning for database performance and scalability is a large, complex topic that is pass:[<phrase role="keep-together">beyond</phrase>] the scope of this book.  If your application requires a high level of database performance, I recommend starting with Kristina Chodorow's pass:[<emphasis><ulink role="orm:hideurl" url="http://bit.ly/Mongo_DB_Guide">MongoDB: The Definitive Guide</ulink></emphasis>] (O'Reilly).
+
+==== Setting Up MongoDB
+
+The difficulty involved in setting up a MongoDB instance varies with your operating system.((("MongoDB", "setting up")))((("database persistence", "setting up MongoDB")))((("persistence", "database", "setting up MongoDB")))  For this reason, we'll be avoiding the problem altogether by using an excellent free MongoDB hosting service, MongoLab.((("MongoLab")))
+
+[NOTE]
+====
+MongoLab is not the only MongoDB service available.  https://www.mongohq.com[MongoHQ],((("MongoHQ"))) among others, offer free development/sandbox accounts.  These accounts are not recommended for production purposes, though.  Both MongoLab and MongoHQ offer production-ready accounts, so you should look into their pricing before making a choice: it will be less hassle to stay with the same hosting service when you make the switch to production.
+====
+
+Getting started with MongoLab is simple.  Just go to http://mongolab.com and click Sign Up.  Fill out the registration form and log in, and you'll be at your home screen.  Under Databases, you'll see "no databases at this time."  Click "Create new," and you will be taken to a page with some options for your new database.  The first thing you'll select is a cloud provider.  For a free (sandbox) account, the choice is largely irrelevant, though you should look for a data center near you (not every data center will offer sandbox accounts, however).  Select "Single-node (development)," and Sandbox.  You can select the version of MongoDB you want to use: the examples in this book use version 2.4.  Finally, choose a database name, and click "Create new MongoDB deployment."
+
+==== Mongoose
+
+While there's a low-level driver available for https://npmjs.org/package/mongodb[MongoDB], you'll probably want to use an "object document mapper" (ODM).((("object document mappers (ODMs)")))((("Mongoose")))  The officially supported ODM for MongoDB is _Mongoose_.
+
+One of the advantages of JavaScript is that its object model is extremely flexible: if you want to add a property or method to an object, you just do it, and you don't need to worry about modifying a class.  Unfortunately, that kind of free-wheeling flexibility can have a negative impact on your databases: they can become fragmented and hard to optimize.  Mongoose attempts to strike a balance: it introduces _schemas_ and _models_ (combined, schemas and models are similar to classes in traditional object-oriented programming).((("schemas (database)")))((("models")))  The schemas are flexible but still provide some necessary structure for your database.
+
+Before we get started, we'll need to install the Mongoose module:
+
+----
+npm install --save mongoose
+----
+
+Then we'll add our database credentials to the _credentials.js_ file:
+
+[source,js]
+----
+mongo: {
+    development: {
+        connectionString: 'your_dev_connection_string',
+    },
+    production: {
+        connectionString: 'your_production_connection_string',
+    },
+},
+----
+
+You'll find your connection string on the database page in MongoLab: from your home screen, click the appropriate database.  You'll see a box with your MongoDB connection URI (it starts with __mongodb://__).  You'll also need a user for your database.  To create one, click Users, then "Add database user."
+
+Notice that we store two sets of credentials: one for development and one for production.  You can go ahead and set up two databases now, or just point both to the same database (when it's time to go live, you can switch to using two separate databases).
+
+==== Database Connections with Mongoose
+
+We'll start by creating a connection ((("persistence", "database", "database connections with Mongoose")))((("database persistence", "database connections with Mongoose")))((("Mongoose", "database connections with")))to our database:
+
+[source,js]
+----
+var mongoose = require('mongoose');
+var opts = {
+    server: {
+       socketOptions: { keepAlive: 1 } 
+    }
+};
+switch(app.get('env')){
+    case 'development':
+        mongoose.connect(credentials.mongo.development.connectionString, opts);
+        break;
+    case 'production':
+        mongoose.connect(credentials.mongo.production.connectionString, opts);
+        break;
+    default:
+        throw new Error('Unknown execution environment: ' + app.get('env'));
+}
+----
+
+The +options+ object is optional, but we want to specify the +keepAlive+ option, which will prevent database connection errors for long-running applications (like a website).
+
+==== Creating Schemas and Models
+
+Let's create a vacation package database for Meadowlark Travel.((("persistence", "database", "creating schemas and models")))((("Mongoose", "creating schemas and models")))((("database persistence", "creating schemas and models")))((("models", "creating")))((("schemas (database)", "creating")))  We start by defining a schema and creating a model from it.  Create the file _models/vacation.js_:
+
+[source,js]
+----
+var mongoose = require('mongoose');
+
+var vacationSchema = mongoose.Schema({
+    name: String,
+    slug: String,
+    category: String,
+    sku: String,
+    description: String,
+    priceInCents: Number,
+    tags: [String],
+    inSeason: Boolean,
+    available: Boolean,
+    requiresWaiver: Boolean,
+    maximumGuests: Number,
+    notes: String,
+    packagesSold: Number,
+});
+vacationSchema.methods.getDisplayPrice = function(){
+    return '$' + (this.priceInCents / 100).toFixed(2);
+};
+var Vacation = mongoose.model('Vacation', vacationSchema);
+module.exports = Vacation;
+----
+
+This code declares the properties that make up our vacation model, and the types of those properties.  You'll see there are several string properties, two numeric properties, two Boolean properties, and an array of strings (denoted by +[String]+).  At this point, we can also define methods on our schema.  We're storing product prices in cents instead of dollars to help prevent any floating-point rounding trouble, but obviously we want to display our products in US dollars (until it's time to internationalize, of course!).  So we add a method called +getDisplayPrice+ to get a price suitable for display.  Each product has a "stock keeping unit" (SKU); even though we don't think about vacations being "stock items," the concept of an SKU is pretty standard for accounting, even when tangible goods aren't being sold.
+
+Once we have the schema, we create a model using +mongoose.model+: at this point, +Vacation+ is very much like a class in traditional object-oriented programming.  Note that we have to define our methods before we create our model.
+
+[NOTE]
+====
+Due to the nature of floating-point numbers, you should always be careful with financial computations in JavaScript.((("JavaScript", "floating-point numbers and financial computations")))  Storing prices in cents helps, but it doesn't eliminate the problems.  A decimal type suitable for financial calculations will be available in the next version of JavaScript (ES6).
+====
+
+We are exporting the +Vacation+ model object created by Mongoose.  To use this model in our application, we can import it like this:
+
+[source,js]
+----
+var Vacation = require('./models/vacation.js');
+----
+
+==== Seeding Initial Data
+
+We don't yet have any vacation packages((("persistence", "database", "seeding initial data")))((("database persistence", "seeding initial data")))((("MongoDB", "seeding initial data"))) in our database, so we'll add some to get us started.  Eventually, you may want to create a way to manage products, but for the purposes of this book, we're just going to do it in code:
+
+[source,js]
+----
+Vacation.find(function(err, vacations){
+    if(vacations.length) return;
+
+    new Vacation({
+        name: 'Hood River Day Trip',
+        slug: 'hood-river-day-trip',
+        category: 'Day Trip',
+        sku: 'HR199',
+        description: 'Spend a day sailing on the Columbia and ' + 
+            'enjoying craft beers in Hood River!',
+        priceInCents: 9995,
+        tags: ['day trip', 'hood river', 'sailing', 'windsurfing', 'breweries'],
+        inSeason: true,
+        maximumGuests: 16,
+        available: true,
+        packagesSold: 0,
+    }).save();
+
+    new Vacation({
+        name: 'Oregon Coast Getaway',
+        slug: 'oregon-coast-getaway',
+        category: 'Weekend Getaway',
+        sku: 'OC39',
+        description: 'Enjoy the ocean air and quaint coastal towns!',
+        priceInCents: 269995,
+        tags: ['weekend getaway', 'oregon coast', 'beachcombing'],
+        inSeason: false,
+        maximumGuests: 8,
+        available: true,
+        packagesSold: 0,
+    }).save();
+
+    new Vacation({
+        name: 'Rock Climbing in Bend',
+        slug: 'rock-climbing-in-bend',
+        category: 'Adventure',
+        sku: 'B99',
+        description: 'Experience the thrill of climbing in the high desert.',
+        priceInCents: 289995,
+        tags: ['weekend getaway', 'bend', 'high desert', 'rock climbing'],
+        inSeason: true,
+        requiresWaiver: true,
+        maximumGuests: 4,
+        available: false,
+        packagesSold: 0,
+        notes: 'The tour guide is currently recovering from a skiing accident.',
+    }).save();
+});
+
+----
+
+There are two Mongoose methods being used here.  The first, +find+, does just what it says.  In this case, it's finding all instances of +Vacation+ in the database and invoking the callback with that list.  We're doing that because we don't want to keep readding our seed vacations: if there are already vacations in the database, it's been seeded, and we can go on our merry way.  The first time this executes, though, +find+ will return an empty list, so we proceed to create two vacations, and then call the +save+ method on them, which saves these new objects to the database.
+
+==== Retrieving Data
+
+We've already seen the +find+ method, which is what we'll use to display a list of vacations.  However, this time we're going to pass an((("persistence", "database", "retrieving data")))((("database persistence", "retrieving data")))((("MongoDB", "retrieving data from"))) option to +find+ that will filter the data.  Specifically, we want to display only vacations that are currently available.
+
+Create a view for the products page, __views/vacations.handlebars__:
+
+[source,html]
+----
+<h1>Vacations</h1>
+{{#each vacations}}
+    <div class="vacation">
+        <h3>{{name}}</h3>
+        <p>{{description}}</p>
+        {{#if inSeason}}
+            <span class="price">{{price}}</span> 
+            <a href="/cart/add?sku={{sku}}" class="btn btn-default">Buy Now!</a>
+        {{else}}
+            <span class="outOfSeason">We're sorry, this vacation is currently 
+            not in season.
+            {{! The "notify me when this vacation is in season" 
+                page will be our next task. }}
+            <a href="/notify-me-when-in-season?sku={{sku}}">Notify me when 
+            this vacation is in season.</a>
+        {{/if}}
+    </div>
+{{/each}}
+----
+
+Now we can create route handlers that hook it all up:
+
+[source,js]
+----
+// see companion repository for /cart/add route....
+
+app.get('/vacations', function(req, res){
+    Vacation.find({ available: true }, function(err, vacations){
+        var context = {
+            vacations: vacations.map(function(vacation){
+                return {
+                    sku: vacation.sku,
+                    name: vacation.name,
+                    description: vacation.description,
+                    price: vacation.getDisplayPrice(),
+                    inSeason: vacation.inSeason,
+                }
+            })
+        };
+        res.render('vacations', context);
+    });
+});
+----
+
+Most of this should be looking pretty familiar, but there might be some things that surprise you.  For instance, how we're handling the view context for the vacation listing might seem odd.((("views", "unmapped database objects and")))  Why did we map the products returned from the database to a nearly identical object?  One reason is that there's no built-in way for a Handlebars view to use the output of a function in an expression.  So to display the price in a neatly formatted way, we have to convert it to a simple string property.  We could have done this:
+
+[source,js]
+----
+var context = {
+    vacations: products.map(function(vacations){
+        vacation.price = vacation.getDisplayPrice();
+        return vacation;
+    });
+};
+----
+
+That would certainly save us a few lines of code, but in my experience, there are good reasons not to pass unmapped database objects directly to views.  The view gets a bunch of properties it may not need, possibly in formats that are incompatible with it.  Our example is pretty simple so far, but once it starts to get more complicated, you'll probably want to do even more customization of the data that's passed to a view.  It also makes it easy to accidentally expose confidential information, or information that could compromise the security of your website.  For these reasons, I recommend mapping the data that's returned from the database and passing only what's needed onto the view (transforming as necessary, as we did with +price+).
+
+[NOTE]
+====
+In some variations of the MVC architecture, a third component called a "view model" is introduced.  A view model essentially distills and transforms a model((("view models"))) (or models) so that it's more appropriate for display in a view.  What we're doing above is essentially creating a view model on the fly.
+====
+
+==== Adding Data
+
+We've already seen how we can add data (we added data when we seeded the vacation collection) and how we can update data (we update the count of packages sold when we book a vacation),((("database persistence", "adding data")))((("persistence", "database", "adding data"))) but let's take a look at a slightly more involved scenario that highlights the flexibility of document databases.
+
+When a vacation is out of season, we display a link that invites the customer to be notified when the vacation is in season again.  Let's hook up that functionality.((("schemas (database)", "creating")))((("models", "creating")))  First, we create the schema and model (__models/vacationInSeasonListener.js__):
+
+[source,js]
+----
+var mongoose = require('mongoose');
+
+var vacationInSeasonListenerSchema = mongoose.Schema({
+    email: String,
+    skus: [String],
+});
+var VacationInSeasonListener = mongoose.model('VacationInSeasonListener',
+    vacationInSeasonListenerSchema);
+
+module.exports = VacationInSeasonListener;
+----
+
+Then we'll create our view, __views/notify-me-when-in-season.handlebars__:
+
+[source,html]
+----
+<div class="formContainer">
+    <form class="form-horizontal newsletterForm" role="form"
+            action="/notify-me-when-in-season" method="POST">
+        <input type="hidden" name="sku" value="{{sku}}">
+        <div class="form-group">
+            <label for="fieldEmail" class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-4">
+                <input type="email" class="form-control" required 
+                    id="fieldName" name="email">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-4">
+                <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+----
+
+And finally, the route handlers:
+
+[source,js]
+----
+var VacationInSeasonListener = require('./models/vacationInSeasonListener.js');
+
+app.get('/notify-me-when-in-season', function(req, res){
+    res.render('notify-me-when-in-season', { sku: req.query.sku });
+});
+
+app.post('/notify-me-when-in-season', function(req, res){
+    VacationInSeasonListener.update(
+        { email: req.body.email }, 
+        { $push: { skus: req.body.sku } },
+        { upsert: true },
+        function(err){
+            if(err) {
+                console.error(err.stack);
+                req.session.flash = {
+                    type: 'danger',
+                    intro: 'Ooops!',
+                    message: 'There was an error processing your request.',
+                };
+                return res.redirect(303, '/vacations');
+            }
+            req.session.flash = {
+                type: 'success',
+                intro: 'Thank you!',
+                message: 'You will be notified when this vacation is in season.',
+            };
+            return res.redirect(303, '/vacations');
+        }
+    );
+});
+----
+
+What magic is this?  How can we "update" a record in the +VacationInSeasonListener+ collection before it even exists?  The answer lies in a ((("upserts")))((("Mongoose", "upserts")))Mongoose convenience called an _upsert_ (a portmanteau of "update" and "insert").  Basically, if a record with the given email address doesn't exist, it will be created.  If a record does exist, it will be updated.  Then we use the magic variable +$push+ to indicate that we want to add a value to an array.  Hopefully this will give you a taste of what Mongoose provides for you, and why you may want to use it instead of the low-level MongoDB driver.
+
+[NOTE]
+====
+This code doesn't prevent multiple SKUs from being added to the record if the user fills out the form multiple times.  When a vacation comes into season, and we find all the customers who want to be notified, we will have to be careful not to notify them multiple times.
+====
+
+==== Using MongoDB for Session Storage
+
+As we discussed((("persistence", "database", "using MongoDB for session storage")))((("database persistence", "using MongoDB for session storage")))((("sessions", "storing, using MongoDB")))((("MongoDB", "using for session storage"))) in <<ch_cookies_and_sessions>>, using a memory store for session data is unsuitable in a production environment.  Fortunately, it's very easy to set up MongoDB to use as a session store.
+
+We'll be using a package called +session-mongoose+ to provide MongoDB session storage.((("session-mongoose package")))  Once you've installed it (+npm install --save session-mongoose+), we can set it up in our main application file:
+
+[source,js]
+----
+var MongoSessionStore = require('session-mongoose')(require('connect'));
+var sessionStore = new MongoSessionStore({ url:
+    credentials.mongo.connectionString });
+
+app.use(require('cookie-parser')(credentials.cookieSecret));
+app.use(require('express-session')({ store: sessionStore }));
+----
+
+Let's use our newly minted session store for something useful.  Imagine we want to be able to display vacation prices in different currencies.  Furthermore, we want the site to remember the user's currency preference.
+
+We'll start by adding a currency picker at the bottom of our vacations page:
+
+[source,html]
+----
+<hr>
+<p>Currency:
+    <a href="/set-currency/USD" class="currency {{currencyUSD}}">USD</a> |
+    <a href="/set-currency/GBP" class="currency {{currencyGBP}}">GBP</a> |
+    <a href="/set-currency/BTC" class="currency {{currencyBTC}}">BTC</a>
+</p>
+----
+
+Now a little CSS:
+
+[source,css]
+----
+a.currency {
+    text-decoration: none;
+}
+.currency.selected {
+    font-weight: bold;
+    font-size: 150%;
+}
+----
+
+Lastly, we'll add a route handler to set the currency, and modify our route handler for pass:[<emphasis role="keep-together">/vacations</emphasis>] to display prices in the current currency:
+
+[source,js]
+----
+app.get('/set-currency/:currency', function(req,res){
+    req.session.currency = req.params.currency;
+    return res.redirect(303, '/vacations');
+});
+
+function convertFromUSD(value, currency){
+    switch(currency){
+        case 'USD': return value * 1;
+        case 'GBP': return value * 0.6;
+        case 'BTC': return value * 0.0023707918444761;
+        default: return NaN;
+    }
+}
+
+app.get('/vacations', function(req, res){
+    Vacation.find({ available: true }, function(err, vacations){
+        var currency = req.session.currency || 'USD';
+        var context = {
+            currency: currency,
+            vacations: vacations.map(function(vacation){
+                return {
+                    sku: vacation.sku,
+                    name: vacation.name,
+                    description: vacation.description,
+                    inSeason: vacation.inSeason,
+                    price: convertFromUSD(vacation.priceInCents/100, currency),
+                    qty: vacation.qty,
+                }
+            })
+        };
+        switch(currency){
+            case 'USD': context.currencyUSD = 'selected'; break;
+            case 'GBP': context.currencyGBP = 'selected'; break;
+            case 'BTC': context.currencyBTC = 'selected'; break;
+        }
+        res.render('vacations', context);
+    });
+});
+----
+
+This isn't a great way to perform currency conversion, of course: we would want to utilize a third-party currency conversion API to make sure our rates are up-to-date.((("currency conversions")))  But this will suffice for demonstration purposes.  You can now switch between the various pass:[<phrase role="keep-together">currencies</phrase>] and—go ahead and try it—stop and restart your server...you'll find it remembers your currency preference!  If you clear your cookies, the currency preference will be forgotten.  You'll notice that now we've lost our pretty currency formatting: it's now more complicated, and I will leave that as an exercise for the reader.
+
+If you look in your database, you'll find there's a new collection called "sessions": if you explore that collection, you'll find a document with your session ID (property +sid+) and your currency preference.
+
+[NOTE]
+====
+MongoDB is not necessarily the best choice for session storage: it is overkill for that purpose.  Another popular and easy-to-use alternative for session persistence is http://redis.io[Redis].((("Redis")))  See the https://www.npmjs.org/package/connect-redis[connect-redis package] for instructions on setting up a session store with Redis.((("connect-redis package")))((("persistence", range="endofrange", startref="ix_persist")))
+====

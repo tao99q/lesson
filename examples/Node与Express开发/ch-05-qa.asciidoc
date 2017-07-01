@@ -1,0 +1,483 @@
+[[ch_qa]]
+== Quality Assurance
+
+__Quality assurance__: it's a phrase that is prone to send shivers down the spines of developers—which is unfortunate.((("quality assurance", id="ix_quality", range="startofrange")))  After all, don't you want to make quality software?  Of course you do.  So it's not the end goal that's the sticking point: it's the politics of the matter.  I've found that there are two common situations that arise in web development:
+
+Large or well-funded organizations::
+	There's usually a QA department and, unfortunately, an adversarial relationship springs up between QA and development.((("development and quality assurance (QA)")))((("quality assurance", "QA department in large or well-funded organizations")))  This is the worst thing that can happen.  Both departments are playing on the same team, for the same goal, but QA often defines success as finding more bugs, while development defines success as generating fewer bugs, and that serves as the basis for conflict and competition.
+
+Small organizations and organizations on a budget::
+	Often, there is no QA department; the development staff is expected to serve the dual role of establishing QA and developing software.((("quality assurance", "in small or budget-conscious organizations")))  This is not a ridiculous stretch of the imagination or a conflict of interest.  However, QA is a very different discipline than development, and it attracts different personalities and talents.  This is not an impossible situation, and certainly there are developers out there who have the QA mindset, but when deadlines loom, it's usually QA that gets the short shrift, to the project's detriment.
+
+With most real-world endeavors, multiple skills are required, and increasingly, it's harder to be an expert in all of those skills.  However, some competency in the areas for which you are not directly responsible will make you more valuable to the team and make the team function more effectively.  A developer acquiring QA skills offers a great example: these two disciplines are so tightly intertwined that cross-disciplinary understanding is extremely valuable.
+
+There is also a movement to merge the roles of QA and development, making developers responsible for QA.  In this paradigm, software engineers who specialize in QA act pass:[<phrase role="keep-together">almost</phrase>] as consultants to developers, helping them build QA into their development workflow.  Whether QA roles are divided or integrated, it is clear that understanding QA is beneficial to developers.
+
+This book is not for QA professionals; it is aimed at developers.  So my goal is not to make you a QA expert, but to give you some experience in that area.  If your organization has a dedicated QA staff, it will make it easier for you to communicate and collaborate with them.  If you do not, it will give you a starting point to establishing a comprehensive QA plan for your project.
+
+=== QA: Is It Worth It?
+
+QA can be expensive—sometimes _very_ expensive.((("quality assurance", "cost of, and return on investment model")))  So is it worth it?  It's a complicated formula with complicated inputs.  Most organizations operate on some kind of "return on investment" model.  If you spend money, you must expect to receive at least as much money in return (preferably more).  With QA, though, the relationship can be muddy.  A well-established and well-regarded product, for example, may be able to get by with quality issues for longer than a new and unknown project.  Obviously, no one _wants_ to produce a low-quality product, but the pressures in technology are high.  Time-to-market can be critical, and sometimes it's better to come to market with something that's less than perfect than to come to market with the perfect product two months later.
+
+In web development, quality can be broken down into three dimensions:
+
+Reach::
+	Reach refers to the market penetration of your product: the number of people viewing your website or using your service.((("reach")))  There's a direct correlation between reach and profitability: the more people who visit the website, the more people who buy the product or service.  From a development perspective, search engine optimization (SEO) will have the biggest impact on reach, which is why we will be including SEO in our QA plan.((("search engine optimization (SEO)")))
+
+Functionality::
+	Once people are visiting your site or using your service,((("functionality of your site, quality of"))) the quality of your site's functionality will have a large impact on user retention: a site that works as pass:[<phrase role="keep-together">advertised</phrase>] is more likely to drive return visits than one that isn't.  Unlike the other dimensions, functionality testing can often be automated.
+
+Usability::
+	Where functionality is concerned with functional correctness, usability evaluates human-computer interaction (HCI).((("usability")))  The fundamental question is, "Is the pass:[<phrase role="keep-together">functionality</phrase>] delivered in a way that is useful to the target audience?"  This often translates to, "Is it easy to use?" though the pursuit of ease can often oppose flexibility or power: what seems easy to a programmer might be different than what seems easy to a nontechnical consumer.  In other words, you must consider your target audience when assessing usability.  Since a fundamental input to a usability pass:[<phrase role="keep-together">measurement</phrase>] is a user, usability is not usually something that can be automated.  However, user testing should be included in your QA plan.
+
+Aesthetics::
+	Aesthetics is the most subjective of the three dimensions and is therefore the least relevant to development.((("aesthetics")))  While there are few development concerns when it comes to your site's aesthetics, routine reviews of your site's aesthetics should be part of your QA plan.  Show your site to a representative sample audience, and find out if it feels dated or does not invoke the desired response.  Keep in mind that aesthetics is time sensitive (aesthetic standards shift over time) and audience specific (what appeals to one audience may be completely uninteresting to another).
+	
+While all four dimensions should be addressed in your QA plan, functionality testing and SEO can be tested automatically during development, so that will be the focus of this chapter.
+
+=== Logic Versus Presentation
+
+Broadly speaking, in your website, there are two "realms": _logic_ (often called "business logic," a term I eschew because of its bias toward commercial endeavor) and _presentation_.((("logic versus presentation")))((("quality assurance", "logic versus presentation")))  You can think of your website's logic existing in kind of a pure intellectual domain.  For example, in our Meadowlark Travel scenario, there might be a rule that a customer must possess a valid driver's license before renting a scooter.  This is a very simple data-based rule: for every scooter reservation, the user needs a valid driver's license.  The _presentation_ of this is disconnected.((("presentation, logic versus")))  Perhaps it's just a checkbox on the final form of the order page, or perhaps the customer has to provide a valid driver's license number, which is validated by Meadowlark Travel.  It's an important distinction, because things should be as clear and simple as possible in the logic domain, whereas the presentation can be as complicated or as simple as it needs to be.  The presentation is also subject to usability and aesthetic concerns, where the business domain is not.
+
+Whenever possible, you should seek a clear delineation between your logic and presentation.  There are many ways to do that, and in this book, we will be focusing on encapsulating logic in JavaScript modules.  Presentation, on the other hand, will be a combination of HTML, CSS, multimedia, JavaScript, and frontend libraries like jQuery.
+
+=== The Types of Tests
+
+The type of testing we will be considering in this book falls into two((("quality assurance", "types of tests")))((("testing", "types of"))) broad categories: unit testing and integration testing (I am considering "system testing" to be a type of integration testing).((("unit testing")))  Unit testing is very fine-grained, testing single components to make sure they function properly, whereas integration testing tests the interaction between multiple components, or even the whole system.((("integration testing")))
+
+In general, unit testing is more useful and appropriate for logic testing (although we will see some instances where it is used in presentation code as well).  Integration testing is useful in both realms.
+
+=== Overview of QA Techniques
+
+In this book, we will be using the following techniques and software((("quality assurance", "overview of techniques"))) to accomplish thorough testing:
+
+Page testing::
+	"Page testing," as the name implies, tests the presentation and frontend functionality of a page.  This can involve both unit and integration testing.((("page testing")))  We will be using Mocha to achieve this.
+
+Cross-page testing::
+	Cross-page testing involves testing functionality that requires navigation from one page to another.((("cross-page testing")))  For example, the checkout process in an ecommerce site usually spans multiple pages.  Since this kind of testing inherently involves more than one component, it is generally considered integration testing.  We will be using Zombie.js for this.
+
+Logic testing::
+	Logic testing will execute unit and integration tests against our logic domain.((("logic testing")))  It will be testing _only_ JavaScript, disconnected from any presentation functionality.
+
+Linting::
+	Linting isn't about finding errors, but _potential_ errors.((("errors", "finding potential errors using linting")))((("linting")))  The general concept of linting is that it identifies areas that could represent possible errors, or fragile constructs that could lead to errors in the future.  We will be using JSHint for linting.
+
+Link checking::
+	Link checking (making sure there are no broken links on your site) falls into the category of "low-hanging fruit." ((("link checking"))) It may seem overkill on a simple project, but simple projects have a way of becoming complicated projects, and broken links _will_ happen.  Better to work link checking into your QA routine early.  Link checking falls under the category of unit testing (a link is either valid or invalid).  We will be using LinkChecker for this.
+
+=== Running Your Server
+
+All of the techniques in this chapter assume your website is running.  So far, we've been running our website manually, with the command +node meadowlark.js+.((("quality assurance", "running your server")))((("servers", "running your server")))  This technique has the advantage of simplicity, and I usually have a dedicated window on the desktop for that purpose.  That's not your only option, however.  If you find yourself forgetting to restart your website when you make JavaScript changes, you might want to look ((("monitor utility for automatic server restarts")))into a monitor utility that will automatically restart your server when it detects changes in JavaScript.((("nodemon")))  https://npmjs.org/package/nodemon[nodemon] is very popular, and there's also a https://npmjs.org/package/grunt-nodemon[Grunt plugin].((("Grunt")))  You will be learning more about Grunt at the end of this chapter.  For now, I recommend just having your app always running in a different window.
+
+=== Page Testing
+
+My recommendation for page testing is that you actually embed tests in the page itself.((("quality assurance", "page testing")))((("page testing", "embedding tests in the page")))  The advantage of this is that while you're working on a page, you can immediately spot any errors as you load it in a browser.  Doing this will require a little setup, so let's get started.
+
+The first thing we'll need is a test framework.((("Mocha")))  We'll be using Mocha.  First, we add the package to the project:
+
+----
+npm install --save-dev mocha
+----
+
+Note that we used +--save-dev+ instead of +--save+; this tells npm to list this package in the development dependencies instead of the runtime dependencies.  This will reduce the number of dependencies the project has when we deploy live instances of the website.
+
+Since we'll be running Mocha in the browser, we need to put the Mocha resources in the public folder so it will be served to the client.  We'll put these in a subdirectory, __public/vendor__:
+
+----
+mkdir public/vendor
+cp node_modules/mocha/mocha.js public/vendor
+cp node_modules/mocha/mocha.css public/vendor
+----
+
+[TIP]
+====
+It's a good idea to put third-party libraries that you are using in a special directory, like __vendor__. ((("libraries", "third-party"))) This makes it easier to separate what code you're responsible for testing and modifying, and what code should be hands off.
+====
+
+Tests usually require a function called +assert+ (or +expect+).((("expect function (Chai assertion library)")))((("assert function"))) ((("Chai assertion library"))) This is available in the Node framework, but not inherently in a browser, so we'll be using the Chai assertion library:
+
+----
+npm install --save-dev chai
+cp node_modules/chai/chai.js public/vendor
+----
+
+Now that we have the necessary files, we can modify the Meadowlark Travel website to allow running tests.((("Meadowlark Travel example website", "modifying to allow running tests")))  The catch is, we don't want the tests to always be there: not only will it slow down your website, but your users don't want to see the results of tests!  Tests should be disabled by default, but it should be very easy to enable them.  To meet both of these goals, we're going to use a URL parameter to turn on tests.  When we're done, going to __http://localhost:3000__ will load the home page, and __http://localhost:3000?test=1__ will load the home page complete with tests.
+
+First, we're going to use some middleware to detect +test=1+ in the querystring.  It must appear _before_ we define any routes in which we wish to use it:
+
+[source,js]
+----
+app.use(function(req, res, next){
+	res.locals.showTests = app.get('env') !== 'production' && 
+		req.query.test === '1';
+	next();
+});
+
+// routes go here....
+----
+
+The specifics about this bit of code will become clear in later chapters; what you need to know for right now is that if +test=1+ appears in the querystring for any page (and we're not running on a production server), the property +res.locals.showTests+ will set to be +true+.  The +res.locals+ object is part of the _context_ that will be passed to views (this will be explained in more detail in <<ch_templating>>).((("res.locals.showTests property")))((("res.locals object")))
+
+Now we can modify __views/layouts/main.handlebars__ to conditionally ((("views", "modifying to conditionally include test framework")))((("layouts", "modifying to conditionally include test framework")))((("main.handlebars file, modifying +<head>+ element
+to include test framework")))((("+<head>+ element in main.handlebars, modifying to include test framework", sortas="head element")))include the test framework.  Modify the +<head>+ section:
+
+[source,html]
+----
+<head>
+	<title>Meadowlark Travel</title>
+	{{#if showTests}}
+		<link rel="stylesheet" href="/vendor/mocha.css">
+	{{/if}}
+	<script src="//code.jquery.com/jquery-2.0.2.min.js"></script>
+</head>
+----
+
+We're linking in jQuery here because, in addition to using it as our primary DOM manipulation library for the site, we can use it to make test assertions.((("jQuery", "using to test assertions")))  You're free to use whatever library you like (or none at all), but I recommend jQuery.  You'll often hear that JavaScript libraries should be loaded last, right before the closing +</body>+ tag.  There is good reason for this, and we will learn some techniques to make this possible, but for now, we're going to include jQuery early.footnote:[Remember the first principle of performance tuning: profile first, then optimize.]
+
+Then, right before the closing +</body>+ tag:
+
+[source,html]
+----
+	{{#if showTests}}
+		<div id="mocha"></div>
+		<script src="/vendor/mocha.js"></script>
+		<script src="/vendor/chai.js"></script>
+		<script>
+			mocha.ui('tdd');
+			var assert = chai.assert;
+		</script>
+		<script src="/qa/tests-global.js"></script>
+		{{#if pageTestScript}}
+			<script src="{{pageTestScript}}"></script>
+		{{/if}}
+		<script>mocha.run();</script>
+	{{/if}}
+</body>
+----
+
+Note that Mocha and Chai get included, as well as a script called __/qa/global-tests.js__.  As the name implies, these are tests that will be run on every page.((("page testing", "global tests")))  A little farther down, we optionally link in page-specific tests, so that you can have different tests for different pages.  We'll start with the global tests, and then add page-specific tests.  Let's start with a single, simple test: making sure the page has a valid title.  Create the directory __public/qa__ and create a file __tests-global.js__ in it:
+
+[source,js]
+----
+suite('Global Tests', function(){
+	test('page has a valid title', function(){
+		assert(document.title && document.title.match(/\S/) && 
+			document.title.toUpperCase() !== 'TODO');
+	});
+});
+----
+
+[NOTE]
+====
+Mocha supports multiple "interfaces," which control the style of your tests.((("Mocha", "multiple interfaces controlling style of your tests")))  The default interface, behavior-driven development (BDD), is tailored to make you think in a behavioral sense.((("behavior-driven development (BDD)", "in Mocha")))  In BDD, you describe components and their behaviors, and the tests then verify those behaviors.  However, I find that very often, there are tests that don't fit this model, and then the BDD language just looks strange.((("test-driven development (TDD) in Mocha")))  Test-driven development (TDD) is more matter-of-fact: you describe suites of tests and tests within the suite.  There's nothing to stop you from using both interfaces in your tests, but then it becomes a configuration hassle.  For that reason, I've opted to stick with TDD in this book.  If you prefer BDD, or mixing BDD and TDD, by all means pass:[<phrase role="keep-together">do so.</phrase>]
+====
+
+Go ahead and run the site now.  Visit the home page and examine the source: you'll see no evidence of test code.  Now, add +test=1+ to the querystring (__http://localhost:3000/?test=1__), and you'll see the tests run on the page.  Any time you want to test the site, all you have to do is add +test=1+ to the querystring!
+
+Now let's add a page-specific test.((("page testing", "page-specific test")))((("links, testing in page-specific test")))  Let's say that we want to ensure that a link to the yet-to-be-created Contact page always exists on the About page.  We'll create a file called __public/qa/tests-about.js__:
+
+[source,js]
+----
+suite('"About" Page Tests', function(){
+	test('page should contain link to contact page', function(){
+		assert($('a[href="/contact"]').length);
+	});
+});
+----
+
+We have one last thing to do: specify in the route which page test file the view should be using.  Modify the About page route in __meadowlark.js__:
+
+[source,js]
+----
+app.get('/about', function(req, res) {
+	res.render('about', { 
+		fortune: fortune.getFortune(),
+		pageTestScript: '/qa/tests-about.js' 
+	} );
+});
+----
+
+Load the About page with +test=1+ in the querystring: you'll see two suites and one failure!  Now add a link to the nonexistent Contact page, and you'll see the test become successful when you reload.
+
+Depending on the nature of your site, you may want this to be more automatic.  For example, if your route was __/foo__, you could automatically set the page-specific tests to be __/foo/tests-foo.js__.  The downside of this approach is that you lose flexibility.  For example, if you have multiple routes that point to the same view, or even very similar content, you might want to use the same test file.
+
+Let's resist the temptation to add more tests now: those will come as we progress through the book.  For now, we have the basic framework necessary to add global and page-specific tests.
+
+=== Cross-Page Testing
+
+Cross-page testing is a little more challenging, because you need to be able to control and observe the browser itself.((("cross-page testing")))((("quality assurance", "cross-page testing")))  Let's look at an example of a cross-page testing scenario.  Let's say your website has a Request Group Rate page that contains a contact form.((("Meadowlark Travel example website", "cross-page testing")))  The marketing department wants to know what page the customer was last on before pass:[<phrase role="keep-together">following</phrase>] a link to Request Group Rate—they want to know whether the customer was viewing the Hood River tour or Oregon Coast retreat.  Hooking this up will require some hidden form fields and JavaScript, and testing is going to involve going to a page, then clicking Request Group Rate and verifying that the hidden field is populated pass:[<phrase role="keep-together">appropriately.</phrase>]
+
+Let's set up this scenario, and then see how we can test it.  First, we'll create a tour page, __views/tours/hood-river.handlebars__:
+
+[source,html]
+----
+<h1>Hood River Tour</h1>
+<a class="requestGroupRate" 
+	href="/tours/request-group-rate">Request Group Rate.</a>
+----
+
+And a quote page, __views/tours/request-group-rate.handlebars__:
+
+[source,html]
+----
+<h1>Request Group Rate</h1>
+<form>
+	<input type="hidden" name="referrer">
+	Name: <input type="text" id="fieldName" name="name"><br>
+	Group size: <input type="text" name="groupSize"><br>
+	Email: <input type="email" name="email"><br>
+	<input type="submit" value="Submit">
+</form>
+<script>
+	$(document).ready(function(){
+		$('input[name="referrer"]').val(document.referrer);
+	});
+</script>
+----
+
+Then we'll create routes for these pages in __meadowlark.js__:
+
+[source,js]
+----
+app.get('/tours/hood-river', function(req, res){
+	res.render('tours/hood-river');
+});
+app.get('/tours/request-group-rate', function(req, res){
+	res.render('tours/request-group-rate');
+});
+----
+
+Now that we have something to test, we need some way to test it, and this is where things get complicated.  To test this functionality, we really need a browser or something a lot like a browser.  Obviously, we can do it by hand by going to the __/tours/hood-river__ page in a browser, then clicking on the Request Group Rate link, then inspecting the hidden form element to see that it's correctly populated with the referring page, but that's a lot of work—we want a way to automate that.
+
+What we're looking for is ((("headless browser")))((("browsers", "headless")))often called a _headless_ browser: meaning that the browser doesn't actually need to display something on the screen, necessarily, it just has to behave like a browser.  Currently, there are three popular solutions for this problem: Selenium, PhantomJS, and Zombie.((("PhantomJS")))((("Selenium")))  Selenium is incredibly robust, with extensive testing support, but configuring it is beyond the scope of this book.  PhantomJS is a great project and actually provides a headless WebKit browser (the same engine used in Chrome and Safari) so, like Selenium, it represents a very high level of realism.  However, it doesn't yet provide the simple test assertions that we're looking for, which leaves us with Zombie.((("Zombie")))
+
+Zombie doesn't use an existing browser engine, so it isn't suitable for testing browser features, but it's great for testing basic functionality, which is what we're looking for.  Unfortunately, Zombie doesn't currently support a Windows installation (it used to be possible through Cygwin).  People have gotten it to work, however, and there's pass:[<phrase role="keep-together">information</phrase>] on the http://zombie.labnotes.org[Zombie home page].  I have made an effort to make this book platform-agnostic, but there currently isn't a Windows solution for simple headless browser tests.  If you're a Windows developer, I encourage you to check out Selenium or PhantomJS: it will be a steeper learning curve, but these projects have a lot to offer.
+
+First, install Zombie:
+
+----
+npm install --save-dev zombie
+----
+
+Now we'll create a new directory called simply _qa_ (distinct from __public/qa__).  In that directory, we'll create a file, __qa/tests-crosspage.js__:
+
+[source,js]
+----
+var Browser = require('zombie'),
+	assert = require('chai').assert;
+
+var browser;
+
+suite('Cross-Page Tests', function(){
+
+	setup(function(){
+		browser = new Browser();
+	});
+
+	test('requesting a group rate quote	from the hood river tour page' +
+		'should populate the referrer field', function(done){
+		var referrer = 'http://localhost:3000/tours/hood-river';
+		browser.visit(referrer, function(){
+			browser.clickLink('.requestGroupRate', function(){
+				assert(browser.field('referrer').value
+					=== referrer);
+				done();
+			});
+		});
+	});
+
+	test('requesting a group rate from the oregon coast tour page should ' +
+			'populate the referrer field', function(done){
+		var referrer = 'http://localhost:3000/tours/oregon-coast';
+		browser.visit(referrer, function(){
+			browser.clickLink('.requestGroupRate', function(){
+				assert(browser.field('referrer').value
+					=== referrer);
+				done();
+			});
+		});
+	});
+
+	test('visiting the "request group rate" page dirctly should result ' +
+			'in an empty referrer field', function(done){
+		browser.visit('http://localhost:3000/tours/request-group-rate',
+			function(){
+				assert(browser.field('referrer').value === '');
+				done();
+		});
+	});
+
+});
+----
+
++setup+ takes a function that will get executed by the test framework before each test is run: this is where we create a new browser instance for each test.  Then we have three tests.  The first two check that the referrer is populated correctly if you're coming from a product page.  The +browser.visit+ method will actually load a page; when the page has been loaded, the callback function is invoked.  Then the +browser.clickLink+ method looks for a link with the +requestGroupRate+ class and follows it.  When the linked page loads, the callback function is invoked, and now we're on the Request Group Rate page.  All that remains to be done is to assert that the hidden "referrer" field correctly matches the original page we visited.  The +browser.field+ method returns a DOM +Element+ object, which has a +value+ property.  The last test simply ensures that the referrer is blank if the Request Group Rate page is visited directly.
+
+Before we run the tests, you'll have to start the server (+node meadowlark.js+).  You'll want to do that in a different window so you can see any console errors.((("Mocha", "using for cross-page testing")))  Then run the test and see how we did (make sure you have Mocha installed globally: pass:[<literal role="keep-together">npm install -g mocha</literal>]):
+
+----
+mocha -u tdd -R spec qa/tests-crosspage.js 2>/dev/null
+----
+
+We'll see that one of our tests is failing...it failed for the Oregon Coast Tour page, which should be no surprise, since we haven't added that page yet.  But the other two tests are passing!  So our test is working; go ahead and add an Oregon Coast Tour page, and all of the tests will pass.  Note that in the previous command, I specified that our interface is TDD (it defaults to BDD) and to use a reporter called spec.  The spec reporter provides a bit more information than the default reporter.  (Once you have hundreds of tests, you might want to switch back to the default reporter.)  Finally, you'll note that we're dumping the error output (+2>/dev/null+). ((("errors", "failed tests in Mocha"))) Mocha reports all of the stack traces for failed tests.  It can be useful information, but usually you just want to see what tests are passing and what tests are failing.  If you need more information, leave the pass:[<literal role="keep-together">2>/dev/null</literal>] off and you will see the error detail.
+
+[TIP]
+====
+One advantage of writing your tests before you implement features is that (if your tests are correct), they will all start out failing.((("testing", "writing tests before implementing features")))  Not only does this give you satisfaction as you see your tests start to pass, but it's additional assurance that the test is correct.  If your test starts out passing before you even implement a feature, the test is probably broken.  This is sometimes called "red light, green light" testing.((("red light, green light testing")))
+====
+
+=== Logic Testing
+
+We'll also be using Mocha for logic testing.((("quality assurance", "logic testing")))((("logic testing")))((("Mocha", "using for logic testing")))  For now, we have only one tiny bit of functionality (the fortune generator), so setting this up will be pretty easy.  Also, since we only have one component, we don't have enough for integration tests, so we'll just be adding unit tests.((("JavaScript", "logic testing (fortune generator example)")))((("unit testing", "unit test for fortune generator (example)")))((("fortune cookies for Meadowlark Travel example website", "unit testing the fortune generator")))  Create the file _qa/tests-unit.js_:
+
+[source,js]
+----
+var fortune = require('../lib/fortune.js');
+var expect = require('chai').expect;
+
+suite('Fortune cookie tests', function(){
+
+    test('getFortune() should return a fortune', function(){
+        expect(typeof fortune.getFortune() === 'string');
+    });
+
+});
+----
+
+Now we can just run Mocha against this new test suite:
+
+----
+mocha -u tdd -R spec qa/tests-unit.js
+----
+
+Not very exciting!  But it provides the template that we will be using throughout the rest of this book.
+
+[NOTE]
+====
+Testing _entropic_ functionality (functionality that is random) ((("entropic functionality, testing")))comes with its own challenges.  Another test we could add for our fortune cookie generator would be a test to make sure that it returns a _random_ fortune cookie.((("random functionality, testing")))  But how do you know if something is random?  One approach is to get a large number of fortunes--a thousand, for example--and then measure the distribution of the responses.  If the function is properly random, no one response will stand out.  The downside of this approach is that it's nondeterministic: it's possible (but unlikely) to get one fortune 10 times more frequently than any other fortune.  If that happened, the test could fail (depending on how aggressive you set the threshold of what is "random"), but that might not actually indicate that the system being tested is failing; it's just a consequence of testing entropic systems.  In the case of our fortune generator, it would be reasonable to generate 50 fortunes, and pass:[<phrase role="keep-together">expect</phrase>] at least three different ones.  On the other hand, if we were developing a random source for a scientific simulation or security component, we would probably want to have much more detailed tests.  The point is that testing entropic functionality is difficult and requires more thought.
+====
+
+=== Linting
+
+A good linter is like having a second set of eyes: it will spot things that will slide right past our human brains.((("linting")))((("quality assurance", "linting")))  The original JavaScript linter is Douglas Crockford's JSLint.((("Crockford, Douglas")))((("JSLint")))((("Kovalyov, Anton")))  In 2011, Anton Kovalyov forked JSLint, and JSHint was born.((("JSHint")))  Kovalyov found that JSLint was becoming too opinionated, and he wanted to create a more customizable, community-developed JavaScript linter.  While I agree with almost all of Crockford's linting suggestions, I prefer the ability to tailor my linter, and for that reason,((("ESLint"))) I recommend JSHint.footnote:[Nicholas Zakas's http://eslint.org[_ESLint_] is also an excellent choice.]
+
+JSHint is very easy to get via npm:
+
+----
+npm install -g jshint
+----
+
+To run it, simply invoke it with the name of a source file:
+
+----
+jshint meadowlark.js
+----
+
+If you've been following along, JSHint shouldn't have any complaints about _meadowlark.js_.((("meadowlark.js file (example)", "linting with JSHint")))  To see the kind of thing that JSHint will save you from, put the following line in _meadowlark.js_, and run JSHint on it:
+
+----
+if( app.thing == null ) console.log( 'bleat!' );
+----
+
+(JSHint will complain about using +==+ instead of +===+, whereas JSLint would additionally complain about the lack of curly brackets.)
+
+Consistent use of a linter will make you a better programmer: I promise that.  Given that, wouldn't it be nice if your linter integrated into your editor and you were informed of potential errors as soon as you made them?  Well, you're in luck.  http://www.jshint.com/install[JSHint] integrates into many popular editors.
+
+=== Link Checking
+
+Checking for dead links doesn't seem very glamorous, but it can have a huge impact on how your website is ranked by search engines.((("link checking")))((("quality assurance", "link checking")))  It's an easy enough thing to integrate into your workflow, so it's foolish not to.
+
+I recommend http://wummel.github.io/linkchecker[LinkChecker]; it's cross-platform, and it offers a command-line as well as a graphical interface.((("LinkChecker")))  Just install it and point it at your home page:
+
+----
+linkchecker http://localhost:3000
+----
+
+Our site doesn't have very many pages yet, so LinkChecker should whip right through it.
+
+=== Automating with Grunt
+
+The QA tools we're using--test suites, linting, link checkers—provide value only if they're actually _used_, and this is where many a QA plan withers and dies.((("quality assurance", "automating testing with Grunt")))((("Grunt", "automating QA testing with")))  If you have to remember all the components in your QA toolchain and all the commands to run them, the chances that you (or other developers you work with) will reliably use them go down considerably.  If you're going to invest the time required to come up with a pass:[<phrase role="keep-together">comprehensive</phrase>] QA toolchain, isn't it worth spending a little time automating the process so that the toolchain will actually be used?
+
+Fortunately, a tool called Grunt makes automating these tasks quite easy.  We'll be rolling up our logic tests, cross-page tests, linting, and link checking into a single command with Grunt.  Why not page tests? ((("page testing", "Grunt and")))((("headless browser")))((("browsers", "headless"))) This is possible using a headless browser like PhantomJS or Zombie, but the configuration is complicated and beyond the scope of this book.  Furthermore, browser tests are usually designed to be run as you work on an individual page, so there isn't quite as much value in rolling them together with the rest of your tests.
+
+First, you'll need to install the Grunt command line, and Grunt itself:
+
+----
+sudo npm install -g grunt-cli
+npm install --save-dev grunt
+----
+
+Grunt relies on _plugins_ to get the job done (see the http://gruntjs.com/plugins[Grunt plugins list] for all available plugins).((("Grunt", "plugins")))((("Mocha", "Grunt plugin for")))  We'll need plugins for Mocha, JSHint, and LinkChecker.((("JSHint", "Grunt plugin for")))  As I write this, there's no plugin for LinkChecker, so we'll have to use a generic plugin that executes arbitrary shell commands.((("LinkChecker", "no Grunt plugin for")))  So first we install all the necessary pass:[<phrase role="keep-together">plugins</phrase>]:
+
+----
+npm install --save-dev grunt-cafe-mocha
+npm install --save-dev grunt-contrib-jshint
+npm install --save-dev grunt-exec
+----
+
+Now that all the plugins have been installed, create a file in your project directory called _Gruntfile.js_:
+
+[source,js]
+----
+module.exports = function(grunt){
+
+	// load plugins
+	[
+		'grunt-cafe-mocha',
+		'grunt-contrib-jshint',
+		'grunt-exec',
+	].forEach(function(task){
+		grunt.loadNpmTasks(task);
+	});
+
+	// configure plugins
+	grunt.initConfig({
+		cafemocha: {
+			all: { src: 'qa/tests-*.js', options: { ui: 'tdd' }, }
+		},
+		jshint: {
+			app: ['meadowlark.js', 'public/js/**/*.js',
+				'lib/**/*.js'],
+			qa: ['Gruntfile.js', 'public/qa/**/*.js', 'qa/**/*.js'],
+		},
+		exec: {
+			linkchecker:
+				{ cmd: 'linkchecker http://localhost:3000' }
+		},
+	});	
+
+	// register tasks
+	grunt.registerTask('default', ['cafemocha','jshint','exec']);
+};
+----
+
+In the section "load plugins," we're specifying which plugins we'll be using, which are the same plugins we installed via npm.((("Grunt", "Gruntfile.js, load plugins section")))  Because I don't like to have to type +loadNpmTasks+ over and over again (and once you start relying on Grunt more, believe me, you will be adding more plugins!), I choose to put them all in an array and loop over them with +forEach+.
+
+In the "configure plugins" section,((("Grunt", "Gruntfile.js, configure plugins section"))) we have to do a little work to get each plugin to work properly.  For the +cafemocha+ plugin (which will run our logic and cross-browser tests),((("logic testing", "configuring Mocha plugin for Grunt")))((("Mocha", "configuring cafemocha plugin for Grunt"))) we have to tell it where our tests are.  We've put all of our tests in the _qa_ pass:[<phrase role="keep-together">subdirectory</phrase>], and named them with a _tests-_ prefix.  Note that we have to specify the +tdd+ interface.  If you were mixing TDD and BDD, you would have to have some way to separate them.  For example, you could use prefixes _tests-tdd-_ and _tests-bdd-_.
+
+For JSHint, we have to specify what JavaScript files should be linted.((("JSHint", "specifying JavaScript files to be linted")))((("JavaScript", "specifying files to be linted for JSHint")))((("linting", "specifying JavaScript files for JSHint")))  Be careful here!  Very often, dependencies won't pass JSHint cleanly, or they will be using different JSHint settings, and you'll be inundated with JSHint errors for code that you didn't write.  In particular, you want to make sure the _node_modules_ directory isn't included, as well as any _vendor_ directories.  Currently, +grunt-contrib-jshint+ doesn't allow you to _exclude_ files, only include them.  So we have to specify all the files we want to include.  I generally break the files I want to include into two lists: the JavaScript that actually makes up our application or website and the QA JavaScript.  It all gets linted, but breaking it up like this makes it a little easier to manager.  Note that the wildcard +/**/+ means "all files in all subdirectories."  Even though we don't have a _public/js_ directory yet, we will.  Implicitly excluded are the _node_modules_ and _public/vendor_ directories.
+
+Lastly, we configure the +grunt-exec+ plugin to run LinkChecker.((("LinkChecker", "configuring grunt-exec plugin to run")))  Note that we've hardcoded this plugin to use port 3000; this might be a good thing to parameterize, which I'll leave as an exercise for the reader.footnote:[See the http://gruntjs.com/api/grunt.option[+grunt.option+ documentation] to get started.]
+
+Finally, we "register" the tasks: this puts individual plugins into named groups.((("Grunt", "registering tasks in Gruntfile.js")))  A specially named task, default, will be the task that gets run by default, if you just type +grunt+.
+
+++++
+<?hard-pagebreak?>
+++++
+
+Now all you have to do is make sure a server is running (in the background or in a different window), and run Grunt:
+
+----
+grunt
+----
+
+All of your tests will run (minus the page tests), all your code gets linted, and all your links are checked! ((("Grunt", "running"))) If any component fails, Grunt will terminate with an error message; otherwise, it will report "Done, without errors."  There's nothing quite so satisfying as seeing that message, so get in the habit of running Grunt before you commit!
+
+=== Continuous Integration (CI)
+
+I'll leave you with another extremely useful QA concept: continuous integration.((("quality assurance", "continuous integration (CI)")))((("continuous integration (CI)")))((("CI", see="continuous integration")))  It's especially important if you're working on a team, but even if you're working on your own, it can provide some discipline that you might otherwise lack.  Basically, CI runs some or all of your tests every time you contribute code to a shared server.  If all of the tests pass, nothing usually happens (you may get an email saying "good job," depending on how your CI is configured).  If, on the other hand, there are failures, the consequences are usually more...public.  Again, it depends on how you configure your CI, but usually the entire team gets an email saying that you "broke the build."  If your integration master is really sadistic, sometimes your boss is also on that email list!  I've even known teams that set up lights and sirens when someone breaks the build, and in one particularly creative office, a tiny robotic foam missile launcher fired soft projectiles at the offending developer!  It's a powerful incentive to run your QA toolchain before committing.
+
+It's beyond the scope of this book to cover installing and configuring a CI server, but a chapter on QA wouldn't be complete without mentioning it.((("servers", "continuous integration (CI)")))  Currently, the most popular CI server for Node projects is http://about.travis-ci.org/docs/user/getting-started[Travis CI].  ((("Travis CI")))Travis CI is a hosted solution, which can be very appealing (it saves you from having to set up your own CI server).  If you're using GitHub, it offers excellent integration support.  ((("Jenkins (CI server)")))Jenkins, a well-established CI server, now has a https://wiki.jenkins-ci.org/display/JENKINS/NodeJS+Plugin[Node plugin].  JetBrains's excellent http://www.jetbrains.com/teamcity[TeamCity] now offers Node plugins.((("JetBrain (CI server)")))
+
+If you're working on a project on your own, you may not get much benefit from a CI server, but if you're working on a team or an open source project, I highly recommend looking into setting up CI for your project.((("quality assurance", range="endofrange", startref="ix_quality")))

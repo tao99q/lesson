@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //x|y x或y中的一个
+    //[xyz] xyz中的一个
+    //[^xyz] 不是xyz中的任意一个
+    //[a-z] a-z中的任意一个
+    // 在中括号中除了上面说的具有特殊意义的字符都只是代表本身的意思,但是转义字符\仍然是转义
+    var reg=/^[\d.]$/;//字符串的length=1
+    reg.test("q");//false
+    reg.test("1.");//false
+    reg.test(".");//true
+
+    //在没有小括号的情况下,|最后运算
+    var  reg=/^10|20$/;//以10开头或者以20结尾
+    reg.test("1000D");//true
+    reg.test("00020");//true
+    reg.test("10201020");//true
+    var reg=/^(10|20)$/;//"10" "20"
+
+    //
+    var reg=/^[1020]$/;//"1" "0" "2"
+    var reg=/^[10-20]$/;//"1" "0-2" "0"
+    //var reg=/^[16-20]$/;//不对的
+
+    //21-26
+    var reg=/^2[1-6]$/;
+
+    //18-75  18-19,20-69 70-75
+    var reg=/^(1[8-9]|[2-6]\d|7[0-5])$/;
+
+    //在正则中小括号表示分组
+    //作用:1改变优先级 先计算括号里面的,
+    // 2表示一个小分组 \number  表示第number个分组匹配的内容
+
+    var reg=/^(\w)(\w{2})\2\1$/;
+    reg.test("_dcdc_")
+
+</script>
+</body>
+</html>

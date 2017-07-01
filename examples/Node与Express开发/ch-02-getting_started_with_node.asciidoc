@@ -1,0 +1,237 @@
+[[ch_getting_started_with_node]]
+== Getting Started with Node
+
+If you don't have any experience with Node, this chapter is for you.  Understanding Express and its usefulness requires a basic understanding of Node.((("Node", "getting started with", id="ix_Nodestart", range="startofrange")))  If you already have experience building web apps with Node, feel free to skip this chapter.  In this chapter, we will be building a very minimal web server with Node; in the next chapter, we will see how to do the same thing with Express.
+
+=== Getting Node
+
+Getting Node installed on your system couldn't be easier. ((("Node", "getting started with", "installing Node")))((("operating systems", "installing Node"))) The Node team has gone to great lengths to make sure the installation process is simple and straightforward on all major platforms.
+
+The installation is so simple, as a matter of fact, that it can be summed up in three simple steps:
+
+. Go to the http://nodejs.org[Node home page].
+. Click the big green button that says INSTALL.
+. Follow instructions.
+
+For Windows and OS X, an installer will be downloaded that walks you through the process.  For Linux, you will probably be up and running more quickly if you https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager[use a package manager].((("package managers", "installing Node via")))((("OS X", see="Mac OS X; operating systems")))((("Mac OS X", "installing Node")))((("Windows systems", "installing Node")))((("Linux", "installing Node")))
+
+[CAUTION]
+====
+If you're a Linux user and you do want to use a package manager, make sure you follow the instructions in the aforementioned web page.((("Linux", "package managers, Node installation and")))  Many Linux distributions will install an extremely old version of Node if you don't add the appropriate package repository.
+====
+
+You can also http://nodejs.org/download[download a standalone installer], which can be helpful if you are distributing Node to your organization.((("installer (standalone) for node")))
+
+If you have trouble building Node, or for some reason you would like to build Node from scratch, please refer to the http://bit.ly/node_installation[official installation instructions].
+
+=== Using the Terminal
+
+I'm an unrepentant fan of the power and productivity of using a terminal (also called a "console" or "command prompt").((("command prompt", seealso="terminals")))((("consoles", seealso="terminals")))((("terminals, using")))((("Node", "getting started with", "using the terminal")))  Throughout this book, all examples will assume you're using a terminal.  If you're not friends with your terminal, I highly recommend you spend some time familiarizing yourself with your terminal of choice.  Many of the utilities in this book have corresponding GUI interfaces, so if you're dead set against using a terminal, you have options, but you will have to find your own way.
+
+If you're on OS X or Linux, you have a wealth of venerable shells (the terminal command interpreter) to choose from.((("Linux", "shells")))((("shells")))((("Mac OS X", "shells")))  The most popular by far is bash, though zsh has its adherents.((("bash shell")))((("zsh shell")))  The main reason I gravitate toward bash (other than long familiarity) is ubiquity.  Sit down in front of any Unix-based computer, and 99% of the time, the default shell will be bash.
+
+If you're a Windows user, things aren't quite so rosy.((("Windows systems", "using a terminal and shell")))  Microsoft has never been particularly interested in providing a pleasant terminal experience, so you'll have to do a little more work.  Git helpfully includes a "Git bash" shell, which provides a Unix-like terminal experience (it only has a small subset of the normally available Unix command-line utilities, but it's a useful subset).  While Git bash provides you with a minimal bash shell, it's still using the built-in Windows console application, which leads to an exercise in frustration (even simple functionaity like resizing a console window, selecting text, cutting, and pasting is unintuitive and awkward).  For this reason, I recommend installing a more sophisticated terminal such as http://bit.ly/Console_2[Console2] or http://bit.ly/Con-Emu[ConEmu].((("ConEmu")))  For Windows power users—especially for .NET developers or for hardcore Windows systems or network administrators—there is another option: Microsoft's own PowerShell.((("Microsoft", "PowerShell")))((("PowerShell")))  PowerShell lives up to its name: people do remarkable things with it, and a skilled PowerShell user could give a Unix command-line guru a run for their money.  However, if you move between OS X/Linux and Windows, I still recommend sticking with Git bash for the consistency it provides.
+
+Another option, if you're a Windows user, is virtualization.((("virtualization")))  With the power and architecture of modern computers, the performance of virtual machines (VMs) is practically indistinguishable from actual machines.((("virtual machines (VMs)")))((("VirtualBox")))  I've had great luck with Oracle's free VirtualBox, and Windows 8 offers VM support built in.  With cloud-based file storage, such as Dropbox, and the easy bridging of VM storage to host storage, virtualizing is looking more attractive all the time.  Instead of using Git bash as a bandage on Windows's pass:[<phrase role="keep-together">lackluster</phrase>] console support, consider using a Linux VM for development.((("Linux VM, using for development on Windows")))  If you find the UI isn't as smooth as you would like, you could use a terminal application, such as pass:[<phrase role="keep-together"><ulink url="http://www.putty.org">PuTTY</ulink></phrase>], which is what I often do.((("PuTTY")))
+
+Finally, no matter what sytem you're on, there's the excellent https://codio.com[Codio]. ((("Codio"))) Codio is a website that will spin up a new Linux instance for every project you have and provide an IDE and command line, with Node already installed.  It's extremely easy to use and is a great way to get started very quickly with Node.
+
+[TIP]
+====
+When you specify the +-g+ (global) option when installing npm packages, they are installed in a subdirectory of your Windows home directory.((("npm (package manager)", "-g (global) option")))((("-g (global) option, installing npm packages on Windows", sortas="g (global) option")))  I've found that a lot of these packages don't perform well if there are spaces in your username (my username used to be "Ethan Brown," and now it's "ethan.brown").  For your sanity, I recommend choosing a Windows username without a space in it.  If you already have such a username, it's advisable to create a new user, and then transfer your files over to the new account: trying to rename your Windows home directory is possible but fraught with danger.
+====
+
+Once you've settled on a shell that makes you happy, I recommend you spend some time getting to know the basics.((("shells", "learning to use")))  There are many wonderful tutorials on the Internet, and you'll save yourself a lot of headaches later on by learning a little now.  At minimum, you should know how to navigate directories; copy, move, and delete files; and break out of a command-line program (usually Ctrl-C).  If you want to become a terminal ninja, I encourage you to learn how to search for text in files, search for files and directories, chain commands together (the old "Unix philosophy"), and redirect output.
+
+[CAUTION]
+====
+On many Unix-like systems, Ctrl-S has a special meaning: it will "freeze" the terminal (this was once used to pause output quickly scrolling past).((("Ctrl-S on Unix-like systems")))((("terminals, using", "Unix-like systems, Ctrl-S")))((("Unix-like systems, Ctrl-S")))  Since this is such a common shortcut for Save, it's very easy to unthinkingly press, which leads to a very confusing situation for most people (this happens to me more often than I care to admit). To unfreeze the terminal, simply hit Ctrl-Q.  So if you're ever confounded by a terminal that seems to have suddenly frozen, try pressing Ctrl-Q and see if it releases it.
+====
+
+=== Editors
+
+Few topics inspire such heated debate among programmers as the choice of editors, and for good reason: the editor is your primary tool.((("editors")))((("Node", "getting started with", "editors")))  My editor of choice is vifootnote:[These days, vi is essentially synonymous with vim (vi improved).((("vi (editor)")))  On most systems, vi is aliased to vim, but I usually type vim to make sure I'm using vim.] (or an editor that has a vi mode).((("vi mode (editors)")))  vi isn't for everyone (my coworkers constantly roll their eyes at me when I tell them how easy it would be to do what they're doing in vi), but finding a powerful editor and learning to use it will significantly increase your productivity and, dare I say it, enjoyment.  One of the reasons I particularly like vi (though hardly the most important reason) is that like bash, it is ubiquitous.  If you have access to a Unix system (Cygwin included), vi is there for you.  Many popular editors (even Microsoft Visual Studio!) have a vi mode.  Once you get used to it, it's hard to imagine using anything else.  vi is a hard road at first, but the payoff is worth it.
+
+If, like me, you see the value in being familiar with an editor that's available anywhere, your other option is Emacs.((("Emacs")))  Emacs and I have never quite gotten on (and usually you're either an Emacs person or a vi person), but I absolutely respect the power and flexibility that Emacs provides.  If vi's modal editing approach isn't for you, I would encourage you to look into Emacs.
+
+While knowing a console editor (like vi or Emacs) can come in incredibly handy, you may still want a more modern editor.  Some of my frontend colleagues swear by Coda, and I trust their opinion.  Unfortunately, Coda is available only on OS X.  Sublime Text is a modern and powerful editor that also has an excellent vi mode, and it's available on Windows, Linux, and OS X.
+
+On Windows, there are some fine free options out there.  TextPad and Notepad++ both have their supporters.((("Windows systems", "editors")))  They're both capable editors, and you can't beat the price.  If you're a Windows user, don't overlook((("Microsoft", "Visual Studio")))((("Visual Studio as JavaScript editor"))) Visual Studio as a JavaScript editor: it's remarkably capable, and has one of the best JavaScript autocomplete engines of any editor.  You can download Visual Studio Express from Microsoft for free.
+
+=== npm
+
+npm is the ubiquitous package manager for((("package managers", "npm")))((("npm (package manager)")))((("Node", "getting started with", "npm package manager"))) Node packages (and is how we'll get and install Express).  In the wry tradition of PHP, GNU, WINE, and others, "npm" is not an acronym (which is why it isn't capitalized); rather, it is a recursive abbreviation for "npm is not an acronym."
+
+Broadly speaking, a package manager's two primary responsibilities are installing packages and manging dependencies.  npm is a fast, capable, and painless package manager, which I feel is in large part responsible for the rapid growth and diversity of the Node ecosystem.
+
+npm is installed when you install Node, so if you followed the steps listed earlier, you've already got it.  So let's get to work!
+
+++++
+<?hard-pagebreak?>
+++++
+
+The primary command you'll be using with npm (unsurprisingly), is ++install++.((("npm (package manager)", "install command")))((("JavaScript", "utilities, installing globally, using npm")))((("Grunt", "installing globally, using npm")))  For example, to install Grunt (a popular JavaScript task runner), you would issue the following command (on the console):
+
+----
+npm install -g grunt-cli
+----
+
+The +-g+ flag tells npm to install the package _globally_, meaning it's available globally on the system.  This distinction will become clearer when we cover the _package.json_ files.  For now, the rule of thumb is that JavaScript utilities (like Grunt) will generally be installed globally, whereas packages that are specific to your web app or project will not.
+
+[NOTE]
+====
+Unlike languages like Python—which underwent a major language change from 2.0 to 3.0, necessitating a way to easily switch between different environments—the Node platform is new enough that it is likely that you should always be running the latest version of Node.((("Node", "getting started with", "supporting multiple versions of Node")))  However, if you do find yourself needing to support multiple version of Node, there is a project, https://github.com/creationix/nvm[nvm], that allows you to switch pass:[<phrase role="keep-together">environments</phrase>].
+====
+
+=== A Simple Web Server with Node
+
+If you've ever built a static HTML website before, or are coming from a PHP or ASP background, you're probably used to the idea of the web server (Apache or IIS, for example) serving your static files so that a browser can view them over the network.((("Node", "getting started with", "simple web server")))  For example, if you create the file __about.html__, and put it in the proper directory, you can then navigate to __http://localhost/about.html__.  Depending on your web server configuration, you might even be able to omit the __.html__, but the relationship between URL and filename is clear: the web server simply knows where the file is on the computer, and serves it to the browser.
+
+[NOTE]
+====
+__localhost__, as the name implies, refers to the computer you're on.((("localhost")))  This is a common alias for((("loopback address, IPv4 or IPv6"))) the IPv4 loopback address 127.0.0.1, or the IPv6 loopback address ::1.  You will often see 127.0.0.1 used instead, but I will be using _localhost_ in this book.  If you're using a remote pass:[<phrase role="keep-together">computer</phrase>] (using SSH, for example), keep in mind that browsing to _localhost_ will not connect to that computer.
+====
+
+Node offers a different paradigm than that of a traditional web server: the app that you write _is_ the web server.  Node simply provides the framework for you to build a web server.((("web servers", "writing with Node")))
+
+"But I don't want to write a web server," you might be saying!  It's a natural response: you want to be writing an app, not a web server.  However, Node makes the business of writing this web server a simple affair (just a few lines, even) and the control you gain over your application in return is more than worth it.
+
+So let's get to it.  You've installed Node, you've made friends with the terminal, and now you're ready to go.
+
+==== Hello World
+
+I've always found it unfortunate that the canonical introductory programming example is the uninspired message "Hello World." ((("web servers", "writing with Node", "&quot;Hello World&quot; example"))) However, it seems almost sacrilegious at this point to fly in the face of such ponderous tradition, so we'll start there, and then move on to something more interesting.
+
+In your favorite editor, create a file called __helloWorld.js__:
+
+[source,js]
+----
+var http = require('http');
+
+http.createServer(function(req,res){ 
+	res.writeHead(200, { 'Content-Type': 'text/plain' });
+	res.end('Hello world!');
+}).listen(3000);
+
+console.log('Server started on localhost:3000; press Ctrl-C to terminate....');
+----
+
+Make sure you are in the same directory as __helloWorld.js__, and type *+node helloWorld.js+*.  Then open up a browser and navigate to __http://localhost:3000__, and voilà!  Your first web server.  This particular one doesn't serve HTML; rather, it just transmits the message "Hello world!" in plaintext to your browser.  If you want, you can experiment with sending HTML instead: just change +text/plain+ to +text/html+ and change +\'Hello world!'+ to a string containing valid HTML.  I didn't demonstrate that, because I try to avoid writing HTML inside JavaScript for reasons that will be discussed in more detail in <<ch_templating>>.
+
+==== Event-Driven Programming
+
+The core philosophy behind Node is that of _event-driven programming_.((("Node", "getting started with", "event-driven programming")))((("event-driven programming")))  What that means for you, the programmer, is that you have to understand what events are available to you and how to respond to them.  Many people are introduced to event-driven programming by implementing a user interface: the user clicks on something, and you handle the "click event."  It's a good metaphor, because it's understood that the programmer has no control over when, or if, the user is going to click something, so event-driven programming is really quite intuitive.  It can be a little harder to make the conceptual leap to responding to events on the server, but the principle is the same.
+
+In the previous code example, the event is implicit: the event that's being handled is an HTTP request.  The +http.createServer+ method takes a function as an argument; that function will be invoked every time an HTTP request is made.  Our simple program just sets the content type to plaintext and sends the string "Hello world!"
+
+==== Routing
+
+Routing refers to the mechanism for serving the client the content it has asked for. ((("Node", "getting started with", "routing")))((("routing")))((("client/server applications, web-based"))) For web-based client/server applications, the client specifies the desired content in the URL; specifically, the path and querystring (the parts of a URL will be discussed in more detail in <<ch_the_request_and_response_objects>>).
+
+Let's expand our "Hello world!" example to do something more interesting.  Let's serve a really minimal website consisting of a home page, an About page, and a Not Found page.  For now, we'll stick with our previous example and just serve plaintext instead of HTML:
+
+[source,js]
+----
+var http = require('http');
+
+http.createServer(function(req,res){ 
+	// normalize url by removing querystring, optional 
+	// trailing slash, and making it lowercase
+	var path = req.url.replace(/\/?(?:\?.*)?$/, '').toLowerCase();
+	switch(path) {
+		case '': 
+			res.writeHead(200, { 'Content-Type': 'text/plain' });
+			res.end('Homepage'); 
+			break;
+		case '/about': 
+			res.writeHead(200, { 'Content-Type': 'text/plain' });
+			res.end('About');
+			break;
+		default:
+			res.writeHead(404, { 'Content-Type': 'text/plain' });
+			res.end('Not Found');
+			break;
+	}
+}).listen(3000);
+
+console.log('Server started on localhost:3000; press Ctrl-C to terminate....');
+----
+
+If you run this, you'll find you can now browse to the home page (__http://localhost:3000__) and the About page (__http://localhost:3000/about__).  Any querystrings will be ignored (so __http://localhost:3000/?foo=bar__ will serve the home page), and any other URL (__http://localhost:3000/foo__) will serve the Not Found page.
+
+==== Serving Static Resources
+
+Now that we've got some simple routing working, let's serve some real HTML and a logo image.  These are called "static resources" because they don't change (as opposed to, for example, a stock ticker: every time you reload the page, the stock prices change).((("static resources", "serving with Node")))((("Node", "getting started with", "serving static resources")))
+
+[TIP]
+====
+Serving static resources with Node is suitable for developent and small projects, but for larger projects, you will probably want to use a proxy server such as Nginx or a CDN to serve static resources.  See <<ch_static_content>> for more information.
+====
+
+If you've worked with Apache or IIS, you're probably used to just creating an HTML file, navigating to it, and having it delivered to the browser automatically.  Node doesn't work like that: we're going to have to do the work of opening the file, reading it, and then sending its contents along to the browser.  So let's create a directory in our project called __public__ (why we don't call it _static_ will become evident in the next chapter).  In that directory, we'll create __home.html__, __about.html__, __notfound.html__, a subdirectory called __img__, and an image called __img/logo.jpg__.  I'll leave that up to you: if you're reading this book, you probably know how to write an HTML file and find an image.((("HTML", "files for static resources")))  In your HTML files, reference the logo thusly: +<img href="/img/logo.jpg" alt="logo">+.
+
+Now modify __helloWorld.js__:
+
+[source,js]
+----
+var http = require('http'),
+	fs = require('fs');
+
+function serveStaticFile(res, path, contentType, responseCode) {
+	if(!responseCode) responseCode = 200;
+	fs.readFile(__dirname + path, function(err,data) {
+		if(err) {
+			res.writeHead(500, { 'Content-Type': 'text/plain' });
+			res.end('500 - Internal Error');
+		} else {
+			res.writeHead(responseCode,
+				{ 'Content-Type': contentType });
+			res.end(data);
+		}
+	});
+}
+
+http.createServer(function(req,res){ 
+	// normalize url by removing querystring, optional
+	// trailing slash, and making lowercase
+	var path = req.url.replace(/\/?(?:\?.*)?$/, '')
+		.toLowerCase();
+	switch(path) {
+		case '': 
+			serveStaticFile(res, '/public/home.html', 'text/html');
+			break;
+		case '/about': 
+			serveStaticFile(res, '/public/about.html', 'text/html');
+			break;
+		case '/img/logo.jpg': 
+			serveStaticFile(res, '/public/img/logo.jpg',
+				'image/jpeg');
+			break;
+		default: 
+			serveStaticFile(res, '/public/404.html', 'text/html',
+				404);
+			break;
+	}
+}).listen(3000);
+
+console.log('Server started on localhost:3000; press Ctrl-C to terminate....');
+----
+
+[NOTE]
+====
+In this example, we're being pretty unimaginative with our routing.((("routing")))  If you navigate to __http://localhost:3000/about__, the __public/about.html__ file is served.  You could change the route to be anything you want, and change the file to be anything you want.  For example, if you had a different About page for each day of the week, you could have files __public/about_mon.html__, __public/about_tue.html__, and so on, and provide logic in your routing to serve the appropriate page when the user navigates to __http://localhost:3000/about__.
+====
+
+Note we've created a helper function, ++serveStaticFile++, that's doing((("serveStaticFile helper function"))) the bulk of the work.  +fs.readFile+ is an asynchronous method for reading files.((("fs.readFile function")))  There is a synchronous version of that function, ++fs.readFileSync++, but the sooner you start thinking asynchronously, the better.  The function is simple: it calls +fs.readFile+ to read the contents of the specified file.  +fs.readFile+ executes the callback function when the file has been read; if the file didn't exist or there were permissions issues reading the file, the +err+ variable is set, and the function returns an HTTP status code of 500 ((("server errors")))indicating a server error.  If the file is read successfully, the file is sent to the client with the specified response code and content type.  Response codes will be discussed in more detail in <<ch_the_request_and_response_objects>>.
+
+[TIP]
+====
++pass:[__dirname]+ will resolve to the directory the executing script resides in.  So if your script resides in __/home/sites/app.js__, +pass:[__dirname]+ will resolve to __/home/sites__.  It's a good idea to use this handy global whenever possible.  Failing to do so can cause hard-to-diagnose errors if you run your app from a different directory.
+====
+
+=== Onward to Express
+
+So far, Node probably doesn't seem that impressive to you.  We've basically replicated what Apache or IIS do for you automatically, but now you have some insight into how Node does things and how much control you have.  We haven't done anything particularly impressive, but you can see how we could use this as a jumping-off point to do more sophisticated things.  If we continued down this road, writing more and more sophisticated Node applications, you might very well end up with something that resembles Express....
+
+Fortunately, we don't have to: Express already exists, and it saves you from implementing a lot of time-consuming infrastructure.  So now that we've gotten a little Node experience under our belt, we're ready to jump into learning Express.
+((("Node", "getting started with", range="endofrange", startref="ix_Nodestart")))

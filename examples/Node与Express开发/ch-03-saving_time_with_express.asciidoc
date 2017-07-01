@@ -1,0 +1,338 @@
+[[ch_saving_time_with_express]]
+== Saving Time with Express
+
+In <<ch_getting_started_with_node>>, you learned how to create a simple web server using only Node.  In this chapter, we will recreate that server using Express.((("Express", id="ix_EXPsavetime", range="startofrange")))  This will provide a jumping-off point for the rest of the content of this book and introduce you to the basics of Express.
+
+=== Scaffolding
+
+Scaffolding is not a new idea, but many people (myself included) were introduced to the concept by Ruby. ((("Ruby", "scaffolding")))((("Express", "saving time with", "scaffolding")))((("scaffolding"))) The idea is simple: most projects require a certain amount of so-called "boilerplate" code, and who wants to recreate that code every time you begin a new project?((("boilerplate code")))  A simple way is to create a rough skeleton of a project, and every time you need a new project, you just copy this skeleton, or template.
+
+Ruby on Rails took this concept one step further by providing a program that would automatically generate scaffolding for you.((("Ruby on Rails, scaffolding utility")))  The advantage of this approach is that it could generate a more sophisticated framework than just selecting from a collection of templates.
+
+Express has taken a page from Ruby on Rails and provided a utility to generate scaffolding to start your Express project.
+
+While the Express scaffolding utility is useful, it currently doesn't generate the framework I will be recommending in this book. ((("scaffolding utility (Express)"))) In particular, it doesn't provide support for my templating language of choice (Handlebars), and it also doesn't follow some of the naming conventions I prefer (though that is easy enough to fix).
+
+While we won't be using the scaffolding utility, I encourage you to take a look at it once you've finished the book: by then you'll be armed with everything you need to know to evaluate whether the scaffolding it generates is useful for you.
+
+Boilerplate is also useful for the actual HTML that will be delivered to the client.  I recommend the excellent HTML5 Boilerplate.((("HTML5 Boilerplate")))  It generates a great blank slate for an HTML5 website.  Recently, http://bit.ly/boiler_plate[HTML5 Boilerplate] has added the ability to generate a custom build.  One of the custom build options includes Twitter Bootstrap, a frontend framework I highly recommend.((("Bootstrap")))((("Twitter Bootstrap")))  We'll be using a Bootstrap-based custom build in <<ch_templating>> to provide a responsive, modern HTML5 website.
+
+=== The Meadowlark Travel Website
+
+Throughout this book, we'll be using a running example: a fictional website for pass:[<phrase role="keep-together">Meadowlark</phrase>] Travel, a company offering services for people visiting the great state of Oregon.((("Meadowlark Travel example website")))((("Express", "Meadowlark Travel example website")))  If you're more interested in creating a REST application, have no fear: the Meadowlark Travel website will expose REST services in addition to serving a functional website.
+
+=== Initial Steps
+
+Start by creating a new directory for your project: this will be the root directory for your project.  In this book, whenever we refer to the "project directory," "app directory," or "project root," we're referring to this directory.((("Express", "Meadowlark Travel example website", "ititial steps")))((("Meadowlark Travel example website", "initial steps")))
+
+[TIP]
+====
+You'll probably want to keep your web app files separate from all the other files that usually accompany a project, such as meeting notes, documentation, etc.((("project files, keeping separate from web app files")))  For that reason, I recommend making your project root a subdirectory of your project directory.  For example, for the Meadowlark Travel website, I might keep the project in __\~/projects/meadowlark__, and the project root in __~/projects/meadowlark/site__.
+====
+
+npm manages project dependencies—as well as metadata about the project—in a file called __package.json__. ((("npm (package manager)", "managing Express project dependencies and project metadata")))((("package.json file")))((("npm init command"))) The easiest way to create this file is to run +npm init+: it will ask you a series of questions and generate a __package.json__ file to get you started (for the "entry point" question, use __meadowlark.js__ or the name of your project).
+
+[TIP]
+====
+Every time you run npm, you'll get warnings unless you provide a repository URL in __package.json__, and a nonempty _README.md_ file.((("README.md file")))  The metadata in the _package.json_ file is really only necessary if you're planning on publishing to the npm repository, but squelching npm warnings is worth the small effort.
+====
+
+The first step will be installing Express.((("npm (package manager)", "installing Express")))((("Express", "installing")))  Run the following npm command:
+
+----
+npm install --save express
+----
+
+Running +npm install+ will install the named package(s) in the __node_modules__ pass:[<phrase role="get-together">directory</phrase>].((("+node_modules+ directory")))  If you specify the +--save+ flag, it will update the __package.json__ file.  Since the __node_modules__ dirctory can be regenerated at any time with npm, we will not save it in our repository.  To ensure we don't accidentally add it to our repository, we create a file called __.gitignore__:
+
+----
+# ignore packages installed by npm
+node_modules
+
+# put any other files you don't want to check in here,
+# such as .DS_Store (OSX), *.bak, etc.
+----
+
+Now create a file called __meadowlark.js__. ((("meadowlark.js file (example)"))) This will be our project's entry point.((("app file")))  Throughout the book, we will simply be referring to this file as the "app file":
+
+[source,js]
+----
+var express = require('express');
+
+var app = express();
+
+app.set('port', process.env.PORT || 3000);
+
+// custom 404 page
+app.use(function(req, res){
+	res.type('text/plain');	
+	res.status(404);
+	res.send('404 - Not Found');
+});
+
+// custom 500 page
+app.use(function(err, req, res, next){
+	console.error(err.stack);
+	res.type('text/plain');
+	res.status(500);
+	res.send('500 - Server Error');
+});
+
+app.listen(app.get('port'), function(){
+  console.log( 'Express started on http://localhost:' + 
+    app.get('port') + '; press Ctrl-C to terminate.' );
+});
+----
+
+[TIP]
+====
+Many tutorials, as well as the Express scaffolding generator, encourage you to name your primary file __app.js__ (or sometimes __index.js__ or __server.js__).((("app file", "naming")))  Unless you're using a hosting service or deployment system that requires your main application file to have a specific name, I don't feel there's a compelling reason to do this, and I prefer to name the primary file after the project.  Anyone who's ever stared at a bunch of editor tabs that all say "index.html" will immediately see the wisdom of this.  +npm init+ will default to __index.js__; if you use a different name for your application file, make sure to((("package.json file", "main property"))) update the +main+ property in __package.json__.
+====
+
+You now have a minimal Express server.  You can start the server (+node meadowlark.js+), and navigate to __http://localhost:3000__.  The result will be disappointing: you haven't provided Express with any routes, so it will simply give you a generic 404 page indicating that the page doesn't exist.
+
+[NOTE]
+====
+Note how we specify the port that we want our application to run on: +app.set('port', process.env.PORT || 3000)+.  This allows us to override the port by setting an environment value before you start the server. ((("PORT environment variable"))) If your app isn't running on port 3000 when you run this example, check to see if your PORT environment variable is set.
+====
+
+[TIP]
+====
+I highly recommend getting a browser plugin that shows you the status code of the HTTP request as well as any redirects that took place.((("browsers", "plugin showing status code of HTTP requests and redirects")))((("redirects", "browser plugin showing")))((("HTTP status codes", "browser plugin showing")))  It will make it easier to spot redirect issues in your code, or incorrect status codes, which are often overlooked.((("Chrome", "Ayima's Redirect Path")))  For Chrome, Ayima's Redirect Path works wonderfully.  In most browsers, you can see the status code in the Network section of the developer tools.
+====
+
+Let's add some routes for the home page and an About page.  Before the 404 handler, we'll add two new routes:
+
+[source,js]
+----
+app.get('/', function(req, res){
+	res.type('text/plain');	
+	res.send('Meadowlark Travel');
+});
+app.get('/about', function(req, res){
+	res.type('text/plain');	
+	res.send('About Meadowlark Travel');
+});
+
+// custom 404 page
+app.use(function(req, res, next){
+	res.type('text/plain');	
+	res.status(404);
+	res.send('404 - Not Found');
+});
+----
+
++app.get+ is the method by which we're adding routes.((("routing", "adding routes in Express")))((("app.get")))  In the Express documentation, you will see +app.VERB+.  This doesn't mean that there's literally a method called +VERB+; it's just a placeholder for your (lowercased) HTTP verbs ("get" and "post" being the most common).((("HTTP verbs")))  This method takes two parameters: a path and a function.
+
+The path is what defines the route.  Note that +app.VERB+ does the heavy lifting for you: by default, it doesn't care about the case or trailing slash, and it doesn't consider the querystring when performing the match.  So the route for the About page will work for __/about__, __/About__, __/about/__, __/about?foo=bar__, __/about/?foo=bar__, etc.
+
+The function you provide will get invoked when the route is matched.  The parameters passed to that function are the request and response objects, which we'll learn more about in <<ch_the_request_and_response_objects>>.  For now, we're just returning plaintext with a status code of 200 (Express defaults to a status code of 200—you don't have to specify it explicitly).
+
+Instead of using Node's low-level +res.end+, we're switching to using Express's extension, +res.send+.  We are also replacing Node's +res.writeHead+ with +res.set+ and +res.status+.((("res.set method")))((("res.status method")))  Express is also providing us a convenience method, ++res.type++, which sets the +Content-Type+ header.((("res.type method")))((("Content-Type header")))  While it's still possible to use +res.writeHead+ and +res.end+, it isn't necessary or recommended.
+
+Note that our custom 404 and 500 pages must be handled slightly differently.  Instead of using +app.get+, it is using +app.use+.((("app.use")))  +app.use+ is the method by which Express adds _middleware_.((("middleware", "adding in Express")))  We'll be covering middleware in more depth in <<ch_middleware>>, but for now, you can think of this as a catch-all handler for anything that didn't get matched by a route.  This brings us to a very important point: _in Express, the order in which routes and middleware are added is significant_.((("routing", "adding routes in Express", "order of")))  If we put the 404 handler above the routes, the home page and About page would stop working: instead, those URLs would result in a 404.  Right now, our routes are pretty simple, but they also support wildcards, which can lead to problems with ordering.((("wildcards in Express routes")))  For example, what if we wanted to add subpages to About, such as __/about/contact__ and __/about/directions__?  The following will not work as expected:
+
+[source,js]
+----
+app.get('/about*',function(req,res){
+	// send content....
+})
+app.get('/about/contact',function(req,res){
+	// send content....
+})
+app.get('/about/directions',function(req,res){
+	// send content....
+})
+----
+
+In this example, the +/about/contact+ and +/about/directions+ handlers will never be matched because the first handler uses a wildcard in its path: +/about*+.
+
+Express can distinguish between the 404 and 500 handlers by the number of arguments their callback functions take.  Error routes will be covered in depth in Chapters pass:[<xref linkend="ch_middleware" xrefstyle="select: labelnumber" />] and pass:[<xref linkend="ch_production_concerns" xrefstyle="select: labelnumber" />].
+
+Now you can start the server again, and see that there's a functioning home page and About page.
+
+So far, we haven't done anything that couldn't be done just as easily without Express, but already Express is providing us some functionality that isn't immediately obvious.  Remember in the previous chapter how we had to normalize +req.url+ to determine what resource was being requested?  We had to manually strip off the querystring and the trailing slash, and convert to lowercase.  Express's router is now handling those details for us automatically.  While it may not seem like a large thing now, it's only scratching the surface of what Express's router is capable of.
+
+==== Views and Layouts
+
+If you're familiar with the "model-view-controller" paradigm, then the concept of a view will be no stranger to you.((("model-view-controller (MVC) pattern")))((("Express", "views and layouts")))((("views")))  Essentially, a view is what gets delivered to the user.  In the case of a website, that usually means HTML, though you could also deliver a PNG or a PDF, or anything that can be rendered by the client.  For our purposes, we will consider views to be HTML.((("HTML", "views")))
+
+Where a view differs from a static resource (like an image or CSS file) is that a view doesn't necessarily have to be static: the HTML can be constructed on the fly to provide a customized page for each request.((("static resources", "views versus")))
+
+Express supports many different view engines that provide different levels of abstraction.  Express gives some preference to a view engine called _Jade_ (which is no surprise, because it is also the brainchild of TJ Holowaychuk). ((("Holowaychuk, TJ")))((("Jade"))) The approach Jade takes is very minimal: what you write doesn't resemble HTML at all, which certainly represents a lot less typing: no more angle brackets or closing tags.  The Jade engine then takes that and converts it to HTML.
+
+Jade is very appealing, but that level of abstraction comes at a cost.  If you're a frontend developer, you have to understand HTML and understand it well, even if you're actually writing your views in Jade.  Most frontend developers I know are uncomfortable with the idea of their primary markup language being abstracted away.  For this reason, I am recommending the use of another, less abstract templating framework called _Handlebars_. ((("Handlebars templating engine")))((("Mustache templating engine"))) Handlebars (which is based on the popular language-independent templating language Mustache) doesn't attempt to abstract away HTML for you: you write HTML with special tags that allow Handlebars to inject content.
+
+To provide Handlebars support, we'll use Eric Ferraiuolo's +express3-handlebars+ pass:[<phrase role="keep-together">package</phrase>] (despite the name, this package works fine with Express 4.0).((("express3-handlebars package")))((("Ferraiuolo, Eric")))  In your project directory, execute:
+
+----
+npm install --save express3-handlebars
+----
+
+Then in __meadowlark.js__, add the following lines after the app has been created:
+
+[source,js]
+----
+var app = express();
+
+// set up handlebars view engine
+var handlebars = require('express3-handlebars')
+	.create({ defaultLayout:'main' });
+app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
+----
+
+This creates a view engine and configures Express to use it by default.  Now create a directory called __views__ that has a subdirectory called __layouts__.((("layouts")))  If you're an experienced web developer, you're probably already comfortable with the concepts of _layouts_ (sometimes called "master pages").((("master pages")))  When you build a website, there's a certain amount of HTML that's the same—or very close to the same—on every page.  Not only does it become tedious to rewrite all that repetitive code for every page, it creates a potential maintenance nightmare: if you want to change something on every page, you have to change _all_ the files.  Layouts free you from this, providing a common framework for all the pages on your site.((("views", "layout")))
+
+So let's create a template for our site.  Create a file called __views/layouts/main.handlebars__:
+
+[source,html]
+----
+<!doctype html>
+<html>
+<head>
+    <title>Meadowlark Travel</title>
+</head>
+<body>
+    {{{body}}}
+</body>
+</html>
+----
+
+The only thing that you probably haven't seen before is this: +\{\{\{body\}\}\}+.  This expression will be replaced with the HTML for each view.  When we created the Handlebars instance, note we specified the default layout (+defaultLayout:\'main'+).  That means that unless you specify otherwise, this is the layout that will be used for any view.((("default layout for views")))
+
+Now let's create view pages for our((("views", "creating view pages for Meadowlark Travel website (example)"))) home page, __views/home.handlebars__:
+
+[source,html]
+----
+<h1>Welcome to Meadowlark Travel</h1>
+----
+
+Then our About page, __views/about.handlebars__:
+
+[source,html]
+----
+<h1>About Meadowlark Travel</h1>
+----
+
+Then our Not Found page, __views/404.handlebars__:
+
+[source,html]
+----
+<h1>404 - Not Found</h1>
+----
+
+And finally our Server Error page, __views/500.handlebars__:
+
+[source,html]
+----
+<h1>500 - Server Error</h1>
+----
+
+[TIP]
+====
+You probably want your editor to associate __.handlebars__ and __.hbs__ (another common extension for Handlebars files) with HTML, to pass:[<phrase role="keep-together">enable</phrase>] syntax highlighting and other editor features.((("editors", "associating .handlebars and .hbs files with HTML")))((("vim editor, associating .handlebars and .hbs files with HTML")))  For vim, you can add the line +au BufNewFile,BufRead *.handlebars set filetype=html+ to your __~/.vimrc__ file.  For other editors, consult your pass:[<phrase role="keep-together">documentation.</phrase>]
+====
+
+Now that we've got some views set up, we have to replace our old ((("views", "adding routes to, in Express")))((("routing", "adding routes to new views in Express")))routes with new routes that use these views:
+
+[source,js]
+----
+app.get('/', function(req, res) {
+	res.render('home');
+});
+app.get('/about', function(req, res) {
+	res.render('about');
+});
+
+// 404 catch-all handler (middleware)
+app.use(function(req, res, next){
+	res.status(404);
+	res.render('404');
+});
+
+// 500 error handler (middleware)
+app.use(function(err, req, res, next){
+	console.error(err.stack);
+	res.status(500);
+	res.render('500');
+});
+----
+
+Note that we no longer have to specify the content type or status code: the view engine will return a content type of ++text/html++ and a status code of 200 by default.((("HTTP status codes", "view engine returning 200 status code by default")))((("content type, view engine returning text/html by default")))  In the catch-all handler, which provides our custom 404 page, and the 500 handler, we have to set the status code explicitly.
+
+If you start your server and check out the home or About page, you'll see that the views have been rendered.  If you examine the source, you'll see that the boilerplate HTML from __views/layouts/main.handlebars__ is there.
+
+==== Static Files and Views
+
+Express relies on a _middleware_ to handle static files and views.((("middleware", "handling static files and views in Express")))((("Express", "static files and views, handling by middleware")))((("views", "handling by middleware, in Express")))  Middleware is a concept that will be covered in more detail in <<ch_middleware>>.  For now, it's sufficient to know that middleware provides modularization, making it easier to handle requests.
+
+The +static+ middleware allows you to designate one or more directories as containing static resources that are simply to be delivered to the client without any special pass:[<phrase role="keep-together">handling.</phrase>]((("static middleware")))  This is where you would put things like images, CSS files, and client-side JavaScript files.
+
+In your project directory, create a subdirectory called __public__ (we call it __public__ because anything in this directory will be served to the client without question).  Then, before you declare any routes, you'll add the +static+ middleware:
+
+[source,js]
+----
+app.use(express.static(__dirname + '/public'));
+----
+
+The +static+ middleware has the same effect as creating a route for each static file you want to deliver that renders a file and returns it to the client.((("routing", "static middleware serving static files")))  So let's create an _img_ subdirectory inside __public__, and put our __logo.png__ file in there.
+
+Now we can simply reference __/img/logo.png__ (note, we do not specify +public+; that directory is invisible to the client), and the ++static++ middleware will serve that file, setting the content type appropriately.((("layouts", "adding header to every page")))  Now let's modify our layout so that our logo appears on every page:
+
+[source,html]
+----
+<body>
+	<header><img src="/img/logo.png" alt="Meadowlark Travel Logo"></header>
+	{{{body}}}
+</body>
+----
+
+[NOTE]
+====
+The +<header>+ element was introduced in HTML5 to provide additional semantic information about content that appears at the top of the page,((("+<header>+ element", sortas="header element")))((("HTML5", "+<header>+ element"))) such as logos, title text, or navigation.
+====
+
+==== Dynamic Content in Views
+
+Views aren't simply a complicated way to deliver static HTML (though they can certainly do that as well).((("Express", "views, dynamic content in")))((("views", "dynamic content in")))  The real power of views is that they can contain dynamic information.
+
+Let's say that on the About page, we want to deliver a "virtual fortune cookie."  In our _meadowlark.js_ file, we define an array ((("fortune cookies for Meadowlark Travel example website")))((("meadowlark.js file (example)", "defining array of fortune cookies")))of fortune cookies:
+
+[source,js]
+----
+var fortunes = [
+	"Conquer your fears or they will conquer you.",
+	"Rivers need springs.",
+	"Do not fear what you don't know.",
+	"You will have a pleasant surprise.",
+	"Whenever possible, keep it simple.",
+];
+----
+
+Modify the view (__/views/about.handlebars__) to display a fortune:
+
+[source,html]
+----
+<h1>About Meadowlark Travel</h1>
+
+<p>Your fortune for the day:</p>
+<blockquote>{{fortune}}</blockquote>
+----
+
+Now modify the route __/about__ to deliver the random fortune cookie:
+
+[source,js]
+----
+app.get('/about', function(req, res){
+	var randomFortune = 
+		fortunes[Math.floor(Math.random() * fortunes.length)];
+	res.render('about', { fortune: randomFortune });
+});
+----
+
+Now if you restart the server and load the __/about__ page, you'll see a random fortune.  Templating is incredibly useful, and we will be covering it in depth in <<ch_templating>>.
+
+==== Conclusion
+
+We've created a very basic website with Express.  Even though it's simple, it contains all the seeds we need for a full-featured website.  In the next chapter, we'll be crossing our __t__s and dotting our __i__s in preparation for adding more advanced functionality.((("Express", range="endofrange", startref="ix_EXPsavetime")))

@@ -1,0 +1,79 @@
+html,body{
+    font-size: 16px;
+    -webkit-user-select: none;
+}
+/*index*/
+.box{
+    margin: 10px auto;
+    width: 600px;
+    padding: 20px;
+    border: 2px dashed green;
+}
+.box a{
+    display: inline-block;
+    line-height: 35px;
+    color: red;
+    font-size: 20px;
+}
+.box .header{
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    color: #fff;
+    background: greenyellow;
+    font-size: 16px;
+}
+.box .header span{
+    float: left;
+    width: 200px;
+}
+.box .content li{
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: aliceblue;
+    cursor: pointer;
+}
+.box .content li span{
+    width: 200px;
+    height: 30px;
+    float: left;
+}
+.box .content li span a{
+    display: inline-block;
+    color: #000;
+    font-size: 16px;
+}
+.box .content li:hover{
+    background: orange;
+}
+.box .content li:nth-child(even){
+    background: #EEE;
+}
+/*addUser*/
+input{
+    outline: none;
+}
+.userAdd{
+    margin: 30px auto;
+    padding: 20px;
+    width: 400px;
+    border: 2px dashed green;
+}
+#userName{
+    display: inline-block;
+    padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #DDD;
+}
+#submit{
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #DDD;
+    background: green;
+    cursor: pointer;
+    color: #FFF;
+}

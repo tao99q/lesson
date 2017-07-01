@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        html,
+        body,
+        div,
+        input {
+            margin: 0;
+            padding: 0;
+            -webkit-user-select: none;
+        }
+
+        input {
+            display: block;
+            margin: 20px auto;
+            width: 100px;
+            height: 40px;
+            font-size: 20px;
+            color: #424242;
+        }
+
+        .box {
+            position: absolute;
+            /*display: none;*/
+            left: 50%;
+            top: 80px;
+            margin-left: -25px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: yellowgreen;
+            opacity: 1;
+            filter: alpha(opacity=1);
+        }
+    </style>
+</head>
+<body>
+<input type="button" name="submitBtn" id="submitBtn" value="操作" />
+<div class="box"></div>
+</body>
+</body>
+</html>
+<!--
+在JQ中加动画之前先执行以下stop()   因为先要停止上一个动画去开启下一个动画
+-->
+<script src="js/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    (function(){})();//原生中的自执行函数
+    $(function(){console.log("我是自执行函数")});//JQ中的自执行函数
+
+    $(function(){
+        //var btn=document.getElementById("submitBtn");
+        //btn.onclick=function(){};
+        //在JQ中事件都没on
+        //click(function(){})
+        var $box=$(".box");
+        $("#submitBtn").click(function(){
+            //this -->  给谁绑定的事件就是谁
+            //console.log(this);
+            //1.隐藏 hide()
+            /*
+            $box.stop().hide();
+            $box.stop().hide("fast");
+            $box.stop().hide("slow");
+            $box.stop().hide(2000);
+            */
+
+            //2.显示 show()
+            /*
+            $box.stop().show();
+            $box.stop().show("fast");
+            $box.stop().show("slow");
+            $box.stop().show(2000);
+            */
+
+            //3.slideUp() 收起来
+            /*
+            $box.stop().slideUp();
+            $box.stop().slideUp("fast");
+            $box.stop().slideUp("slow");
+            $box.stop().slideUp(2000);
+            */
+
+            //4.slideDown()展开
+            /*
+            $box.stop().slideDown();
+            $box.stop().slideDown("fast");
+            $box.stop().slideDown("slow");
+            $box.stop().slideDown(2000);
+            */
+
+            //5.slideToggle() 自动收放
+            /*
+            $box.stop().slideToggle();
+            $box.stop().slideToggle("fast");
+            $box.stop().slideToggle("slow");
+            $box.stop().slideToggle(3000);
+            */
+
+            //6  fadeIn()/fadeOut() 淡入淡出
+            /*
+            //fadeIn
+            $box.stop().fadeIn();
+            $box.stop().fadeIn("fast");
+            $box.stop().fadeIn("slow");
+            $box.stop().fadeIn(2000);
+            //fadeOut
+            $box.stop().fadeOut();
+            $box.stop().fadeOut("fast");
+            $box.stop().fadeOut("slow");
+            $box.stop().fadeOut(2000);
+            */
+            //fadeToggle()自动淡入淡出
+
+            //delay(时间) 延迟动画 对这俩hide(),show()没有效果
+            /*
+            $box.stop().delay(3000).slideDown();
+            $box.stop().delay(3000).show();
+            $box.stop().delay(3000).show(2000);
+            */
+            //animate({目标值},duration,回调函数function)
+            /*
+            $box.stop().animate({top:600,height:100},2000,function(){
+                //this当前执行动画的元素
+                //this.innerHTML="哈哈哈"
+                $(this).css("backgroundColor","red");
+                $(this).delay(3000).animate({top:80,height:50},1000,function(){
+                    $(this).css("backgroundColor","yellowgreen");
+                })
+            })
+            */
+
+            function toUp(){
+                $box.stop().animate({top:80,height:50},1000,toDown);
+            };
+            function toDown(){
+                $box.stop().animate({top:500,height:100},2000,toUp);
+            };
+            if($(":animated").length==0){
+                toDown();
+            }else{
+                $box.stop();
+            }
+        })
+    })
+</script>

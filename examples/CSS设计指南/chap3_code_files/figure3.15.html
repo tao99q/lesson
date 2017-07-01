@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 3.15 How Big is a Box?</title>
+<style>
+body {font-family:helvetica, arial, sans-serif; font-size:1em; margin:0px; background-color:#caebff;}
+img{margin-left:-51px;} /* positions ruler */
+p {width:400px; margin: 0 30px; padding:0 20px;  border:solid red;  border-width: 0 6px  0 6px;  background-color:#fff;}	
+</style>
+</head>
+<body>
+<img id="ruler" src="images/ruler_1000px.gif" alt="ruler" />
+<p>This element width is set to 400 pixels. On each side of the box, the padding is 20 pixels and the border is 6 pixels, so now the total width of the element is 452 pixels. With the addition of 30 pixels of margins each side the element, the total width claimed by this element is 512 pixels.</p>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+</html>

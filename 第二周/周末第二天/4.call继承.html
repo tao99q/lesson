@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //
+    function F1(){
+        this.x=100;
+        this.y=200;
+    }
+    F1.prototype.getX=function(){
+        console.log(this.x);
+    };
+    function F2(){
+        //this->F2的实例,f2
+        //F1()->this==window,想办法把F1执行的时候里面的this变成f2
+        F1.call(this);
+        //F1.call(f2)
+        //call让F1执行了,就是this.x=100;this.y=200;执行了
+        //f2.x=100;
+        //f2.y=200;
+    }
+    var f2=new F2();//this=f2  {x:100,y:200}
+    var f3=new F2();//this=f3
+    console.log(f2.x);
+
+
+
+
+</script>
+</body>
+</html>

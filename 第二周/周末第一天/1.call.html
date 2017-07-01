@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    function fn(){
+        console.log(this);
+        console.log(arguments.callee===fn.constructor);
+        fn.caller
+    }
+    fn();
+    fn.s=function(){console.log(this)};
+    fn.s();//this->fn
+    var obj={};
+    obj.s=function(){
+        console.log(this)
+    };
+    obj.s()//this->obj
+
+    fn.__proto__===Function.prototype
+    console.dir(Function.prototype);
+
+
+    //call 作用1.改变前面函数的this;2.让前面函数执行
+    //call(参数1,参数2,参数3..)参数1:用来改变前面函数this的,参数2,参数3...给后面函数传参数的
+    //call(),call(null),call(undefined),1前面函数的this就是window
+    //fn.call;
+    //fn.__proto__-->Function.prototype
+
+    function ff(){
+        console.log(this)
+    }
+    ff();//this ==window
+    ff.call();//this==window
+    ff.call(null);//this==window
+    ff.call(undefined);//this==window
+
+    function ss(n,m){
+        console.log(n+m,this)
+    }
+    ss(1,2);
+    ss.call(undefined,1,2);//n=1,m=2
+    ss.call(null);//n=undefined,m=undefined,n+m=NaN
+
+
+    function dd(n,m,z){
+        console.log(this);
+        console.log(this.m + this.n);
+        console.log(m +n);
+    }
+    var obj={n:10,m:"20"};
+    var n= 1,m=2;
+    dd(1,2,3);//n=1,m=2,z=3,this==window,
+    dd.call();//
+    dd.call(obj,1,2,3)//this=obj,obj.m+obj.n="2010";m+n=3
+
+    function qq(){
+        console.log(typeof this)
+    }
+    qq.call(1);//this ==Number
+</script>
+</body>
+</html>

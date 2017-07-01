@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			#box1{
+				width: 400px;
+				height: 200px;
+			}
+			#box1{
+				background: radial-gradient(#fff,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(#fff,yellow,orange,red,plum);		
+			}
+			/*
+			 * 0，0 盒子的左上角
+			 */
+		    #box1{
+				/*圆心的位置：50px 200px*/
+				background: radial-gradient(50px 200px,#fff,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(50px 200px,#fff,yellow,orange,red,plum);		
+			}
+			#box1{
+				/*circle强制圆形渐变*/
+				background: radial-gradient(circle,#fff,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(circle,#fff,yellow,orange,red,plum);		
+			}
+			
+			#box1{
+				/*长方形 ：默认值ellipse椭圆形渐变*/
+				background: radial-gradient(ellipse,#fff,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(ellipse,#fff,yellow,orange,red,plum);		
+			}
+			#box1{
+				height: 400px;
+				background: radial-gradient(200px  200px at 0px 200px,#fff,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(200px  200px at 0px 200px,#fff,yellow,orange,red,plum);
+			}
+			#box1{
+				height: 400px;
+				background: radial-gradient(200px  200px at top,#fff,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(200px  200px at top,#fff,yellow,orange,red,plum);
+			}
+			#box1{
+				height: 400px;
+				background: radial-gradient(200px  200px at 0 50%,#fff,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(200px  200px at 0 50%,#fff,yellow,orange,red,plum);
+			}
+			#box1{
+				height: 400px;
+				background: radial-gradient(circle at 0 50%,#fff,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(circle at 0 50%,#fff,yellow,orange,red,plum);
+			}
+			
+			#box1{
+				/*closest-side   farthest-side*/
+				height: 400px;
+				background: radial-gradient(circle closest-side,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(circle closest-side,#fff,yellow,orange,red,plum);
+			}
+			#box1{
+				/*closest-corner farthest-curner*/
+				height: 400px;
+				background: radial-gradient(circle closest-corner,yellow,orange,red,plum);
+				background: -webkit-radial-gradient(circle closest-corner,#fff,yellow,orange,red,plum);
+			}
+			#box1{
+				background: -repeating-radial-gradient(#ddd,#ddd 5px,yellow 10px,orange 15px);
+				background: -webkit-repeating-radial-gradient(#ddd,#ddd 5px,yellow 10px,orange 15px);
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div id="box1"></div>
+	</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>阻止事件默认行为</title>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<body>
+	<a href="javascript:;"></a>
+	<a id="a" href="http://baidu.com"></a>
+	<script type="text/javascript">
+
+		var a=document.getElementById("a");
+		a.onclick=function (e) {
+		    //事件对象也存在兼容性，在低版本浏览器中，不会给函数传参数，事件对象存在window.event中
+			e=e||window.event;
+			//e.target 事件源存在兼容性
+			e.target=e.target||e.srcElement;
+			//pageX,pageY在低版本浏览器中没有
+			e.pageX=e.pageX||(e.clientX+(document.documentElement.scrollLeft||document.body.scrollLeft));
+			e.pageY=e.pageY||(e.clientY+(document.documentElement.scrollTop+document.body.scrollTop));
+		    return false;//没有兼容性
+			e.preventDefault();//阻止默认行为的
+			//在IE下没有
+			e.returnValue=false;
+        }
+	</script>
+	</body>
+</html>

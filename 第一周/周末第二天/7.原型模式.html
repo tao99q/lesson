@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--
+
+
+-->
+<script type="text/javascript">
+    var ary=[];
+    console.dir(ary);
+
+    function Fn() {
+        this.a=1
+    }
+    var obj1=new Fn();
+    function f() {
+        console.log(arguments.callee);
+        console.log(f.prototype.constructor);
+    }
+    f();
+
+    console.log(Array.prototype.constructor);
+    console.log(typeof Array);
+
+    function FF() {
+        this.x=1;
+        this.y=2;
+        this.get=function () {
+            console.log(this.x + this.y);
+        }
+    }
+    FF.prototype.getX=function () {
+        console.log(this.x++);
+    };
+    FF.prototype.get=function () {
+        console.log(this.x + this.y);
+    };
+    var f1=new FF();
+    var f2=new FF();
+    console.log(f1.get === f2.get);//false
+    console.log(f1.getX === f2.getX);//true
+</script>
+</body>
+</html>

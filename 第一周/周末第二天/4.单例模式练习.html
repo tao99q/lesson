@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        ul,li{
+            list-style: none;
+            -webkit-user-select: none;
+        }
+        #oUl,#oUl2{
+            width: 500px;
+            height: 300px;
+            margin: 20px auto;
+            border: 2px dashed darkgoldenrod;
+            padding: 20px;
+        }
+        #oUl2 li,#oUl li{
+            height: 60px;
+            line-height: 60px;
+            background-color: antiquewhite;
+            box-shadow: 1px 2px 3px;
+            font-size: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        #oUl2 li:hover,#oUl li:hover{
+            background-color: burlywood;
+            color: honeydew;
+        }
+        #btn {
+            display: block;
+            width: 100px;
+            height: 40px;
+            font-size: 30px;
+            color: white;
+            background-color: blue;
+            line-height: 40px;
+            box-shadow: 2px 2px 1px;
+            margin: 0 auto;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<ul id="oUl">
+    <li>2</li>
+    <li>5</li>
+    <li>1</li>
+    <li>3</li>
+</ul>
+<button id="btn">添加</button>
+<ul id="oUl2">
+</ul>
+</body>
+</html>
+<script src="public.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var oUl=document.getElementById("oUl");
+    var oUl2=document.getElementById("oUl2");
+    var oLis=oUl.getElementsByTagName("li");
+    var btn=document.getElementById("btn");
+    for (var i=0;i<oLis.length;i++){
+        oLis[i].onclick=function () {
+            this.innerHTML++;
+        }
+    }
+    btn.onclick=function () {
+        oUl2.innerHTML="";
+        oLis=oUl.getElementsByTagName("li");
+        var ary=public.toArray(oLis);
+        ary.sort(function (a,b) {
+            return a.innerHTML-b.innerHTML
+        });
+        console.log(ary);
+        for (var j=0;j<ary.length;j++){
+            console.log(oUl2);
+            oUl2.appendChild(ary[j].cloneNode(true));
+        }
+    };
+
+//    function toArray(likeArray) {
+//        var ary=[];
+//        for (var i=0;i<likeArray.length;i++){
+//            ary.push(likeArray[i])
+//        }
+//    }
+</script>

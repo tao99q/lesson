@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #box, .box {
+            width: 100px;
+            height: 200px;
+            background-color: yellowgreen;
+        }
+    </style>
+</head>
+<body>
+<button>按钮</button>
+<div id="box"></div>
+<div class="box">
+    <p>p1</p>
+    <p class="p">p2</p>
+    <p>p3</p>
+</div>
+<script src="js/jquery-3.2.1.min.js"></script>
+<script>
+    /*
+
+     $("#box").click(function(e){}).mouseover(function(e){});
+
+     //on绑定事件
+     $("#box").on("click",function(e){});
+
+     // $("#box").on("事件类型","筛选器从#box的后代中筛选"，{对象，用来给事件对象绑定数据用的},function(e){});
+
+
+     //1.给多个事件行为,绑定同一个函数
+     $("#box").on("click mouseover",fn);
+
+     //on("事件类型type","筛选器",{事件对象绑定的数据data},function(e){},false/true)
+     //2.on中有个参数是用来筛选的 (后代筛选)
+     $(".box").on("click","p.p",function(e){});
+
+
+     //3.on中还有个参数是用来给事件对象绑定数据的
+     //objData :事件对象绑定的数据
+     //e.data=objData
+     $("#box").on("click",objData,function(e){})
+
+
+     //4.事件命名空间  给事件类型后面加个点和名字:"click.box"
+     //.box就是事件的命名空间
+     $("#box").on("click.box",function(e){});
+
+     //off移除事件
+
+     //预留事件 解决未来要添加的元素绑定事件的问题
+
+     //预留事件的另一种方式 delegate/undelegate
+
+
+     */
+    // $("#box").on("事件类型","筛选器从#box的后代中筛选"，{对象，用来给事件对象绑定数据用的},function(e){});
+
+    /*
+    $(".box p").on("click",function (e) {
+        this;//p标签
+        console.log(this);
+    });
+    $(".box").append("<p>p4</p>");
+    //预留事件，可以解决后来添加的元素事件绑定不上的问题
+    $(".box").on("click","p",function (e) {
+        //给每一个筛选器得到的元素绑定事件 p
+        //this  p
+        console.log(this);
+    });
+    $(".box").append("<p>p5</p>");
+    */
+    var objData={
+        name:"a",
+        f:function(){console.log(this);}
+    };
+
+    $(".box").on("click",".p",objData,function (e) {
+        //e.data=objData
+        //e.data data这个属性是JQ自己做的处理，定义属性
+        //console.dir(e);
+        console.log(e.data);
+    });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 4.17 Basic Text Layout</title>
+<style>
+/* structure */
+* {margin:0; padding:0;} /* remove all margins */
+body {font:1.0em Helvetica, arial, sans-serif;} /* set the overall font size and family */
+article {width:500px; margin:20px auto; padding:20px; border:2px solid #999;} /* create a centered box */
+</style>
+</head>
+
+<body>
+    <article>
+    	<h1>CSS</h1>
+        <p>CSS stands for Cascading Style Sheets. CSS controls the presentational aspects of your Web pages.</p>
+        <h2>Block-Level Elements</h2>
+        <p>Block-level elements stack down the page. They include:</p>
+        	<ul>
+            	<li><code>header</code></li>
+            	<li><code>section</code></li>
+            	<li><code>h1, h2, etc.</code></li>
+        	</ul>
+       	<h2>Inline Elements</h2>
+        <p>Inline elements sit next to each other, if there is room. They include:</p>
+        	<ul>
+            	<li><code>img</code></li>
+            	<li><code>a</code></li>
+            	<li><code>em</code></li>
+        	</ul> 
+        <blockquote><q>Typography maketh the Web site.</q> <cite>CWS</cite></blockquote>
+    </article>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

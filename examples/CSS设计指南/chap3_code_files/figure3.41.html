@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 3.41 Linear Gradients</title>
+<style>
+* {margin:0; padding:0;}
+div {height:150px; width:152px; border:1px solid #CCC; float:left; margin:10px;} /* styles the element box */
+h1 {text-align:left; font:25px Helvetica, Arial, sans-serif; margin:120px 5px;} /* centers the headline vertically and horizontally */
+ /* centers the headline vertically and horizontally */
+.gradient1 {background:-webkit-linear-gradient(#64d1dd, #fff 50%, #64d1dd);} /* top to bottom by default */
+.gradient2 {background:-webkit-linear-gradient(#e86a43 20%, #fff 50%, #e86a43 80%);} /* left to right */
+.gradient3 {background:-webkit-linear-gradient(#64d1dd, #fff 25%, #64d1dd 50%, #fff 75%, #64d1dd);} /* top-left to bottom-right */
+.gradient4 {background:-webkit-linear-gradient(#e86a43, #fff 25%, #64d1dd 25%, #64d1dd 75%, #fff 75%, #e86a43);} /* top-left to bottom-right */
+</style>
+</head>
+
+<body>
+    <div class="gradient1"><h1>1</h1></div>
+    <div class="gradient2"><h1>2</h1></div>
+    <div class="gradient3"><h1>3</h1></div>
+    <div class="gradient4"><h1>4</h1></div>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

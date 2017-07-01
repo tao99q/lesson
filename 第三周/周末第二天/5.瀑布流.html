@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>瀑布流</title>
+    <style>
+        html,body,ul,li,img,p{
+            margin: 0;
+            padding: 0;
+        }
+        img{
+            border: none;
+        }
+        ul,li{
+            list-style: none;
+        }
+        body{
+            padding: 10px;
+            background-color: rgba(221, 221, 221, 0.29);
+        }
+        ul{
+            float: left;
+            margin: 0 0.8%;
+            width: 18.4%;
+        }
+
+        ul li{
+            background-color: #fff;
+            margin: 10px 0;
+            box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
+            height: 200px;
+        }
+        ul li img{
+            width: 100%;
+            height: 70%;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+        ul li p{
+            color: #ffdddd;
+            font-size: 16px;
+            padding: 0 5px;
+            height: 30%;
+        }
+    </style>
+</head>
+<body>
+<ul></ul>
+<ul></ul>
+<ul></ul>
+<ul></ul>
+<ul></ul>
+</body>
+</html>
+<!--
+页面上有5列(5个ul),每个ul的高度不设置,让li自动撑开,随着li增加,ul高度不断地改变,我每次都给当前最矮的那个ul增加一个li,每次增加之前先将五个ul按照高度从小到大排序,给第一个ul增加li
+在创建li的时候高度随机给的,图片也是随机给的
+-->
+<script src="js/public.js"></script>
+<script src="js/pbl.js"></script>

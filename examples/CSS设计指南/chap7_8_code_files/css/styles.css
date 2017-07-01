@@ -1,0 +1,406 @@
+@charset "UTF-8";
+/* CSS Document */
+ 
+* {margin:0; padding:0;}
+body {
+	font-family:helvetica, arial, sans-serif; 
+	background:#efefef; margin:0 0;
+	}
+#wrapper {
+	width:980px; margin:0 auto 20px;
+	}
+header {
+	position:relative; /* positioning context for title and search areas */
+	height:70px;   /*  fixed height to enclose absolutely positioned elements */	
+	margin:10px 0;  /* vertical space around header */
+	border-radius:20px 0px 20px 0px; /* order: tl, tr, br, bl */
+	box-shadow:0 12px 8px -9px #555; /* negative spread brings shadow inside box width */
+	background:#fff;
+	padding-top:1px; /* prevents menu's top margin collapsing */
+	}
+header section#title {
+	position:absolute;
+	width:300px; /* wide enough to not force text wrap */
+	height:65px; /* tall enough for both lines of text */
+	left:0px; /* top left corner positioning */
+	top:0px;
+	}
+header h1 {
+	padding:9px 12px 0;
+	font-family:Lato, helvetica, sans-serif;
+	font-style:normal;
+	font-weight:900;
+	font-size:2.2em;
+	line-height:1;
+	letter-spacing:-.025em;
+	color:#4eb8ea;
+	}
+header h2 {
+	font-family:"Source Sans Pro", helvetica, sans-serif;
+	font-style:normal;
+	font-weight:400;
+	font-size:.9em;
+	color:#333;
+	padding:0px 12px;
+	line-height:1;
+	letter-spacing:-.025em;
+	}
+
+/* FEATURE AREA */	
+section#feature_area {
+	overflow:hidden; /* encloses the floated child elements */
+	margin:16px 0 0; /* space between header and feature area */
+	padding:0 0 10px; 
+	}
+section#feature_area article { /* the blog lead-off area */
+	float:left;
+	width:66%;
+	}
+section#feature_area article .inner {
+	padding:12px; /* space around content */
+	background:#fff;
+	border-radius:20px 0;
+	box-shadow:0 12px 8px -9px #555;
+	}
+section#feature_area article a { /* link around h3 headline */
+	text-decoration:none;
+	}
+section#feature_area article img { /* blog lead-off CWS pic */
+	float:left;
+	padding:0 10px 10px 0;
+	}
+section#feature_area article h4 {  /* blog lead-off date */
+	font-family:"Source Sans Pro", helvetica, sans-serif;
+	font-style:normal;
+	font-weight:400;
+	font-size:1em;
+	color:#f58c21;
+	letter-spacing:-.025em;
+	}
+section#feature_area article h3 { /* blog lead-off headline */
+	font-family:Lato, helvetica, sans-serif;
+	font-style:normal;
+	font-weight:700;
+	font-size:1.75em;
+	color:#555;
+	margin:0px 0 12px 0px;
+	letter-spacing:-.05em;
+	}
+section#feature_area article#blog_leadoff p { /* body copy of blog lead-off */
+	font-family:"Source Sans Pro", helvetica, sans-serif;
+	font-style: normal;
+	font-weight:400;
+	font-size:1.1em;
+	line-height:1.5em;
+	color:#616161;
+	margin:0 0px;
+	text-align:justify;
+	}
+section#feature_area article#blog_leadoff p::first-letter { /* the drop-cap */
+	font-family:Lato, helvetica, sans-serif; 
+	font-style: normal;
+	font-weight:700;
+    font-size:4.5em;  
+    float:left;  
+    margin:.05em .05em 0 0;  
+    line-height:0.6;
+	text-shadow:1px 3px 3px #ccc;
+	}
+section#feature_area article#blog_leadoff p::first-line {  /* the first line small caps */
+	font-variant:small-caps;
+	font-size:1.2em;
+	}
+section#feature_area aside { /* the containter for the form and links */
+	width:34%;
+	float:right;
+	}
+/* see form css for form element */
+section#feature_area nav {
+	width:19em; /* overall container width */
+	float:right;/* aligns to right edge of section */
+	margin:15px 0 0; /* space above and below */	
+	padding:.6em 0em .75em; /* padding above and below content */		
+	background:#fff;
+	border-radius:10px 0 10px 0;
+	box-shadow: 0 12px 8px -9px #555;
+	}
+#feature_area nav h3 {
+	padding:0 14px 0; /* horizontal space for title */
+	font-family:Lato, helvetica, sans-serif;
+	font-weight:700;	
+	font-size:1.3em;
+	text-align:left;
+	color:#aaa;
+	letter-spacing:-.05em;
+	}
+#feature_area nav ul {
+	margin:0em 0 0 20px;
+	}
+#feature_area nav li {
+	padding:.7em 0 0 2em;
+	position:relative; /* positioning context for bullets */
+	list-style-type:none
+	}
+#feature_area nav li:before { /* custom list bullets */
+	content:""; 	/* empty string for unneeded content */
+	position:absolute; /* relative to list items */
+	height:10px; /* size bullet */
+	width:10px;
+	left:12px; /* position bullet */
+	top:12px;
+	border-radius:5px 0 5px 0; /* the bullet shape */
+	background-color:#d6e636; /* bullet color */
+	box-shadow:1px 1px 2px #888;
+	}
+#feature_area nav li a {
+	display:block; /* link becomes full-width */
+	text-decoration:none; /* remove default underline */
+	font-size:.9em;
+	color:#616161;
+	}
+#feature_area nav li a:hover {
+	color:#000;
+	}
+/* BOOK AREA */
+section#book_area	{
+	clear:both;
+	border-radius:20px 0px 20px 0px;
+	border:1px solid #f58c21;	
+	margin:8px 0 16px; /* separation from feature area and footer */
+	overflow:hidden; /* encloses floated article elements */
+	}	
+#book_area  article { /* four columns for the books */
+	float:left;
+	width:25%;
+	padding:10px 0;
+	background:none;
+	}
+#book_area article .inner { /* wrapper around books */
+	position:relative; /* positioning context for popups */
+	width:140px; 
+	margin:0 auto;
+	}
+#book_area  .inner h3 { /* rotated type */
+	position:absolute;
+	width:160px;
+	left:112%; /* positions type on right side of book */
+	bottom:5px;
+	-webkit-transform:rotate(-90deg);
+	-webkit-transform-origin:left bottom;
+	   -moz-transform:rotate(-90deg);
+	   -moz-transform-origin:left bottom; /* turns the type - needs VSPs */
+		-ms-transform:rotate(-90deg);
+	   	-ms-transform-origin:left bottom; /* turns the type - needs VSPs */
+		    transform:rotate(-90deg); /* sets rotation point at start of type */
+		    transform-origin:left bottom;
+	color:#ccc;
+	font-size:1.4em;
+	font-family:Lato, helvetica, sans-serif;
+	font-style:normal;
+	font-weight:900;
+	text-align:left;
+	}
+#book_area article.right:last-child h3 {
+	left:85%; /* different offset for narrower 4th book cover */
+	}
+#book_area article img {
+	box-shadow: 0 12px 8px -9px #555; /* shadow under book */
+	}
+	
+/* start of the pop-ups */
+#book_area article aside {
+	display:none; /* hides popups */
+	position:absolute; /* relative to images */
+	z-index:2;
+	width:200px; /* width of popup */
+	background:#fff;
+	padding:10px 2px 5px; /* space around popup content */
+	border:2px solid #f58c21;
+	border-radius:10px 0px 10px 0px;
+	box-shadow:4px 4px 16px #555; 
+	color:#555;
+	font-family:"Source Sans Pro", helvetica, sans-serif;
+	font-size:.8em;
+	line-height:1.5em;
+	}
+#book_area article:hover aside {
+	display:block; /* shows popup */
+	}
+#book_area article aside li {
+	padding:.25em 0 .75em 1em;
+	list-style-type:none;
+	line-height:1.2em;
+	}
+#book_area article aside li a {
+	text-decoration:none;
+	font-size:1.2em;
+	color:#616161;
+	}
+#book_area article aside li a:hover {
+	color:#333;
+	}
+#book_area article.left aside {
+	left:84%; top:14px; /* positions popup on right side of image */
+	}
+#book_area article.right aside {
+	right:84%; top:14px;	/* positions popup on left side of image */
+	}
+#book_area article aside:after { /* red triangle box*/
+	content:""; /* some content required - using empty text string */
+	position:absolute; /* relative to popup */
+	top:33px;
+	border:12px solid;
+	height:0px; width:0px; /* collapses box to create triangle */
+	}	
+#book_area article.left aside:after { /* create the triangle by making three sides transparent */
+	right:100%;
+	border-color:transparent #f58c21 transparent transparent; 
+	}
+#book_area article.right aside:after { /* create the triangle by making three sides transparent */
+	left:100%;
+	border-color:transparent transparent transparent #f58c21;
+	}
+#book_area article aside:before { /* red triangle box*/
+	content:""; /* some content required - using empty text string */
+	position:absolute; /* relative to popup */
+	border:8px solid;
+	height:0px; width:0px; /* collapses box to create triangle */
+	z-index:100;
+	top:37px;
+	}
+#book_area article.left aside:before { /* create the triangle by making three sides transparent */
+	right:100%; 
+	border-color:transparent white transparent transparent; 
+	}
+#book_area article.right aside:before { /* create the triangle by making three sides transparent */
+	left:100%;
+	border-color:transparent transparent transparent white;
+	}
+footer {
+	padding:.5em 0 .35em 0; /* space above and below content */
+	text-align:center; /* centers content */
+	border-radius:10px 0px 10px 0px; 
+	background:#fff;
+	box-shadow:0 12px 8px -9px #555;
+	}
+footer p { /* text line styling */
+	font-family:'Source Sans Pro';
+	font-weight:400;
+	font-size:.85em;
+	letter-spacing:-.05em;
+	color:#555;
+	}
+footer p a { /* link in text line */
+	font-family:'Source Sans Pro';
+	font-style:italic;
+	font-weight:700;
+	font-size:1em;
+	color:#4eb8ea;
+	text-decoration:none;
+	}
+footer p a:hover {
+	color:#777;
+	}
+footer ul { /* list of links */
+	display:inline-block; /* shrink-wraps list */
+	margin:4px 0 0; 
+	}
+footer li {
+	list-style-type:none; /* removes default bullets */
+	float:left; /* makes list horizontal */
+	font-family:"Source Sans Pro";
+	font-weight:400;
+	font-size:.85em;	
+	}
+footer li + li a {
+	border-left:1px solid #ccc; /* dividers between links */
+	}
+footer li a {
+	text-decoration:none; /* removes default underlining off links */
+	color:#aaa;
+	padding:0 5px; /* space between links */
+	}
+footer a:hover {
+	color:#777;
+	}
+	
+/* START OF MEDIA QUERIES */
+@media only screen and (max-width:1000px) {
+	body { 
+		margin:0 8px 20px; /* add right margin to prevent scroll clipping */
+	}
+	#wrapper {width:98%;} /* layout becomes fluid */
+	header {
+    	height:100px; padding:1px 0 0 0; /* header height increases to make romm for lower menu */
+	}
+	header nav.menu {
+		margin-top:65px; /* moves menu down below title & search */
+	}
+	section#feature_area {padding-bottom:0;}
+	section#feature_area article { /* makes blog leadoff full-width */
+		float:none; 
+		width:auto;
+	}
+	section#feature_area aside { /* makes aside full-width */
+		float:none;
+		width:auto;
+	}
+	section#feature_area aside form {
+		float:left; /* moves form to left of aside */
+		margin:15px 0 0 0; /* matches nav top margin */
+	}
+	section#feature_area aside nav {
+		width:17em; /* decreases width on blog link area */
+	}
+}	
+
+@media only screen and (max-width:640px) {
+	header {height:100px;}
+	header nav.menu {width:94%; font-size:.65em; } /* more horiz margin - relatively */
+	section#book_area article { /* the blog post */
+		width:auto; float:none; margin:0; padding:0; /* now each one is full width */
+	}
+	section#feature_area aside form, section#feature_area aside nav { /* the blog post */
+		margin:10px auto; /* adds top and bottom margins */
+		float:none; /* now sit one above the other */
+	} 
+	section#book_area article .inner {width:98%; margin:0 0 0 5px; } /* pic wrapper */
+	#book_area  .inner h3 { /* unrotate the rotated type */
+		-webkit-transform:none;
+		-moz-transform:none;
+		-moz-transform-origin:none;
+		-ms-transform-origin:none;
+		transform:none;
+		position:static;
+	}
+	#book_area article img { /* control the image width */
+		width:40%;
+	}
+	section#book_area {background:#fff; padding: 0 10px 10px; margin:0 0 10px;}
+	#book_area article aside { /* display the popup content next to the image */
+		display:block;
+		position:static;
+		float:right;
+		margin:0; padding:0 0 20px 0;
+		font-size:.8em;
+		border:none;
+		width:55%;
+		box-shadow:none;
+	}
+	section#book_area article aside::before, /* hides the triangles on the popups */
+	section#book_area article aside::after {
+		display:none;
+	}
+}
+@media only screen and (max-width:320px) { /* portrait iPhone */
+	header {height:90px;} /* reduces height of header */
+	header section#title {top:12px;}
+	header section#title h1 {font-size:1.25em;} /* makes type smaller */
+	header section#title h2 {font-size:.75em;} /* makes type smaller */
+	header form.search {top:6px; right:2px;} /* moves search up */
+	header nav.menu {font-size:.55em; margin-top:55px;} /* scales down and moves menu up */
+	nav.menu ul li a {
+		padding:5px 4px; /* increase links sizes to give better target */
+		margin:0;
+	}
+}

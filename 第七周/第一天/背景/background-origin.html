@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			div{
+				display: inline-block;
+				margin: 20px;
+			}
+			#box1 {
+				/*background-origin
+				 不会改变图片大小，顾上不顾下，顾左不顾右，只要不超出border就可以
+				*/
+				width: 400px;
+				height: 400px;
+				padding: 20px;
+				border: 30px dashed orange;
+				background: url(../img/border.jpg) no-repeat;
+				/*border-box：从border的外边界算起，也就是包括border*/
+				/*background-origin: border-box;*/
+				/*padding-box：包括padding，不包括border*/
+				/*background-origin: padding-box;*/
+				/*content-box：只有内容部分不包括padding*/
+				background-origin: content-box;
+			}
+			#box2{
+				width: 300px;
+				height: 300px;
+				padding: 20px;
+				border: 30px dashed orange;
+				background: url(../img/border.jpg) no-repeat;
+				background-clip: border-box;
+				background-clip: padding-box;
+				background-clip: content-box;
+			}
+			#box3{
+				width:400px;
+				height: 300px;
+				padding: 20px;
+				border: 30px dashed orange;
+				background: url(../img/border.jpg) no-repeat;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				font-size: 80px;
+				font-weight: bold;
+			}
+			#box4{
+				width:300px;
+				height: 300px;
+				padding: 20px;
+				border: 30px dashed orange;
+				background: url(../img/bg.jpg) no-repeat;
+				
+				/*background-size*/
+				background-size: auto;
+				background-size: 100% 100%;
+				background-size: cover;
+				/*cover:放大图片以适应铺满整个容器，但是宽高比例不变，让图片失真*/
+				
+			}
+			#box5{
+				width:100px;
+				height: 100px;
+				padding: 20px;
+				border: 30px dashed orange;
+				background: url(../img/border.jpg) no-repeat;
+				/*contain 将图片缩小，能在盒子中展示，原来宽高比例不变，也是会让图片失真*/
+				background-size: contain;
+			}
+			#box6{
+				width:300px;
+				height: 300px;
+				padding: 20px;
+				border: 30px dashed orange;
+				background: url(../img/bg.jpg);
+				/*既然背景图片可是复制，也就是说背景图片可以放多张*/
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="box1"></div>
+		<div id="box2"></div>
+		<div id="box3">李小龙,真厉害！ha!hhaha</div>
+		<div id="box4"></div>
+		<div id="box5"></div>
+		<div id="box6"></div>
+	</body>
+
+</html>

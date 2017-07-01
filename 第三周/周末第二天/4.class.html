@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div id="oDiv" class="box1 box11 div1 div2"></div>
+<script src="js/public.js"></script>
+<script>
+    var oDiv=document.getElementById("oDiv");
+    console.log(oDiv.className.indexOf("box1"));
+    var ary=oDiv.className.split(" ");
+    function hasClass(ele,classStr){
+        var ary=ele.className.split(" ");
+        for(var i=0;i<ary.length;i++){
+            if(ary[i]==classStr){
+                return true
+            }
+        }
+    }
+    console.log(hasClass(oDiv, "div2"));
+
+    //分析得到每一个class名他的左边要么是空格要么是作为开头,右边要么是空格要么作为结尾
+   //   /(^| +)div1( +|$)/
+    function hasClass(curEle,classStr){
+        var reg=new RegExp("(^| +)"+classStr+"( +|$)");
+        return reg.test(curEle.className);
+    }
+    console.log(public.hasClass(oDiv, "div2"));
+    console.log(public.hasClass(oDiv, "div3"));
+
+
+    //给当前元素增加一个或者多个class名
+    //oDiv.className+=" box4 box5     box6 ";
+
+    function addClass(curEle,classStr){
+        //1.先对classStr做处理,先把首尾空格去掉,再按照一到多个空格拆开,变成数组
+        ///^ +| +$/g;
+        classStr=classStr.replace(/^ +| +$/g,'').split(/ +/g);
+        //2.循环判断有没有那个class名,没有的话给元素加上,有的话不加
+        for(var i=0;i<classStr.length;i++){
+            if(!hasClass(curEle,classStr[i])){
+                curEle.className+=" "+classStr[i];
+            }
+        }
+        //为了防止之前没有class名,我们再做一次处理,将curEle的className值的首尾空格再去掉一次,就完美了(玩美)
+        curEle.className=curEle.className.replace(/^ +| +$/g,'');
+    }
+
+
+
+    addClass(oDiv," box4 box5     box6 ");
+
+
+
+    function removeClass(curEle,classStr){
+        //1.先处理classStr
+        classStr=classStr.replace(/^ +| +$/g,"").split(/ +/g);
+        for(var i= 0;i<classStr.length;i++){
+            var reg=new  RegExp("(^| +)"+classStr[i]+"( +|$)");
+            hasClass(curEle,classStr[i])?curEle.className=curEle.className.replace(reg,' '):null;
+        }
+        curEle.className=curEle.className.replace(/^ +| +$/g,'');
+    }
+    //"div1 div2 div3"
+    removeClass(oDiv," div2  div3  ");
+</script>
+</body>
+</html>

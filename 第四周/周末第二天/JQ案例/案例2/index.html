@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/demo.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style1.css"/>
+</head>
+<body id="page">
+<div class="container">
+    <!-- Codrops top bar -->
+    <section class="pe-container">
+        <ul id="pe-thumbs" class="pe-thumbs">
+            <!--<li>-->
+                <!--<a href="#"><img src="images/thumbs/1.jpg"/></a>-->
+            <!--</li>-->
+        </ul>
+    </section>
+</div>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script>
+    $(function(){
+        //绑定数据
+        var htmlStr=``;
+        for(var i=1;i<37;i++){
+            //var code=Math.round(Math.random()*(36-1)+1);
+            htmlStr+=`<li><a href="javascript:;"><img src="images/thumbs/${i}.jpg" alt=""/></a></li>`;
+        }
+        $("#pe-thumbs").html(htmlStr);
+
+        $("#pe-thumbs li").mouseover(function(){
+            $("img",$(this)).css({zIndex:10,opacity:0.8,transform:"scale(1.2)"});
+            $(this).next().find("img").css({zIndex:8,opacity:0.6,transform:"scale(0.9)"});
+            $(this).prev().find("img").css({zIndex:8,opacity:0.6,transform:"scale(0.9)"});
+            $("img").eq($(this).index()+9).css({zIndex:8,opacity:0.6,transform:"scale(0.9)"});
+            $("img").eq($(this).index()-9).css({zIndex:8,opacity:0.6,transform:"scale(0.9)"});
+            $("img").eq($(this).index()+8).css({zIndex:6,opacity:0.5,transform:"scale(0.8)"});
+            $("img").eq($(this).index()-8).css({zIndex:6,opacity:0.5,transform:"scale(0.8)"});
+            $("img").eq($(this).index()+10).css({zIndex:6,opacity:0.5,transform:"scale(0.8)"});
+            $("img").eq($(this).index()-10).css({zIndex:6,opacity:0.5,transform:"scale(0.8)"});
+
+        }).mouseout(function(){
+            $("img").css({zIndex:0,opacity:0.3,transform:"scale(1)"});
+        })
+    })
+</script>
+</body>
+</html>

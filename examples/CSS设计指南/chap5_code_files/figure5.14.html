@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 5.14 A Multi-Row, Multi-Column Layout</title>
+<link href='http://fonts.googleapis.com/css?family=Metrophobic|Droid+Sans:400,700|Droid+Sans+Mono|Open+Sans:400italic,700italic,800italic,300italic,600italic,400,300,600,700,800|Open+Sans+Condensed:300,300italic,700' rel='stylesheet' type='text/css'>
+
+<style>
+* {margin:0; padding:0;}
+body {
+	font-family:helvetica, arial, sans-serif; 
+	}
+#wrapper {
+	width:960px; margin:0 auto; overflow:hidden; border:1px solid #6b5678;
+	}
+header {
+	background:#a292ac;
+	padding:3px 10px;
+	}
+header h1 {
+	font-family:Metrophobic;
+	font-size:2.5em;
+	letter-spacing:-.05em;
+	color:#fff;
+	}
+nav{
+	background:#f7923a;
+	padding:3px 10px;
+	}
+section#branding img {
+	display:block;
+	}
+/* FEATURE AREA */	
+section#feature_area  article {
+	float:left;
+	width:320px;
+	padding:10px 0;
+	background:#fff;
+	border-top:4px solid #f7be84;
+	}
+section#feature_area article .inner {
+	margin:10px 20px;
+	padding:5px;
+	background:#fff;
+	border:5px solid;
+	}
+section#feature_area article:nth-child(2) {
+	background:#e5e8ed;
+	}
+section#feature_area article:nth-child(1) .inner {
+	border-color:#d7dd6f;
+	}
+section#feature_area article:nth-child(2) .inner {
+	border-color:#f6dec5;
+	}
+section#feature_area article:nth-child(3) .inner {
+	border-color:#d1d8e4;
+	}
+section#feature_area article p {
+	font-family:'Open Sans';
+	font-weight:300;
+	font-size:1.15em;
+	line-height:1em;
+	text-align:center;
+	color:#616161;
+	}
+/* PROMO AREA */	
+#promo_area  article {
+	float:left;
+	width:240px;
+	padding:10px 0;
+	border-top:4px solid #f7be84;
+	background:#fff;
+	}
+#promo_area article .inner {
+	margin:0 20px;
+	padding:10px;
+	background:#e5e8ed;
+	}
+#promo_area article p {
+	font-family:'Open Sans Condensed';
+	font-weight:300;
+	font-size:1em;
+	line-height:1.5em;
+	color:#616161;
+	}
+footer {
+	clear:both;
+	text-align:center;
+	background:#6b5678;
+	}
+footer p {
+	font-family:'Open Sans';
+	font-weight:600;
+	font-size:.7em;
+	letter-spacing:-.05em;
+	color:#fff;
+	}
+footer a {
+	font-family:'Open Sans';
+	font-weight:700italic;
+	font-size:1em;
+	color:#f7be84;
+	text-decoration:none;
+	}
+</style>
+</head>
+
+<body>
+	<div id="wrapper">
+        <header>
+            <h1>Full-width content</h1>
+        </header>
+        <nav>
+        	<p>Navigation menus go here</p>
+        </nav>
+        <section id="branding">
+            <img src="images/grand_canyon.jpg" alt="Grand Canyon Sunset" />
+        </section><!--end branding area-->
+        
+        <section id="feature_area">
+            <article>
+                <div class="inner">
+                    <p>Integer at neque in magna lacinia bibendum sit amet sit amet dolor.</p>
+                </div>
+            </article>
+            
+            <article>
+                <div class="inner">
+                    <p>Integer at neque in magna lacinia bibendum sit amet sit amet dolor.</p>
+                </div>
+            </article>
+            
+            <article>
+                <div class="inner">
+                    <p>Integer at neque in magna lacinia bibendum sit amet sit amet dolor.</p>
+				</div>
+            </article>
+        
+        </section><!--end feature_area-->
+        
+        <section id="promo_area">
+            <article>
+                <div class="inner">
+                    <p>Integer at neque in magna lacinia bibendum sit amet sit amet dolor. Nam consequat ullamcorper eros, sed bibendum metus faucibus sit amet.</p>
+                </div>
+            </article>
+            
+            <article>
+                <div class="inner">
+                    <p>Integer at neque in magna lacinia bibendum sit amet sit amet dolor. Nam consequat ullamcorper eros, sed bibendum metus faucibus sit amet.</p>
+                </div>
+            </article>
+            
+            <article>
+                <div class="inner">
+                    <p>Integer at neque in magna lacinia bibendum sit amet sit amet dolor. Nam consequat ullamcorper eros, sed bibendum metus faucibus sit amet.</p>
+                </div>
+            </article>
+        	<article>
+                <div class="inner">
+                    <p>Integer at neque in magna lacinia bibendum sit amet sit amet dolor. Nam consequat ullamcorper eros, sed bibendum metus faucibus sit amet.</p>
+                </div>
+            </article>
+            
+        </section><!--end promo_area-->
+    <footer>
+      <p>A CSS template from <a href="http://www.stylinwithcss.com"><em>Stylin&rsquo;
+            with CSS, Third Edition</em></a> by Charles Wyke-Smith</p>    </footer>
+   </div>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<!-- Please note that the watermarked image/images in this code example is/are provided only for the purpose of displaying the code example in your browser. Licensing rights to this image/images is/are not conveyed to you. If you would like to purchase licensing rights for the images in this book, please visit the following url: --> 
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>To purchase the stock images in this book and other great stock images, go to <a href="http://www.bigstockphoto.com/?refid=PEECNmwgKb">bigstockphoto.com</a></p>
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+</html>

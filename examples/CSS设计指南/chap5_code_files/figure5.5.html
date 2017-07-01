@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 5.5 Creating Columns</title>
+<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700|PT+Sans:400,700|Open+Sans:400,700|Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
+<style>
+* {margin:0; padding:0;}
+body {
+	font-family:helvetica, arial, sans-serif;
+	}
+#wrapper {
+	width:960px; margin:0 auto; border:1px solid; overflow:hidden;
+	}
+header {
+	background:#f00;
+	}
+header h1 {
+	font-family:'Droid Sans';
+	font-weight:400;
+	font-size:4em;
+	letter-spacing:-.05em;
+	color:#fff;
+	padding:0 0 5px 10px; 
+	}
+nav {
+	width:150px;
+	float:left;
+	background:#dcd9c0;
+	}
+nav li {
+	list-style-type:none;
+	}
+nav a {
+	font-family:'Open Sans Condensed';
+	font-weight:700;
+	font-size:1.2em;
+	color:#616161;
+	}
+article {
+	width:600px;
+	float:left;
+	background:#ffed53;	
+	}
+article h1 {
+	font-family:'Droid Sans';
+	font-weight:700;
+	font-size:1.5em;
+	letter-spacing:-.05em;
+	color:#616161;
+	}
+article h2 {
+	font-family:'Droid Sans';
+	font-weight:700;
+	font-size:1.25em;
+	letter-spacing:-.05em;
+	color:#616161;
+	text-decoration:overline;
+	margin:10px 0 0 0;
+	}
+article p {
+	font-family:'Open Sans Condensed';
+	font-weight:300;
+	font-size:1em;
+	color:#000;
+	}
+aside {
+	width:210px;
+	float:left;
+	background:#3f7ccf;
+	}
+aside h3 {
+	font-family:'Open Sans Condensed';
+	font-weight:700;
+	letter-spacing:-.075em;
+	color:#ffed53;
+	}
+aside p {
+	font-family:'Open Sans Condensed';
+	font-weight:700;
+	font-size:.85em;
+	line-height:1.2em;
+	color:#fff;
+	}
+footer {
+	clear:both;
+	background:#000;
+	}
+footer p {
+	font-family:'Open Sans';
+	font-weight:700;
+	font-size:.65em;
+	color:#fff;
+	}
+footer a {
+	font-family:'Open Sans';
+	font-weight:700italic;
+	font-size:1em;
+	color:#ffed53;
+	text-decoration:none;
+	}
+</style>
+</head>
+
+<body>
+	<div id="wrapper">
+    	<header>
+    		<h1>A Fixed-Width Layout</h1>
+    	</header>
+		<nav>
+            <ul>
+                <li><a href="#">Link 1</a></li>
+                <li><a href="#">Link 2</a></li>
+                <li><a href="#">Link 3</a></li>
+            </ul>
+        </nav>
+        <article>
+            <h1>Three-Column Layout</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eleifend libero et risus aliquam a cursus felis gravida. Etiam ultricies tristique tellus, vulputate euismod neque elementum ac. Integer at neque in magna lacinia bibendum sit amet sit amet dolor. Nam consequat ullamcorper eros, sed bibendum metus faucibus sit amet. Sed convallis accumsan dui, eu sodales odio mollis nec. Curabitur in nunc sed leo tempor luctus in a dolor. Sed sit amet facilisis sem. Donec scelerisque consectetur velit, vitae bibendum mauris rutrum quis.</p>
+            <h2>This is a Second-Level Heading</h2>
+            <p>Phasellus pretium gravida interdum. Nam interdum posuere tempus. Ut commodo laoreet dolor, non hendrerit mi dictum vitae. Nam nec egestas libero. Quisque sodales tortor ut tortor egestas eu adipiscing enim pellentesque. Cras condimentum tellus in nisl tincidunt et ornare augue dignissim. Nam laoreet elit vitae lorem tincidunt adipiscing. Maecenas pharetra mattis urna, eu adipi  scing diam pharetra ac. Vivamus vulputate odio at velit sagittis a rhoncus lacus lobortis. Morbi porttitor scelerisque est in egestas.</p>
+        </article>
+        <aside>
+            <h3>This is the Sidebar</h3>
+            <p>Integer at neque in magna lacinia bibendum sit amet sit amet dolor. Nam consequat ullamcorper eros, sed bibendum metus faucibus sit amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </aside>
+       	<footer>
+            <p>This is the footer. Phasellus pretium gravida interdum. Nam interdum posuere tempus. Ut commodo laoreet dolor, non hendrerit mi dictum vitae. Nam nec egestas libero.</p>
+        </footer>
+    </div>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

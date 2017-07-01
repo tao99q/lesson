@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="box">
+    <label>根据</label>
+    <select id="according">
+        <option value="1">name</option>
+        <option value="2">group</option>
+        <option value="3">tel</option>
+        <option value="4">qq</option>
+    </select>
+    <input id="info" type="text" placeholder="输入检索信息">
+    <input id="submit" type="button" value="查询">
+</div>
+<ul class="studentList"></ul>
+</body>
+</html>
+<script src="js/jquery-1.11.3.js"></script>
+<script>
+
+    $("#submit").click(function () {
+        $.ajax({
+            url:"/studentInfo",
+            type:"post",
+            dataType:"json",
+            async:false,
+            cache:false,
+            data:{
+                according:$("#according option:selected").val(),
+                info:$("#info").val()
+            },
+            success:function (result) {
+                bindData(result);
+            },
+            error:function (e) {
+                console.log(e)
+            }
+        })
+    });
+    function bindData(result) {
+        if(result&&result.code==0){
+            var data=result.data,
+                str=``;
+            $.each(data,function (index,item) {
+                str+=`<li>
+                       <span>${item.name}</span>
+                       <span>${item.group}</span>
+                       <span>${item.tel}</span>
+                       <span>${item.qq}</span>
+                     </li>`
+            })
+            $(".studentList").html(str);
+        }
+    }
+</script>
+
+
+<!--
+API
+url:/studentInfo
+type:post
+data:{
+  according:"name",
+  info:""
+},
+返回值:'{
+  code:0,
+  msg:"",
+  data:[]
+}'
+-->

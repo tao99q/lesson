@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--
+在作用域形成之后，代码执行之前，把var 和function 关键字的变量提前的声明或定义，带var 的只声明不定义，function的既声明又定义，这个过程叫做预解释，也叫作变量提声
+
+
+注意：在全局中，声明的时候就相当于给window增加一个属性；
+不管是全局还是私有的情况，如果在代码执行的是遇到一个变量，这个变量是没有声明过得变量也是相当于给window增加一个属性
+-->
+<script type="text/javascript">
+    console.log(a);
+    console.log(sum);
+    console.log(window.a);
+	console.log(window);
+    var a=1;
+    var b="1";
+    var c={a:1};
+    function sum() {}
+    d=1;
+	console.log(window.sum);
+    console.log(window.d);
+    //例子
+
+    console.log(d);//function d (){}
+    d=1;//d=1
+    var s=d;//s=1
+    function d () {
+       console.log(1)
+    }
+   // d();//报错了  d is not a function
+    //1.全局作用域形成
+    //2.全局下的预解释： var s=undefined, function d=xxxfff000;
+    //3.代码执行
+    //console.log(a1 == f2());//报错了
+    var f1;
+    a1=0;//window.a1=0;
+    function f1() {
+        return 1
+    }
+    function f2() {
+        a1=1;
+    }
+    f1=f1();//f1=1
+    f2=f2();//f2=undefined
+    console.log(f1);
+    console.log(f2);
+    //console.log(a1 == f2());
+    //1.全局预解释：var f1=undefined(去掉),function f1=xxxfff000,f2=xxxfff111
+    //2.代码执行：
+
+    //3题.
+    //console.log(c1,c2,c3);
+    var c1=c2=c3=10;
+    //var c1=10,c2=10,c3=10;
+    //var c1=10;c2=10;c3=10;
+    function c3() {
+        console.log(c3)
+    }
+   // c3();//报错了 c3 is not a function
+    //预解释：var c1=undefined,function c3=xxxfff000;
+    //代码执行：
+    //c1=c2=c3=10; c3=10,c2=c3->c2=10,c1=c2->c1=10
+    //
+	console.log([]==![]);
+</script>
+</body>
+</html>

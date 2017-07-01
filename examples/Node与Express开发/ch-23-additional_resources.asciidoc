@@ -1,0 +1,114 @@
+[[ch_additional_resources]]
+== Additional Resources
+
+In this book, I have tried to give you a comprehensive overview of building websites with Express.  And we have covered a remarkable amount of ground, but we've still only scratched the surface of the packages, techniques, and frameworks that are available to you.((("resources, additional", id="ix_resadd", range="startofrange")))  In this chapter, we'll discuss where you can go for additional resources.
+
+=== Online Documentation
+
+For JavaScript, CSS, and HTML documentation, the https://developer.mozilla.org[Mozilla Developer Network (MDN)] is without equal.((("HTML", "online documentation")))((("CSS", "online documentation")))((("MDN (Mozilla Developer Network)")))((("Mozilla Developer Network (MDN)")))((("documentation", "online")))((("online documentation")))  If I need JavaScript documentation, I either search directly on MDN or append "mdn" to my search query.  Otherwise, inevitably, w3schools appears in the search.  Whoever is managing SEO for w3schools is a genius, but I recommend avoiding this site: I find the documentation is often severely lacking.
+
+Where MDN is a great HTML reference, if you're new to HTML5 (or even if you're not), you should read Mark Pilgrim's http://diveintohtml5.info[_Dive Into HTML5_].((("Pilgrim, Mark")))((("HTML5", "online documentation")))  WHATWG maintains an excellent http://developers.whatwg.org["living standard" HTML5 specification]; it is usually where I turn to first for really hard-to-answer HTML questions.  Finally, the official specifications for HTML and CSS are located on the http://www.w3.org[W3C website]; they are dry, difficult-to-read documents, but sometimes it's your only recourse for the very hardest problems.
+
+JavaScript adheres to the http://bit.ly/ECMA-262_specs[ECMA-262 ECMAScript language specification].((("JavaScript", "online documentation")))((("ECMA-262 ECMAScript language specification")))  Information about the next version of JavaScript, called ES6 (codenamed _Harmony_) can be found at http://bit.ly/es6_harmony.  To track the availability of ES6 features in Node (and various browsers), see the excellent http://kangax.github.io/es5-compat-table/es6[guide maintained by @kangax].
+
+Both http://api.jquery.com[jQuery] and http://getbootstrap.com[Bootstrap] have extremely good online documentation.((("Bootstrap", "online documentation")))((("jQuery", "online documentation")))
+
+The http://nodejs.org/api[Node documentation] is very good, and((("Node", "documentation"))) comprehensive, and it should be your first choice for authoritative documentation about Node modules (such as +http+, +https+, and +fs+).((("Express", "documentation")))  The http://expressjs.com[Express documentation] is quite good, but not as comprehensive as one might like.  The https://npmjs.org/doc[npm documentation] is comprehensive and useful, particularly the https://npmjs.org/doc/json.html[page on the _package.json_ file].((("npm (package manager)", "online documentation")))
+
+=== Periodicals
+
+There are three free periodicals you should absolutely ((("periodicals")))subscribe to and read dutifully every week:
+
+* http://javascriptweekly.com[JavaScript Weekly]
+* http://nodeweekly.com[Node Weekly]
+* http://html5weekly.com[HTML5 Weekly]
+
+These three periodicals will keep you informed of the latest news, services, blogs, and tutorials as they become available.
+
+=== Stack Overflow
+
+Chances are good that you've already used Stack Overflow (SO): since its inception in 2008, it has become the dominant online Q&A site,((("Stack Overflow (SO)"))) and is your best resource to get your JavaScript, Node, and Express questions answered (and any other technology covered in this book).  Stack Overflow is a community-maintained, reputation-based Q&A site.  The reputation model is what's responsible for the quality of the site and its continued success.  Users can gain reputation by having their questions or answers "upvoted" or having an accepted answer.  You don't have to have any reputation to ask a question, and registration is free.  However, there are things you can do to increase the chances of getting your question answered in a useful manner, which we'll discuss in this section.
+
+Reputation is the currency of Stack Overflow, and while there are people out there who genuinely want to help you, it's the chance to gain reputation that's the icing on the cake that motivates good answers.  There are a lot of really smart people on SO, and they're all competing to provide the first and/or best correct answer to your question (there's a strong disincentive to provide a quick but bad answer, thankfully).  Here are things you can do to increase the chances of getting a good answer for your question:
+
+Be an informed SO user::
+	Take the http://stackoverflow.com/tour[SO tour], then read http://stackoverflow.com/help/how-to-ask["How do I ask a good question?"]  If you're so inclined, you can go on to read all of the http://stackoverflow.com/help[help documentation]—you'll earn a badge if you read it all!
+
+Don't ask questions that have already been answered::
+	Do your due diligence, and try to find out of someone has already asked your question.  If you ask a question that has an easily found answer already on SO, your question will quickly be closed as a duplicate, and people will often downvote you for this, negatively affecting your reputation.
+
+Don't ask people to write your code for you::
+	You will quickly find your question downvoted and closed if you simply ask "How do I do __X__?" The SO community expects you to make an effort to solve your own problem before resorting to SO.  Describe in your question what you've tried and why it isn't working.
+
+Ask one question at a time::
+	Questions that are asking five things—"How do I do this, then that, then the other things, and what's the best way to do this?"—are difficult to answer, and are pass:[<phrase role="keep-together">discouraged.</phrase>]
+
+Craft a minimal example of your issue::
+	I answer a lot of SO questions, and the ones I almost automatically skip over are those where I see three pages of code (or more!).  Just taking your 5,000-line file and pasting into an SO question is not a great way to get your question answered (but people do it all the time).  It's a lazy approach that isn't often rewarded.  Not only are you less likely to get a useful answer, but the very process of eliminating things that _aren't_ causing the problem can lead you to solving the problem yourself (then you don't even need to ask a question on SO).  Crafting a minimal example is good for your debugging skills and for your critical thinking ability, and makes you a good SO citizen.
+
+Learn Markdown::
+	Stack Overflow uses Markdown for formatting questions and answers.((("Markdown")))  A well-formatted question has a better chance of being answered, so you should invest the time to learn this useful and increasingly ubiquitous http://stackoverflow.com/help/formatting[markup language].
+
+Accept and upvote answers::
+	If someone answers your question satisfactorily, you should upvote and accept it; it boosts the reputation of the answerer, and reputation is what drives SO.  If multiple people provide acceptable answers, you should pick the one you think is best and accept that, and upvote anyone else you feel offered a useful answer.
+
+If you figure out your own problem before someone else does, answer your own pass:[<phrase role="kekep-together">question</phrase>]::
+	SO is a community resource: if you have a problem, chances are, someone else has it too.  If you've figured it out, go ahead and answer your own question for the benefit of others.
+
+If you enjoy helping the community, consider answering questions yourself: it's fun and rewarding, and it can lead to benefits that are more tangible than an arbitrary reputation score.  If you have a question for which you've received no useful answers for two days, you can start a _bounty_ on the question, using your own reputation.  The reputation is withdrawn from your account immediately, and it is nonrefundable.  If someone answers the question to your satisfaction, and you accept their answer, they will receive the bounty.  The catch is, of course, you have to have reputation to start a bounty: the minimum bounty is 50 reputation points.  While you can get reputation from asking quality questions, it's usually quicker to get reputation by providing quality answers.
+
+Answering people's questions also have the benefit of being a great way to learn.  I generally feel that I learn more from answering other people's questions than I do from having my questions answered.  If you want to really thoroughly learn a technology, learn the basics and then start trying to tackle people's questions on SO: at first you might be consistently beat out by people who are already experts, but before long, you'll find that you _are_ one of the experts.
+
+Lastly, you shouldn't hesitate to use your reputation to further your career.  A good reputation is absolutely worth putting on a résumé.  It's worked for me and, now that I'm in the position of interviewing developers myself, I'm always impressed to see a good SO reputation (I consider a "good" SO reputation anything over 3,000; five-digit reputations are _great_).  A good SO reputation tells me that someone is not just competent in their field, but they are clear communicators and generally helpful.
+
+=== Contributing to Express
+
+Express and Connect are open source projects, so anyone can submit "pull requests" (GitHub lingo for changes you've made that you would like included in the project).((("Connect library", "contributing to")))((("Express", "contributing to")))  This is not easy to do: the developers working on these projects are pros and the ultimate authority on their own projects.  I'm not discouraging you from contributing, but I am saying you have to dedicate some significant effort to be a successful contributor, and you cannot take submissions lightly.
+
+The actual process of contributing is pretty easy: you fork the project in your own GitHub account, clone that fork, make your changes, push them back to GitHub, and then create a pull request, which will be reviewed by someone on the project.  If your submissions are small, or are bug fixes, you may have luck simply submitting the pull request.  If you're trying to do something major, you should communicate with one of the main developers and discuss your contribution.  You don't want to waste hours or days on a complicated feature only to find that it doesn't fit with the maintainer's vision, or it's already being worked on by someone else.
+
+The other way to contribute (indirectly) to the development of Express and Connect is to publish npm packages, specifically middleware.  Publishing your own middleware requires approval from no one, but that doesn't mean you should carelessly clutter the npm registry with low-quality middleware: plan, test, implement, and document, and your middleware will enjoy more success.
+
+If you do publish your own packages, here are the minimum things you should have:
+
+Package name::
+	While package naming is up to you, you obviously have to pick something that isn't already taken, which can sometimes be a challenge.  Unlike GitHub, npm packages are not namespaced by account, so you're competing globally for names.  If you're writing middleware, it's customary to prefix your package name with +connect-+ or +express-+.  Catchy package names that don't have any particular relation to what it does are fine, but even better is a package name that hints at what it does (a great example of a catchy but appropriate package name is +zombie+, for headless browser emulation).
+
+Package description::
+	Your package description should be short, concise, and descriptive.  This is one of the primary fields that is indexed when people search for packages, so it's best to be descriptive, not clever (there's room for some cleverness and humor in your documentation, don't worry).
+
+Author/contributors::
+	Take some credit.  Go on.
+
+License(s)::
+	This is often neglected, and there is nothing more frustrating than encountering a package without a license (leaving you unsure if you can use it in your project).  Don't be that person.  The http://bit.ly/mit_license[MIT license] is an easy choice if you don't want any restrictions on how your code is used.  If you want it to be open source (and stay open source), another popular choice is the http://bit.ly/gpl_license[GPL license].  It's also wise to include license files in the root directory of your project (they should start with _LICENSE_).  For maximum coverage, dual-license with MIT and GPL.  For an example of this in _package.json_ and in _LICENSE_ files, see my http://bit.ly/connect-bundle[+connect-bundle+ package].
+
+Version::
+	For the versioning system to work, you need to version your packages.  Note that npm versioning is separate from commit numbers in your repository: you can update your repository all you like, but it won't change what people get when they use npm to install your package.  You need to increment your version number and re-publish for changes to be reflected in the npm registry.
+
+Dependencies::
+	You should make an effort to be conservative about dependencies in your packages.  I'm not suggesting constantly reinventing the wheel, but dependencies increase the size and licensing complexity of your package.  At a minimum, you should make sure you aren't listing dependencies that you don't need.
+
+Keywords::
+	Along with description, keywords are the other major metadata used for people trying to find your package, so choose appropriate keywords.
+
+Repository::
+	You should have one.  GitHub is the most common, but others are welcome.
+
+README.md::
+	The standard documentation format for both GitHub and npm is http://daringfireball.net/projects/markdown/syntax[Markdown].  It's an easy, wiki-like syntax that you can quickly learn.  Quality documentation is vitally important if you want your package to be used: if I land on an npm page and there's no documentation, I usually just skip it without further investigation.  At a minimum, you should describe basic usage (with examples).  Even better is to have all options documented.  Describing how to run tests goes the extra mile.
+
+When you're ready to publish your own package, the process is quite easy.  Register for a free https://npmjs.org/signup[npm account], then follow these steps:
+
+. Type +npm adduser+, and log in with your npm credentials.
+. Type +npm publish+ to publish your package.
+
+That's it!  You'll probably want to create a project from scratch, and test your package by using +npm install+.
+
+=== Conclusion
+
+It is my sincere hope that this book has given you all the tools you need to get started with this exciting technology stack.  At no time in my career have I felt so invigorated by a new technology (despite the odd main character that is JavaScript), and I hope I have managed to convey some of the elegance and promise of this stack.  Though I have been building websites professionally for many years, I feel that, thanks to Node and Express, I understand the way the Internet works at a deeper level than I ever have before.  I believe that it's a technology that truly enhances understanding, instead of trying to hide the details from you, all while still providing a framework for quickly and efficiently building websites.
+
+Whether you are a newcomer to web development, or just to Node and Express, I welcome you to the ranks of JavaScript developers.  I look forward to seeing you at user groups and conferences, and most important, seeing what you will build.
+((("resources, additional", range="endofrange", startref="ix_resadd")))
+

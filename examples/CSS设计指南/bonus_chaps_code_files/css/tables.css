@@ -1,0 +1,136 @@
+/* CSS Document */
+/* various tables styles - see sample HTML markup below */
+/* basic_lines creates a layout with various weights of horizontal lines between the table rows */
+/* tic_tac_toe creates open table cells all around the layout */  
+body {
+	font:14px Helvetica, Arial, sans-serif;
+	}
+table {
+	margin:20px; /* temporary - remove if you want to use the styles */
+	} 
+
+table.book_listing {
+	border:2px solid #069;
+	border-collapse:collapse;
+	}
+table.book_listing caption {
+	font-size:20px;
+	}
+table.book_listing th {
+	color:#777;
+	padding:5px 5px;
+	}
+table.book_listing tr {
+	border-bottom:1px solid #aaa;
+	}
+table.book_listing tr td+td {
+	padding:0 20px;
+	}
+table.book_listing img {
+	height:80px;
+	}
+table.book_listing tr {
+		background:-webkit-linear-gradient(#ccc, #fff, #ccc);
+	}
+table.basic_lines_step1 {
+	width:600px;
+ 	border-top:3px solid #069;
+	}
+table.basic_lines_step1 caption {
+	margin-bottom:3px;
+	}	
+
+table.basic_lines_step2 {
+	width:600px;
+ 	border-top:3px solid #069;
+	}
+table.basic_lines_step2 caption {
+	margin-bottom:3px;
+	}	
+table.basic_lines_step2 th {
+	border-bottom:3px solid #069;
+	}	
+table.basic_lines_step2 td {
+	border-bottom:1px solid #069;
+	}
+
+table.basic_lines {
+	width:600px;
+ 	border-collapse:collapse;
+	border-top:3px solid #069;
+	}
+table.basic_lines caption {
+	margin-bottom:3px;
+	}	
+table.basic_lines th {
+	border-bottom:3px solid #069;
+	}	
+table.basic_lines td {
+	border-bottom:1px solid #069;
+	}	
+table.basic_lines td, table.basic_lines th {
+	padding:5px 3px;
+	}
+
+/* TIC-TAC-TOE style table */
+table.tic_tac_toe {border-collapse:collapse;}
+table.tic_tac_toe caption { /* styles for the caption */
+	margin-bottom:.5em;
+	font-size:1.2em;
+	}
+table.tic_tac_toe th { 
+	border-right:3px solid #99CCCC; 
+	border-bottom:1px solid #99CCCC;
+	padding-right:.3em;
+	}
+table.tic_tac_toe td { /* create the border of table cells */
+	border-right:1px solid #99CCCC; 
+	border-bottom:1px solid #99CCCC;
+	padding:3px 3px;
+	}
+table.tic_tac_toe tr:last-child td,
+table.tic_tac_toe tr:last-child th {
+	border-bottom:0; /* bottom row of tds and ths */
+	}
+table.tic_tac_toe td:last-child, /* right row of tds and ths */
+	table.tic_tac_toe th[scope="col"]:last-child {
+	border-right:0; 
+	}
+table.tic_tac_toe th[scope="col"]:first-child {border-right:3px solid #99CCCC;}/* first cell of headings row */
+table.tic_tac_toe th[scope="col"] { /* column headings row */
+	border-right:1px solid #99CCCC; 
+	border-bottom:3px solid #99CCCC;
+	}
+table.tic_tac_toe th[scope="row"] {text-align:right;} /* left column */
+	
+
+
+/* sample markup for table CSS above, this example uses basic_lines class */
+
+/*
+<table class="basic_lines" summary="Summary of my books">
+  <caption>
+    <strong>My Books</strong>
+  </caption>
+  <tr>
+    <th scope="col">&nbsp;</th>
+    <th scope="col">Stylin'</th>
+    <th scope="col">Codin'</th>
+	<th scope="col">Scriptin'</th>
+  </tr>
+  <tr>
+    <th scope="row">Languages</th>
+    <td>HTML &amp; CSS</td>
+    <td>PHP &amp; SQL</td>
+	<td>JavaScript and Ajax</td>
+  </tr>
+  <tr>
+    <th scope="row">Focus</th>
+    <td>Interface design</td>
+    <td>Back-end code</td>
+	<td>Browser applications</td>
+  </tr>
+</table>
+*/
+
+/* end sample markup for table CSS above */

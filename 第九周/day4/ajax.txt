@@ -1,0 +1,78 @@
+AJAX什么?
+Async (异步) Javascript And XMl
+异步:客户端和服务器的数数据交互,不需要整个页面刷新,只需要将操作的这一部分更新一下 ,这就叫做局部刷新
+
+AJAX一般都是用来请求页面的部分数,在将获取出来的数据绑定到页面指定位置
+
+AJAX如何使用
+四步:
+1.创建一个XHR的异步对象 (这种方式不兼容IE6及更低版本的浏览器,需要做兼容处理)
+var xhr=new XMLHTTPRequest;
+2.打开一个URL地址并请求(发送请求之前的配置)
+open([请求方式],[API接口],[设置同步异步],[user name],[User Pass]);
+[请求方式]:get系列:GET/DELETE/HEAD  post系列:POST/PUT
+[user name]:用户名
+[User Pass]:用户密码
+有些服务器为了安全考虑,只允许部分人可以访问,就只给部分人分配权限,访问的时候需要提供安全秘钥,一般的服务器就不想要这么麻烦,匿名访问就可以,所以只需要传前三个参数即可
+3.监听不同的状态进行不同的业务操作  onreadystatechange
+xhr.readyState:AJAX状态
+0:unSend 未发送,刚开始创建一个AJAX的实例 var xhr=new XMLHTTPRequest;
+1:opened 已经打开 第二步open("get",url,true)
+2:headers_received客户端已经收到服务器的响应头了
+3:loading 服务器返回的响应主体正在传输
+4:done 服务器返回的响应主体已经被客户端接收
+xhr.status HTTP状态 通过这个状态码可以知道HTTP事物是否成功,以及失败的原因
+
+[2开头]:代表成功
+200:0K
+
+[3开头]:也代表成功,只不过这个过程经过特殊处理
+301:Moved Permanently 在新版的HTTP协议中代表,永久重定向 比如访问http:\\www.360buy.com默认会跳到https://www.jd.com
+302:Moved temporarily 在新版的HTTP协议中代表临时转移  ==>服务器的负载均衡
+304:Not Modified 获取的是缓存中的数据(网站性能优化的重要的手段,我们一般将一些不怎么变的静态资源JS/CSS/IMG等 最喜欢做成304 以后直接从缓存中拿出就可以)
+
+[4开头] 代表错误,而且一般都是客户端的错误
+400:Bad Request 请求参数错了
+401:Unauthorized 去访问权限
+403:Forbidden 请求接收到了,但是没有返回正常的结果,没有原因
+404:Not Found 请求地址不存在
+413: 客户端传给服务器的内容超过了服务器愿意接收的范围
+
+[5开头] 代表服务器错误
+500: Internal Server Error 服务器的未知错误
+503: Server Unavailable服务器超负荷
+
+
+xhr.response :获取响应主体(一般不用)
+xhr.responseText:获取响应主体内容,是text(字符串)格式的
+xhr.responseXML:获取响应主体内容,是XML格式(XML文档)
+
+xhr.getResponseHeader("Data"):获取响应头的指定内容
+xhr.getALLResponseHeaders:获取所有的响应头
+xhr.timeout:设置请求的超时时间 比如设置的是3s,超过3s就算请求失败,并且如果请求超时就会触发ontimeout事件
+xhr.abort():中断当前AJAX请求 一旦中断请求就会触发 onabort事件
+xhr.setRequestHeader([key],[value]):设置请求头信息
+
+4 发送send() AJAX这件事是从send开始的,之前都是在做准备工作,当xhr.readyState===4的时候结束
+
+
+面试问题:
+get系列和post系列有什么区别
+1.传参数的方式不同
+get:通过URL+?+参数
+xhr.open("get","/userInfo?name=XXX&age=100")
+xhr.send(null)
+post:请求主体
+xhr.open("post","/userInfo");
+xhr.send("name=XXX&age=100&sex=1");
+2.get方式容易出现缓存 post不会
+原因:GET是通过URl上问号拼接参数的方式传给服务器数据的,如果当前穿的参数跟上一次一样了,浏览器就会走他的记忆功能(缓存),以为你请求的是同一个url,就会把之前的返回给你,这样有些需求是不可以的比如我想实时获取股票信息,就不能走缓存
+[清除缓存]原理:保证url每一次都不同,这就可以给每个url后面拼接一个变量=随机数/时间戳
+xhr.open("get","/userInfo?name=XXX&age=100&_="+Math.random());
+xhr.open("get","/userInfo?name=XXX&age=100&_="+(new Date).getTime())
+3.参数大小
+get:是把数据放到url上,但是浏览器的url大小是有限制的,如果超过大小限时浏览器就会默认给你截断 (每一个浏览器还不一样:谷歌8KB,火狐7KB,IE约2KB)
+post:数据在请求主体中,大小没有限制,但是在真实项目中为了保证上传速度,一般限制100KB以内
+4.安全性
+get不安全:将数据放到url上都被看光了,
+一般有重要的信息都会采用post请求

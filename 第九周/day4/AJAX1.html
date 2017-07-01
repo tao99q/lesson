@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    var xhr=new XMLHttpRequest();
+    console.dir(xhr);
+    //xhr.setRequestHeader()设置请求头
+    //xhr.setRequestHeader("zhufeng",8);
+    //设置请求头之前必须保证已经执行OPEN了
+    //The object's state must be OPENED.at
+    xhr.open("GET","note1.txt",true);
+    //xhr.setRequestHeader("zhufeng",8);
+    xhr.setRequestHeader("zhufeng",encodeURIComponent("珠峰培训"));
+    //'珠峰培训' is not a valid HTTP header field value.
+    //设置请求头的时候不能设置中文汉字
+    //如果想用汉字就需要相应的客户端编码和服务器解码
+    /**
+     * 1.escape/unescape:客户端对中文或者是特殊字符进行编码，服务器进行解码，但是一般不用，因为只有node环境才支持
+     * 2.encodeURI/decodeURI:按照UNICODE编码解码  只对于汉字进行编码解码
+     * 3.encodeURIComponent/decodeURIComponent:可以对汉字和特殊字符进行编码解码  (用的最多)
+     */
+     //console.log(decodeURIComponent("%E7%8F%A0%E5%B3%B0%E5%9F%B9%E8%AE%AD"));
+    xhr.onreadystatechange=function () {
+
+    };
+    xhr.send(null)
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>小米轮播JQ版(渐隐渐现)</title>
+		<link rel="stylesheet" type="text/css" href="css/jQbanner.css"/>
+	</head>
+	<body>
+		<div class="banner" id="bannerFir">
+			<div class="bannerInner">
+				<!--图片的绑定-->
+			</div>
+			<ul class="bannerTip">
+				<!--动态数据绑定几个圈-->
+			</ul>
+			<a href="javascript:;" class="bannerLeft"></a>
+			<a href="javascript:;" class="bannerRight"></a>
+		</div>
+		<div class="banner" id="bannerTwo">
+			<div class="bannerInner">
+				<!--图片的绑定-->
+			</div>
+			<ul class="bannerTip">
+				<!--动态数据绑定几个圈-->			
+			</ul>
+			<a href="javascript:;" class="bannerLeft"></a>
+			<a href="javascript:;" class="bannerRight"></a>
+		</div>
+	</body>
+	<script src="js/jquery-1.9.1.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/index.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+	    $("#bannerFir").banner("js/data.json",3000);
+	    $("#bannerTwo").banner("js/data.json",2000);
+
+	</script>
+</html>

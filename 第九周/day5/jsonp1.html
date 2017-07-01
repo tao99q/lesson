@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+//    function ff(result) {
+//        console.log(result)
+//    }
+</script>
+<!--<script type="text/javascript" src="http://matchweb.sports.qq.com/kbs/hotMatchList?callback=ff"></script>-->
+
+<script src="js/jquery-1.11.3.js"></script>
+<script>
+    $.ajax({
+        url:"http://matchweb.sports.qq.com/kbs/hotMatchList",
+        type:"get",
+        dataType:"jsonp",
+        jsonp:"callback",
+        jsonpCallback:"fn",//设置传给服务器的函数名不是JQ默认随机生成的那个 而是我们自己 起的名字fn了
+        success:function (result) {
+            console.log(result)
+        }
+    });
+    //JQ 中JSONP请求 JQ会默认给url后面追加一个变量来清缓存
+
+    //在JQ处理JSONP请求的时候,会默认帮我们在请求地址后面创建 一个callback=jQuery1113032316038483043563_1498364164243,这是JQ随机生成的一个函数,可以认为是success赋值的那个匿名函数
+</script>

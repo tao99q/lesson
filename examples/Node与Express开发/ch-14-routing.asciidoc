@@ -1,0 +1,353 @@
+[[ch_routing]]
+== Routing
+
+Routing is one of the most important aspects of your((("routing", id="ix_routing", range="startofrange"))) website or web service; fortunately, routing in Express is simple, flexible, and robust.  _Routing_  is the mechanism by which requests (as specified by a URL and HTTP method) are routed to the code that handles them.((("routing", "defined")))  As we've already noted, routing used to be file based and very simple: if you put the file __foo/about.html__ on your website, you would access it from the browser with the path __/foo/about.html__.  Simple, but inflexible.  And, in case you hadn't noticed, having "HTML" in your URL is extremely passé these days.
+
+Before we dive into the technical aspects of routing with Express, we should discuss the concept of _information architecture_ (IA). ((("IA", see="information architecture")))((("information architecture (IA)"))) IA refers to the conceptual organization of your content.  Having an extensible (but not overcomplicated) IA before you begin thinking about routing will pay huge dividends down the line.
+
+One of the most intelligent and timeless essays on IA is by Tim Berners-Lee, who practically _invented the Internet_. ((("Berners-Lee, Tim"))) You can (and should) read it now: http://www.w3.org/Provider/Style/URI.html.  It was written in 1998.  Let that sink in for a minute: there's not much that was written on Internet technology in 1998 that is just as true today as it was then.
+
+From that essay, here is the lofty responsibility we are being asked to take on:
+
+[quote, Tim Berners-Lee]
+____
+It is the duty of a Webmaster to allocate URIs which you will be able to stand by in 2 years, in 20 years, in 200 years. This needs thought, and organization, and commitment.
+____
+
+I like to think that if web design ever required professional licensing, like other kinds of engineering, that we would take an oath to that effect.((("URLs", "designing for website content")))  (The astute reader of that article will find humor in the fact that the URL to that article ends with __.html__.)
+
+To make an analogy (that may sadly be lost on the younger audience), imagine that every two years, your favorite library completely reordered the Dewey Decimal System.  You would walk into the library one day, and you wouldn't be able to find anything.  That's exactly what happens when you redesign your URL structure.
+
+Put some serious thought into your URLs: will they still make sense in 20 years?  (200 years may be a bit of a stretch: who knows if we'll even be using URLs by then.  Still, I admire the dedication of thinking that far into the future.)  Carefully consider the breakdown of your content.  Categorize things logically, and try not to paint yourself into a corner.  It's a science, but it's also an art.
+
+Perhaps most important, work with others to design your URLs.  Even if you are the best information architect for miles around, you might be surprised at how people look at the same content with a different perspective.  I'm not saying that you should try for an IA that makes sense from _everyone's_ perspective (because that is usually quite impossible), but being able to see the problem from multiple perspectives will give you better ideas and expose the flaws in your own IA.
+
+Here are some suggestions((("URLs", "design suggestions for lasting IA")))((("information architecture (IA)", "suggestions for designing lasting IA"))) to help you achieve a lasting IA:
+
+Never expose technical details in your URLs::
+	Have you ever been to a website, noticed that the URL ended in __.asp__, and thought that the website was hopelessly out-of-date?  Remember that, once upon a time, ASP was cutting-edge.  Though it pains me to say it, so too shall fall JavaScript and JSON and Node and Express.  Hopefully not for many, many productive years, but time is not often kind to technology.
+
+Avoid meaningless information in your URLs::
+	Think carefully about every word in your URL.  If it doesn't mean anything, leave it out.  For example, it always makes me cringe when websites use the word _home_ in URLs.  Your root URL _is_ your home page.  You don't need to additionally have URLs like __/home/directions__ and __/home/contact__.
+
+Avoid needlessly long URLs::
+	All things being equal, a short URL is better than a longer URL.  However, you should not try to make URLs short at the expense of clarity, or SEO.  Abbreviations are tempting, but think carefully about them: they should be very common and ubiquitous before you immortalize them in a URL.
+
+Be consistent with word separators::
+	It's quite common to separate words with hyphens, and a little less common to do so with underscores.  Hyphens are generally considered more aesthetically pleasing than underscores, and most SEO experts recommend them.  Whether you choose hyphens or underscores, be consistent in their use.
+
+Never use whitespace or untypable characters::
+	Whitespace in a URL is not recommended.  It will usually just be converted to a plus sign (+), leading to confusion.  It should be obvious that you should avoid untypable characters, and I would caution you strongly against using any characters other than alphanumeric characters, numbers, dashes, and underscores.  It may feel clever at the time, but "clever" has a way of not standing the test of time.  Obviously, if your website is not for an English audience, you may use non-English characters (using percent codes), though that can cause headaches if you ever want to localize your website.
+
+Use lowercase for your URLs::
+	This one will cause some debate: there are those who feel that mixed case in URLs is not only acceptable, but preferable.  I don't want to get in a religious debate over this, but I will point out that the advantage of lowercase is that it can always automatically be generated by code.  If you've ever had to go through a website and sanitize thousands of links, or do string comparisons, you will appreciate this argument.  I personally feel that lowercase URLs are more aesthetically pleasing, but in the end, this decision is up to you.
+
+=== Routes and SEO
+
+If you want your website to be discoverable (and most people do), then you need to think about SEO, and how your URLs can affect it.((("routing", "routes and SEO")))  In particular, if there are certain keywords that are very important—__and it makes sense__—consider making it part of the URL.  For example, Meadowlark Travel offers several Oregon Coast vacations: to ensure 	high search engine ranking for these vacations, we use the string "Oregon Coast" in the title, header, body, and meta description, and the URLs start with __/vacations/oregon-coast__.((("search engine optimization (SEO)", "routes and")))  The Manzanita vacation package can be found at __/vacations/oregon-coast/manzanita__.  If, to shorten the URL, we simply used __/vacations/manzanita__, we would be losing out on valuable SEO.
+
+That said, resist the temptation to carelessly jam keywords into URLs in an attempt to improve your rankings: it will fail.  For example, changing the Manzanita vacation URL to __/vacations/oregon-coast-portland-and-hood-river/oregon-coast/manzanita__ in an effort to say "Oregon Coast" one more time, and also work the "Portland" and "Hood River" keywords in at the same time, is wrong-headed.  It flies in the face of good IA, and will likely backfire.
+
+=== Subdomains
+
+Along with the path, subdomains are the other part of the URL that((("routing", "subdomains")))((("URLs", "subdomains")))((("subdomains"))) is commonly used to route requests.  Subdomains are best reserved for significantly different parts of your application—((("admin interfaces")))((("REST APIs")))for example, a REST API (__api.meadowlarktravel.com__) or an admin interface (__admin.meadowlarktravel.com__).  Sometimes subdomains are used for technical reasons.  For example, if we were to build our blog with WordPress (while the rest of our site uses Express), it can be easier to use __blog.meadowlarktravel.com__ (a better pass:[<phrase role="keep-together">solution</phrase>] would be to use a proxy server, such as Nginx).  There are usually SEO pass:[<phrase role="keep-together">consequences</phrase>] to partitioning your content using subdomains, which is why you should generally reserve them for areas of your site that aren't important to SEO, such as admin areas and APIs.  Keep this in mind and make sure there's no other option before using a subdomain for content that is imporant to your SEO plan.
+
+The routing mechanism in Express does not take subdomains into account by default: +app.get('/about')+ will handle requests for __http://meadowlarktravel.com/about__, __http://www.meadowlarktravel.com__, and __http://admin.meadowlarktravel.com/about__.((("Express", "routing", "subdomains")))  If you want to handle a subdomain separately, you can use a package called `vhost` (for "virtual host," which comes from an Apache mechanism commonly used for handling subdomains).  First, install the package (+npm install --save vhost+), then edit your application file to create a subdomain:
+
+[source,js]
+----
+// create "admin" subdomain...this should appear
+// before all your other routes
+var admin = express.Router();
+app.use(vhost('admin.*', admin));
+
+// create admin routes; these can be defined anywhere
+admin.get('/', function(req, res){
+	res.render('admin/home');
+});
+admin.get('/users', function(req, res){
+	res.render('admin/users');
+});
+----
+
++express.Router()+ essentially creates a new instance of the Express router.((("express.Router()")))  You can treat this instance just like your original instance (+app+): you can add routes and middleware just as you would to +app+.  However, it won't do anything until you add it to +app+.  We add it through +vhost+, which binds that router instance to that subdomain.
+
+=== Route Handlers Are Middleware
+
+We've already seen very basic route: simply matching a given path.((("route handlers", "as middleware")))((("middleware", "route handlers")))((("routing", "route handlers as middleware")))  But what does +app.get(\'/foo',...)+ actually _do_?  As we saw in <<ch_middleware>>, it's simply a specialized piece of middleware, down to having a +next+ method passed in.  Let's look at some more sophisticated examples:
+
+[source,js]
+----
+app.get('/foo', function(req,res,next){
+	if(Math.random() < 0.5) return next();
+	res.send('sometimes this');
+});
+app.get('/foo', function(req,res){
+	res.send('and sometimes that');
+});
+----
+
+In the previous example, we have two handlers for the same route.  Normally, the first one would win, but in this case, the first one is going to pass approximately half the time, giving the second one a chance.  We don't even have to use +app.get+ twice: you can use as many handlers as you want for a single +app.get+ call.  Here's an example that has an approximately equal chance of three different responses:
+
+[source,js]
+----
+app.get('/foo', 
+	function(req,res, next){
+		if(Math.random() < 0.33) return next();	
+		res.send('red');
+	},
+	function(req,res, next){
+		if(Math.random() < 0.5) return next();	
+		res.send('green');
+	},
+	function(req,res){
+		res.send('blue');
+	},
+)
+----
+
+While this may not seem particularly useful at first, it allows you to create generic functions that can be used in any of your routes.  For example, let's say we have a mechanism that shows special offers on certain pages.  ((("res.locals object", "function to inject special offers data into")))The special offers change frequently, and they're not shown on every page.  We can create a function to inject the specials into the +res.locals+ property (which you'll remember from <<ch_templating>>):
+
+[source,js]
+----
+function specials(req, res, next){
+	res.locals.specials = getSpecialsFromDatabase();
+	next();
+}
+
+app.get('/page-with-specials', specials, function(req,res){
+	res.render('page-with-specials');
+});
+----
+
+We could also implement an authorization mechanism with this approach.  Let's say our user authorization code sets a session variable called +req.session.authorized+.((("authorization filter, creating")))((("req.session.authorized")))  We can use the following to make a reusable authorization filter:
+
+[source,js]
+----
+function authorize(req, res, next){
+	if(req.session.authorized) return next();
+	res.render('not-authorized');
+}
+
+app.get('/secret', authorize, function(){
+	res.render('secret');
+})
+
+app.get('/sub-rosa', authorize, function(){
+	res.render('sub-rosa');	
+});
+----
+
+=== Route Paths and Regular Expressions
+
+When you specify a path (like __/foo__) in your route, it's eventually converted to a regular expression by Express.((("routing", "route paths and regular expressions")))((("regular expressions, route paths and")))  Some regular expression metacharacters are available in route paths: ++&#43;++, ++?++, +*+, +(+, and +)+.  Let's look at a couple of examples.  Let's say you want the URLs pass:[<emphasis role="keep-together">/user</emphasis>] and __/username__ to be handled by the same route:
+
+[source,js]
+----
+app.get('/user(name)?', function(req,res){
+	res.render('user');	
+});
+----
+
+One of my favorite novelty websites is __http://khaaan.com__.  Go ahead: I'll wait while you visit it.  Feel better?  Good.  Let's say we want to make our own "KHAAAAAAAAN" page, but we don't want our users to have to remember if it's 2 __a__'s or 3 or 10.  The following will get the job done:
+
+[source,js]
+----
+app.get('/khaa+n', function(req,res){
+	res.render('khaaan');
+});
+----
+
+Not all normal regex metacharacters have meaning in route paths, though—only the ones listed earlier.  This is important, because periods, which are normally a regex metacharacter meaning "any character," can be used in routes unescaped.
+
+Lastly, if you really need the full power of regular expressions for your route, that is supported:
+
+[source,js]
+----
+app.get(/crazy|mad(ness)?|lunacy/, function(req,res){
+	res.render('madness');	
+});
+----
+
+I have yet to find a good reason for using regex metacharacters in my route paths, much less full regexes, but it's good to know the functionality is there.
+
+=== Route Parameters
+
+Where regex routes may find little day-to-day use in your Expression toolbox, you'll most likely be using route parameters quite frequently.((("routing", "route parameters")))  In short, it's a way to make part of your route into a variable parameter.  Let's say in our website we want to have a page for each staff member.  We have a database of staff members with bios and pictures.  As our company grows, it becomes more and more unwieldy to add a new route for each staff member.  Let's see how route parameters can help us:
+
+[source,js]
+----
+var staff = {
+	mitch: { bio: 'Mitch is the man to have at your back in a bar fight.' },
+	madeline: { bio: 'Madeline is our Oregon expert.' },
+	walt: { bio: 'Walt is our Oregon Coast expert.' },
+};
+
+app.get('/staff/:name', function(req, res){
+	var info = staff[req.params.name];	
+	if(!info) return next();        // will eventually fall through to 404
+	res.render('staffer', info);
+})
+----
+
+Note how we used __:name__ in our route.  That will match any string (that doesn't include a forward slash) and put it in the +req.params+ object with the key +name+.  This is a feature we will be using often, especially when creating a REST API.  You can have multiple parameters in our route.  For example, if we want to break up our staff listing by city:
+
+[source,js]
+----
+var staff = {
+	portland: {
+		mitch: { bio: 'Mitch is the man to have at your back.' },
+		madeline: { bio: 'Madeline is our Oregon expert.' },
+	},
+	bend: {
+		walt: { bio: 'Walt is our Oregon Coast expert.' },
+	},
+};
+
+app.get('/staff/:city/:name', function(req, res){
+	var info = staff[req.params.city][req.params.name];
+	if(!info) return next();        // will eventually fall through to 404
+	res.render('staffer', info);
+});
+----
+
+=== Organizing Routes
+
+It may be clear to you already that it would be unwieldy to define all of our routes in the main application file.((("routing", "organizing routes")))  Not only will that file grow over time, it's also not a great separation of functionality: there's a lot going on in that file already.  A simple site may have only a dozen routes or fewer, but a larger site could have hundreds of routes.
+
+So how to organize your routes?  Well, how do you _want_ to organize your routes?  Express is not opinionated about how you organize your routes, so how you do it is limited only by your own imagination.
+
+I'll cover some popular ways to handle routes in the next sections, but at the end of the day, I recommend four guiding principles for deciding how to organize your routes:
+
+Use named functions for route handlers::
+	Up to now, we've been writing our route handlers inline, by actually defining the function that handles the route right then and there.  This is fine for small applications or prototyping, but it will quickly become unwieldy as your website grows.
+
+Routes should not be mysterious::
+	This principle is intentionally vague, because a large, complex website may by necessity require a more complicated organizational scheme than a 10-page website.  At one end of the spectrum is simply putting _all_ of the routes for your website in one single file so you know where they are.  For large websites, this may be undesirable, so you break the routes out by functional areas.  However, even then, it should be clear where you should go to look for a given route.  When you need to fix something, the last thing you want to do is have to spend an hour figuring out where the route is being handled.  I have an ASP.NET MVC project at work that is a nightmare in this respect: the routes are handled in at least 10 different places, and it's not logical or consistent, and it's often contradictory.  Even though I am intimately familiar with that (very large) website, I still have to spend a significant amount of time tracking down where certain URLs are handled.
+
+Route organization should be extensible::
+	If you have 20 or 30 routes now, defining them all in one file is probably fine.  What about in three years when you have 200 routes?  It can happen.  Whatever method you choose, you should ensure you have room to grow.
+
+Don't overlook automatic view-based route handlers::
+	If your site consists of many pages that are static and have fixed URLs, all of your routes will end up ((("views", "automatic view-based route handlers")))looking like this: +app.get(\'/static/thing\', function(req, res){ res.render(\'static/thing'); }+.  To reduce needless code repetition, consider using an automatic view-based route handler.  This approach is described later in this chapter and can be used together with custom routes.
+
+=== Declaring Routes in a Module
+
+The first step to organizing our routes is getting them all into their own module.((("routing", "declaring routes in a module")))((("modules", "declaring routes in")))  There are multiple ways to do this.  One approach is to make your module a function that returns an array of objects containing "method" and "handler" properties.  Then you could define the routes in your application file thusly:
+
+[source,js]
+----
+var routes = require('./routes.js')();
+
+routes.forEach(function(route){
+	app[route.method](route.handler);
+})
+----
+
+This method has its advantages, and could be well suited to storing our routes dynamically, such as in a database or a JSON file.  However, if you don't need that functionality, I recommend passing the +app+ instance to the module, and letting it add the routes.  That's the approach we'll take for our example.  Create a file called __routes.js__ and move all of our existing routes into it:
+
+++++
+<?hard-pagebreak?>
+++++
+
+[source,js]
+----
+module.exports = function(app){
+
+	app.get('/', function(req,res){
+		app.render('home');	
+	}))
+
+	//...
+
+};
+----
+
+If we just cut and paste, we'll probably run into some problems.  For example, our pass:[<literal role="keep-together">/about</literal>] handler uses the +fortune+ object that isn't available in this context.  We could add the necessary imports, but hold off on that: we'll be moving the handlers into their own module soon, and we'll solve the problem then.
+
+So how do we link our routes in?  Simple: in __meadowlark.js__, we simply import our routes:
+
+[source,js]
+----
+require('./routes.js')(app);
+----
+
+=== Grouping Handlers Logically
+
+To meet our first guiding principle (use named functions for route handlers),((("routing", "grouping route handlers logically"))) we'll need somewhere to put those handlers.  One rather extreme option is to have a separate JavaScript file for every handler.  It's hard for me to imagine a situation in which this approach would have benefit.  It's better to somehow group related functionality together.  Not only does that make it easier to leverage shared functionality, but it makes it easier to make changes in related methods.
+
+For now, let's group our functionality into separate files: __handlers/main.js__, where we'll put the home page handler, the "about" handler, and generally any handler that doesn't have another logical home; __handlers/vacations.js__, where vacation-related handlers will go; and so on.
+
+Consider __handlers/main.js__:
+
+[source,js]
+----
+var fortune = require('../lib/fortune.js');
+
+exports.home = function(req, res){
+	res.render('home');
+};
+
+exports.about = function(req, res){
+	res.render('about', { 
+		fortune: fortune.getFortune(),
+		pageTestScript: '/qa/tests-about.js' 
+	} );
+};
+
+//...
+----
+
+Now let's modify __routes.js__ to make use of this:
+
+[source,js]
+----
+var main = require('./handlers/main.js');
+
+module.exports = function(app){
+
+	app.get('/', main.home);
+	app.get('/about', main.about);
+	//...
+		
+};
+----
+
+This satisfies all of our guiding principles.  __/routes.js__ is _very_ straightforward.  It's easy to see at a glance what routes there are in your site and where they are being handled.  We've also left ourselves plenty of room to grow.  We can group related functionality in as many different files as we need.  And if __routes.js__ ever gets unwieldy, we can use the same technique again, and pass the +app+ object on to another module that will in turn register more routes (though that is starting to veer into the "overcomplicated" territory—make sure you can really justify an approach that complicated!).
+
+=== Automatically Rendering Views
+
+If you ever find yourself wishing for the days of old where you could just put an HTML file in a directory and—presto!—your website would serve it, then you're not alone.((("views", "rendering automatically")))((("routing", "automatically rendering views")))  If your website is very content-heavy without a lot of functionality, you may find it a needless hassle to add a route for every view.  Fortunately, we can get around this pass:[<phrase role="keep-together">problem.</phrase>]
+
+Let's say you just want to add the file __views/foo.handlebars__ and just magically have it available on the route __/foo__.  Let's see how we might do that.  In our application file, right before the 404 handler, add the following middleware:
+
+[source,js]
+----
+var autoViews = {};
+var fs = require('fs');
+
+app.use(function(req,res,next){
+    var path = req.path.toLowerCase();  
+    // check cache; if it's there, render the view
+    if(autoViews[path]) return res.render(autoViews[path]);
+    // if it's not in the cache, see if there's
+    // a .handlebars file that matches
+    if(fs.existsSync(__dirname + '/views' + path + '.handlebars')){
+        autoViews[path] = path.replace(/^\//, '');
+        return res.render(autoViews[path]);
+    }
+    // no view found; pass on to 404 handler
+    next();
+});
+----
+
+Now we can just add a __.handlebars__ file to the __view__ directory and have it magically render on the appropriate path.  Note that regular routes will circumvent this mechanism (because we placed the automatic view handler after all other routes), so if you have a route that renders a different view for the route __/foo__, that will take precedence.
+
+=== Other Approaches to Route Organization
+
+I've found that the approach I've outlined here offers a great balance between flexibility and effort.  However, there are some other popular approaches to route organization.((("routing", "route organization, other approaches")))  The good news is that they don't conflict with the technique I have described here.  So you can mix and match techniques if you find certain areas of your website work better when organized differently (though you run the danger of confusing your architecture).
+
+The two most popular approaches to route organization are _namespaced routing_ and _resourceful routing_.  Namespaced routing is great when you have many routes that all start with the same prefix (for example, __/vacations__).  There's a Node module called +express-namespace+ that makes this approach easy.  Resourceful routing automatically adds routes based on the methods in an object.  It can be a useful technique if your site logic is naturally object-oriented.  The package +express-resource+ is an example of how to implement this style of route organization.
+
+Routing is an important part of your project, and if the module-based routing technique I've described in this chapter doesn't seem right for you, I recommend you check out the documentation for +express-namespace+ or +express-resource+.((("express-resource")))((("express-namespace")))
+((("routing", range="endofrange", startref="ix_routing")))

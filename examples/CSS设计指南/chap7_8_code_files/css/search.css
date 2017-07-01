@@ -1,0 +1,31 @@
+@charset "UTF-8";
+/* CSS Document */
+
+form.search {
+	position:absolute;
+	width:150px;
+	right:20px; /* relative to right side of header */
+	top:23px;
+	/* border:1px solid #333; */ /* temp for screenshots */
+	}
+.search input {
+	float:right; width:70px;	
+	padding:2px 0 3px 5px;
+	border-radius:10px 0px 10px 0px;
+	font-family:"Source Sans Pro", helvetica, sans-serif;
+	font-style: normal; font-weight: 400; font-size:1em;
+	color:#888;
+	outline:none; /* removes default border hilite */
+	-webkit-transition:2s width; /* animates field */
+	}
+.search input:focus {
+	width:140px;
+	}
+.search label{
+	display:none; 
+	}
+form.search input {
+	background-color:#FFF;
+	}
+form.search input::-webkit-input-placeholder {color:#ccc;
+	}

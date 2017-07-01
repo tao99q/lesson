@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #box{
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: yellowgreen;
+            border-radius: 50%;
+            left: 0;
+            top: 20px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="box"></div>
+<script src="js/public.js"></script>
+<script>
+    var box=document.getElementById("box");
+    var maxL=public.win("clientWidth")-box.offsetWidth;
+    /*
+    var step=5;
+    box.timer=window.setInterval(function(){
+        var l=public.css(box,"left");
+        if(l+step>=maxL){
+            window.clearInterval(box.timer);
+            public.css(box,"left",maxL);
+            return;
+        }
+        l+=step;
+        public.css(box,"left",l);
+    },17);
+    */
+</script>
+<script>
+    //实现多维度的动画,让他们同步到达中点位置,我得计算每一个的步长,这样比较麻烦,他们运动的总时间是一样的,
+    //例如 left=begin+ (target-begin)/duration * time;
+    var box=document.getElementById("box");
+    var maxL=public.win("clientWidth")-box.offsetWidth;
+    var maxT=public.win("clientHeight")-box.offsetHeight;
+    /*
+    var beginL=public.css(box,"left");
+    var beginT=public.css(box,"top");
+    var duration=2000;
+    var time=0;
+    box.timer=window.setInterval(function(){
+        if(time+10>=duration){
+            window.clearInterval(box.timer);
+            public.css(box,"left",maxL);
+            public.css(box,"top",maxT);
+            return;
+        }
+        time+=10;
+        var l=beginL+(maxL-beginL)/duration *time;
+        var t=beginT+(maxT-beginT)/duration *time;
+        public.css(box,"left",l);
+        public.css(box,"top",t);
+    },17);
+    function linear(b,t,d,s){
+        //b:起始位置,t:目标位置,d:总时间,s:当前走过的时间
+        return b+(t-b)/d*s;
+    }
+   */
+</script>
+</body>
+</html>
+<script src="js/animate.js"></script>
+<script>
+    var box=document.getElementById("box");
+    var maxL=public.win("clientWidth")-box.offsetWidth;
+    var maxT=public.win("clientHeight")-box.offsetHeight;
+
+//    animate(box,{left:maxL,top:maxT},3000,function(){
+//        public.css(this,{backgroundColor:"red"});
+//    });
+    //public.css(box,{backgroundColor:"red"});
+//    console.log("哈哈");
+//    window.setTimeout(function(){console.log("定时器1")},4000);
+//    console.log("嘿嘿");
+//    window.setTimeout(function(){console.log("定时器2")},5000);
+//    console.log("嘻嘻");
+    //animate(box,{left:maxL},3000);
+    //animate(box,{left:maxL},1000,2);
+    //animate(box,{left:maxL,top:maxT},function(){},3000,19);
+    //animate(box,{left:maxL,top:maxT},function(){},3000);
+    animate(box,{top:maxT},function(){},16);
+</script>

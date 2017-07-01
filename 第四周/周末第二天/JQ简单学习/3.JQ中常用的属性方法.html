@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p id="p1">1111</p>
+
+<div class="box1">
+    <div class="box"></div>
+</div>
+<ul>
+    <li>1</li>
+    <li>2</li>
+</ul>
+<span class="span1">1</span>
+<span>1</span>
+<span>1</span>
+</body>
+</html>
+<script src="js/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    /*
+    //6.JQ中强大的好处:链式写法
+    //JQ 中的方法都有返回值返回的是个JQ对象
+    $(".box1").css({width: 100, height: 100, backgroundColor: "red"}).width(200).addClass("box2").height();
+
+
+    //7.文档处理
+    //加载父级元素的后面
+    //父级.append(新元素可以是原生的也可以给是JQ对象)
+    var oDiv = document.createElement("div");
+    $(".box1").append(oDiv);
+    $(".box1").append($("#p1"));
+
+    //新元素.appendTo(父级)
+    $("#p1").appendTo($(".box"));
+
+    //prepend/prependTo  加在父级元素的前面
+    $("ul").prepend($("#p1"));
+
+    //after/before 加在当前元素的后面/前面
+    $(".box1").after($("#p1"));
+    $(".box1").before($("#p1"));
+
+    // JQ选择出来的元素.insertBefore(指定元素)
+    //将JQ选择出来的元素添加到指定元素的前面
+    // JQ选择出来的元素.insertAfter (指定元素)
+    //将JQ选择出来的元素添加到指定元素的后面
+
+    //replaceAll(选择器)
+    $(".box1").replaceAll("#p1");//将#p1替换成.box1
+
+    var p = document.createElement("p");
+    $(p).replaceAll("li");
+
+    //remove() 删除
+    //$(".box1").remove();
+
+    $("div").remove(".box");//把所有div中类名是box删掉
+    //$(".box1 div").remove();
+    $("span").remove(".span1");//把所有的span中class名是span1的span删掉
+
+*/
+</script>
+<script>
+//筛选
+    //eq(),first(),last()
+    var $li=$("ul>li");
+    $li[0];//元素 原生对象
+    console.log($li.eq(0));
+
+    $li.last();
+    $li.first();
+
+    //同级过滤 filter
+    $("ul>li").filter(".li1");//在所有的li中找类名是li1的li元素
+
+    //子级过滤
+    $("ul").children(".li1");//在ul下找类名是li1的孩子
+
+    //后代过滤
+    $("ul").find(".li1");//在ul下找类名是li1的后代(子子孙孙)
+
+    //DOM
+    //parent()/parents()
+    $(".box1").parent();//一个父级元素
+    console.log($(".box1").parents());//父亲,父亲的父亲,.......html
+
+    //next()     下一个弟弟
+    //prev()     上一个哥哥
+    //nextAll()  所有的弟弟
+    //prevAll()  所有的哥哥
+    //siblings() 所有的兄弟
+</script>

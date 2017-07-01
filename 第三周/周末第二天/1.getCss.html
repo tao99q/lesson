@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #box{
+            opacity: 0.6;
+            filter:alpha(opacity=60.5) ;
+        }
+    </style>
+</head>
+<body>
+<div id="box">11111</div>
+</body>
+</html>
+<script>
+    var box=document.getElementById("box");
+    console.log(box.style.width);
+    window.getComputedStyle(box,null);
+    console.log(window.getComputedStyle(box).width);
+    console.log(window.getComputedStyle(box).color);
+    box.currentStyle.width;
+    function getCss(curEle,attr){
+        var val=null;
+        if("getComputedStyle" in window){
+           val= window.getComputedStyle(curEle)[attr] ;
+        }else{
+            //IE6-8
+            //curEle.currentStyle["opacity"]
+            //curEle.currentStyle["filter"]
+            if(attr=="opacity"||attr=="filter"){
+                val=curEle.currentStyle["filter"];
+                //"alpha(opacity=60.5)"
+                var reg=/^alpha\(opacity=(\d+(?:\.\d+)?)\)$/;
+                return reg.test(val)?reg.exec(val)[1]/100:1;
+            }
+            val=curEle.currentStyle[attr];
+        }
+        //val 就是想要的那个值,还是要做一下处理,把单位去掉,变成数组
+        //"-2px" '40.6px'  "50deg"   "1px solid red"
+        var reg=/^-?\d+(\.\d+)?(px|pt|pp|rem|em|deg)?$/;
+        return reg.test(val)?parseFloat(val):val;
+    }
+    getCss(box,"width");
+    getCss(box,"opacity");
+    //public.css()
+</script>

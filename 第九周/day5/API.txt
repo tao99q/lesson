@@ -1,0 +1,20 @@
+1.获取指定页数的数据内容
+url:/getUserList
+type:GET
+参数:?page=1
+返回'
+{
+   code:0,
+   msg:"success",
+   total:9,//返回一共多少页
+   data:[{"id":1,"name":"XX","sex":0,"score":100},{}...一共十条]
+}
+'
+
+page        userList
+1             0 -9
+2             10-19
+3             20-29
+4             30-39
+n             (n-1)*10~n*10-1
+9             80-87

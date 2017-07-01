@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body id="body">
+<script>
+    var Body = document.getElementById("body");
+    function on(ele,type,callback,bool) {
+        if(ele.addEventListener){
+            ele.addEventListener(type,callback,bool);
+        }else {
+            //判断之前都没有这个事件类型的数组，没有的话我们创建一个，存在当前元素的自定义属性上
+            if(!ele[type+"Event"]){
+                //这个判断语句中的代码只会执行一次
+                ele[type+"Event"]=[];
+                //callback是在run中依次执行的，run只需要执行一次就够了，
+                ele.attachEvent("on"+type,function (e) {
+                    run.call(ele,e)
+                })
+            }
+            //先获取当前类型的数组
+            var typeAry=ele[type+"Event"];
+            //循环判断这个数组中有没有callback
+            if(typeAry.length){
+                for(var i=0;i<typeAry.length;i++){
+                    if(typeAry[i]==callback)return
+                }
+            }
+            //如果能执行这一步说明循环完了也面有发现一样的
+            //那就放心的往那个数组里面添加就可以了
+            typeAry.push(callback);
+
+
+        }
+    }
+    function off(ele,type,callback,bool) {
+        if(ele.removeEventListener){
+            ele.removeEventListener(type,callback,bool)
+        }else {
+            ele.detachEvent("on"+type,callback)
+        }
+    }
+
+    function run (e) {
+        e=e||window.event;
+        //ele==this
+        //让数组中的函数按顺序执行，并且让函数中的this变成ele
+        //先把数组获取出来
+        var typeAry=this[e.type+"Event"];
+        if(typeAry&&typeAry.length){
+            for(var i=0;i<typeAry.length;i++){
+                typeAry[i].call(this,e)
+            }
+        }
+    }
+
+
+
+    function f1(e) {
+
+    }
+    on(Body,"click",f1)
+</script>
+</body>
+</html>

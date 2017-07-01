@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.box1{
+				width: 50px;
+				height: 200px;
+				/*word-wrap:normal;*/
+				/*word-wrap:break-word ;*/
+				border: 1px solid red;
+				word-break：normal;
+				word-break: break-all;
+				word-break: keep-all;
+			}
+		</style>
+	</head>
+	<body>
+		1.text-overflow:clip/ellipsis
+		clip:对于文本内容超出容器会被裁剪，但是不会显示省略号
+		ellipsis：超出内容裁剪，显示省略号 必须配合使用overflow:hidden，white-space:nowarp,才有效果
+			
+		2.word-wrap:normal/break-word	
+		normal:默认值，控制连续文本换行（允许内容撑破容器边界,英文单词不断开）
+		break-word:在容器边界换行（截断英文单词）
+		
+		3.word-break：normal/break-all/keep-all
+		normal 默认值 中文会换行，英文不会
+		break-all:可以强制截断英文换行
+		keep-all:不允许断开 中文会把标点符号前后的一个词或者短语整个换行 英文加上-会折行
+		<div class="box1">
+			1.text-overflow:clip/ellipsis
+		clip:对于文本内容超出容器会被裁剪，但是不会显示省略号
+		ellipsis：超出内容裁剪，显示省略号 必须配合使用overflow:hidden，white-space:nowarp,才有效果
+		
+		</div>
+	</body>
+</html>

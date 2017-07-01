@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+
+        }
+    </style>
+</head>
+<body>
+<script>
+    var liWenXin = {};
+    function marry() {
+        person1(1);
+        person2(10);
+        person3(100);
+        person4(1000);
+    }
+    liWenXin["marry"] = marry;
+    function person1(money) {
+        console.log(money);
+    }
+    function person2(money) {
+        console.log(money);
+    }
+    function person3(money) {
+        console.log(money);
+    }
+    function person4(money) {
+        console.log(money);
+    }
+
+    //window.setTimeout(liWenXin.marry,2000);
+
+
+    document.body.addEventListener("click", person1);
+    document.body.addEventListener("click", person2);
+    document.body.addEventListener("click", person3);
+    document.body.addEventListener("click", person4);
+
+    var obj = {};
+    function on(type, callback) {
+        if (!obj[type + "Self"]) {
+            obj[type + "Self"] = [];
+        }
+        var selfEvent = obj[type + "Self"];
+        if(selfEvent&&selfEvent.length){
+            for(var i=0;i<selfEvent.length;i++){
+                if(selfEvent[i]==callback) return;
+            }
+        }
+        selfEvent.push(callback);
+    }
+    function fire(type) {
+        var selfEvent=obj[type+"Self"];
+        if(selfEvent&&selfEvent.length){
+            for(var i=0;i<selfEvent.length;i++){
+                if(typeof selfEvent[i]=="function"){
+                    selfEvent[i].call(obj)
+                }
+            }
+        }
+    }
+    function off(type,callback) {
+        var selfEvent=obj[type+"Self"];
+        if(selfEvent&&selfEvent.length){
+            for(var i=0;i<selfEvent.length;i++){
+                if(selfEvent[i]==callback){
+                    selfEvent.splice(i,1);
+                    break
+                }
+            }
+        }
+    }
+    on("eat", fn1);
+    on("eat", fn2);
+    on("eat", fn3);
+    on("eat", fn4);
+    on("eat", fn5);
+    off("eat",fn2);
+    off("eat",fn3);
+    fire("eat");
+
+    function fn1() {
+        console.log("点餐！")
+    }
+    function fn2() {
+        console.log("玩手机！")
+    }
+    function fn3() {
+        console.log("菜来了！")
+    }
+    function fn4() {
+        console.log("吃光！")
+    }
+    function fn5() {
+        console.log("结账！")
+    }
+
+
+
+    on("drink",fn1);
+    on("drink",fn5);
+    on("drink",fn2);
+    fire("drink")
+</script>
+
+
+</body>
+</html>

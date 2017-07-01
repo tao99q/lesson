@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Stylin' with CSS - Figure 3.6 Box Margin</title>
+    <style type="text/css">
+        body {
+            margin:0; padding:0;
+            font-family: helvetica, arial, sans-serif;
+            font-size: 1em;
+            background-color: #caebff;
+        }
+
+        .borderson {
+            border: 1px solid #000;
+        }
+
+        .nomargins {
+            margin: 0;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+<h2>Margin Demo</h2>
+<p>No styles are applied to either of these paragraphs.</p>
+<p>However, there is clearly space between them.</p>
+<h2 class="borderson">Margin Demo&#8212;with borders turned on</h2>
+<p class="borderson">This is the same arrangement of a heading and two paragraphs but now the borders are visible, and
+    you can see how the default margins creates space between the elements.</p>
+<p class="borderson">Margins push an element away from elements it would otherwise touch.</p>
+<h2 class="nomargins">Margin Demo&#8212;borders on, but without margins</h2>
+<p class="nomargins">Here the margins are set to 0 (zero), so the elements' borders now touch.</p>
+<p class="nomargins">Be aware that almost every element has margins by default, and you will often want to eliminate or
+    adjust the default margin settings to get the effect you want.</p>
+
+<!-- OK to remove the code between here and </body> -->
+<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a
+            href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+</div>
+
+</body>
+</html>

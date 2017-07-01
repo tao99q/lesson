@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			div{
+				display: inline-block;
+				margin-left: 50px;
+			}
+			#box1{
+				width: 200px;
+				height: 200px;
+				border: 27px solid orange;
+				border-image: url(../img/border.png) 27;
+				-webkit-border-image: url(../img/border.png) 27;
+			}
+			#box2{
+				width: 200px;
+				height: 200px;
+				border: 27px solid orange;
+				border-image: url(../img/border.png)round 27;
+				-webkit-border-image: url(../img/border.png)round 27;
+			}
+			#box3{
+				width: 200px;
+				height: 200px;
+				border: 27px solid orange;
+				border-image: url(../img/border.png)repeat 27;
+				-webkit-border-image: url(../img/border.png)repeat 27;
+			}
+			#box4{
+				width: 200px;
+				height: 200px;
+				border: 27px solid orange;
+				border-image: url(../img/border.png)stretch repeat 27;
+				-webkit-border-image: url(../img/border.png)stretch repeat 27;
+			}
+		</style>
+	</head>
+	<body>
+		<!--stretch  拉伸 默认值
+		round 平铺
+		repeat 复制-->
+		<div id="box1"></div>
+		<div id="box2"></div>
+		<div id="box3"></div>
+		<div id="box4"></div>
+	</body>
+</html>

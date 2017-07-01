@@ -1,0 +1,230 @@
+[[ch_implementing_mvc_in_express]]
+== Implementing MVC in Express
+
+We've covered a lot of ground by now, and if you're feeling a little overwhelmed, you're not alone.  This chapter will discuss some techniques to bring a little order to the pass:[<phrase role="keep-together">madness.</phrase>]((("Express", "model-view-controller (MVC) pattern, implementing", id="ix_ExpMVC", range="startofrange")))((("model-view-controller (MVC) pattern", "implementing in Express", id="ix_MVCExp", range="startofrange")))
+
+One of the more popular development paradigms to come to prominence in recent years is the model-view-controller (MVC) pattern.  This is quite an old concept, actually, dating back to the 1970s.  It's experienced a resurgence thanks to its suitability for web development.
+
+One of the biggest advantages of MVC that I've observed is a reduced ramp-up time on projects.  For example, a PHP developer who's familiar with MVC frameworks can jump into a .NET MVC project with surprising ease.  The actual programming language is usually not so much a barrier as just _knowing where to find stuff_.  MVC breaks down functionality into very well-defined realms, giving us a common framework for developing software.
+
+In MVC, the _model_ is a "pure" view of your data and logic.((("models", "defined")))  It does not concern itself with user interaction at all.((("views", "defined")))  _Views_ convey models to the user, and the controller((("controllers (in model-view-controller pattern)"))) accepts user input, manipulates models, and chooses what view(s) to display.  (I've often thought "coordinator" would be a better term than "controller": after all, a controller does not sound like something that accepts user input, and yet this is one of the main responsibilities of the controller in an MVC project.)
+
+MVC has spawned what seems like countless variations.  Microsoft's "model-view-view model" (MVVM) in particular introduces a valuable concept: the view model (it also rolls the controller into the view, a simplification I find less interesting).((("MVVM (model-view-view model)")))((("model-view-view model (MVVM)")))((("Microsoft", "model-view-view model (MVVM)")))  The idea of a _view model_ is that it is a transformation of a model.((("view models")))  Furthermore, a single view model may combine more than one model, or parts of models, or parts of a single model.  At first blush, it may seem like an unnecessary complication, but I've found it to be a very valuable concept.  Its value lies in "protecting" the model.  In pure MVC, it's tempting (or even necessary) to contaminate your model with transformations or enhancements that are necessary only for the views.  Model views give you an "out": if you need a view of your data that's only needed for presentation, it belongs in a view model.
+
+Like any pattern, you have to decide how rigid you want to be about it.  Too much rigidity leads to heroic efforts to accomplish edge cases "the right way," and too little rigidity leads to maintenance issues and technical debt.  My preference is to lean more toward the side of rigidity.  Fortunately, MVC (with view models) provides very natural areas of responsibility, and I find it's very rare to run into a situation that can't easily be accommodated by this pattern.
+
+=== Models
+
+To me, the models are far and away the most important components.((("model-view-controller (MVC) pattern", "implementing in Express", "models")))((("models")))  If your model is robust and well designed, you can always scrap the presentation layer (or add an additional presentation layer).  Going the other way is harder, though: your models are the foundations of your project.
+
+It is vitally important that you don't contaminate your models with any presentation or user-interaction code.  Even if it seems easy or expedient, I assure you that you are only making trouble for yourself in the future.  A more complicated--and contentious--issue is the relationship between your models and your persistence layer.
+
+In an ideal world, your models and the persistence layer could be completely separate.  And certainly this is achievable, but usually at significant cost.  Very often, the logic in your models is heavily dependent on persistence, and separating the two layers may be more trouble than it's worth.
+
+In this book, we've taken the path of least resistance by using Mongoose (which is specific to MongoDB) to define our models.((("MongoDB")))((("Mongoose")))  If being tied to a specific persistence technology makes you nervous, you might want to consider using the native MongoDB driver (which doesn't require any schemas or object mapping) and separating your models from your persistence layer.
+
+There are those who submit that models should be _data only_.  That is, they contain no logic, only data.  While the word "model" does conjure the idea of data more than functionality, I don't find this to be a useful restriction, and prefer to think of a model as combining data and logic.
+
+I recommend creating a subdirectory in your project called _models_ that you can keep your models in.  Whenever you have logic to implement, or data to store, you should do so in a file within the _models_ directory.  For example, we might keep our customer data and logic in a file called _models/customer.js_:
+
+[source,js]
+----
+var mongoose = require('mongoose');
+var Orders = require('./orders.js');
+
+var customerSchema = mongoose.Schema({
+	firstName: String,
+	lastName: String,
+	email: String,
+	address1: String,
+	address2: String,
+	city: String,
+	state: String,
+	zip: String,
+	phone: String,
+	salesNotes: [{
+		date: Date,
+		salespersonId: Number,
+		notes: String,
+	}],
+});
+
+customerSchema.methods.getOrders = function(){
+	return Orders.find({ customerId: this._id });
+};
+
+var Customer = mongoose.model('Customer', customerSchema);
+modules.export = Customer;
+----
+
+=== View Models
+
+While I prefer not to be dogmatic about passing models directly to views,((("view models", "creating")))((("model-view-controller (MVC) pattern", "implementing in Express", "view models"))) I definitely recommend creating a view model if you're tempted to modify your model _just because you need to display something in a view_.  View models give you a way to keep your model abstract, while at the same time providing meaningful data to the view.
+
+Take the previous example.  We have a model called +Customer+.  Now we want to create a view showing customer information, along with a list of orders.  Our +Customer+ model doesn't quite work, though.  There's data in it we don't want to show the customer (sales notes), and we may want to format the data that is there differently (for example, correctly formatting mailing address and phone number).  Furthermore, we want to display data that isn't even _in_ the +Customer+ model, such as the list of customer orders.  This is where view models come in handy.  Let's create a view model in _viewModels/customer.js_:
+
+[source,js]
+----
+var Customer = require('../model/customer.js');
+
+// convenience function for joining fields
+function smartJoin(arr, separator){
+	if(!separator) separator = ' ';
+	return arr.filter(function(elt){
+		return elt!==undefined && 
+			elt!==null && 
+			elt.toString().trim() !== '';
+	}).join(separator);
+}
+
+module.exports = function(customerId){
+	var customer = Customer.findById(customerId);
+	if(!customer) return { error: 'Unknown customer ID: ' + 
+		req.params.customerId };
+	var orders = customer.getOrders().map(function(order){
+		return {
+			orderNumber: order.orderNumber,
+			date: order.date,
+			status: order.status,
+			url: '/orders/' + order.orderNumber,
+		}
+	});
+	return {
+		firstName: customer.firstName,
+		lastName: customer.lastName,
+		name: smartJoin([customer.firstName, customer.lastName]),
+		email: customer.email,
+		address1: customer.address1,
+		address2: customer.address2,
+		city: customer.city,
+		state: customer.state,
+		zip: customer.zip,
+		fullAddress: smartJoin([
+			customer.address1,
+			customer.address2,
+			customer.city + ', ' + 
+				customer.state + ' ' + 
+				customer.zip,
+		], '<br>'),
+		phone: customer.phone,
+		orders: customer.getOrders().map(function(order){
+			return {
+				orderNumber: order.orderNumber,
+				date: order.date,
+				status: order.status,
+				url: '/orders/' + order.orderNumber,
+			}
+		}),
+	}
+}
+----
+
+In this code example, you can see how we're discarding the information we don't need, reformatting some of our info (such as +fullAddress+), and even constructing additional information (such as the URL that can be used to get more order details).
+
+The concept of view models is essential to protecting the integrity and scope of your model.  If you find all of the copying (such as +firstname: customer.firstName+), you might want to look into http://underscorejs.org[_Underscore_], which((("Underscore"))) gives you the ability to do more elaborate composition of objects.  For example, you can clone an object, picking only the properties you want, or go the other way around and clone an object while omitting only certain properties.  Here's the previous example rewritten with Underscore (install with +npm install --save underscore+):
+
+[source,js]
+----
+var _ = require('underscore');
+
+// get a customer view model
+function getCustomerViewModel(customerId){
+	var customer = Customer.findById(customerId);
+	if(!customer) return { error: 'Unknown customer ID: ' + 
+		req.params.customerId };
+	var orders = customer.getOrders().map(function(order){
+		return {
+			orderNumber: order.orderNumber,
+			date: order.date,
+			status: order.status,
+			url: '/orders/' + order.orderNumber,
+		}
+	});
+	var vm = _.omit(customer, 'salesNotes');
+	return _.extend(vm, {
+		name: smartJoin([vm.firstName, vm.lastName]),
+		fullAddress: smartJoin([
+			customer.address1,
+			customer.address2,
+			customer.city + ', ' + 
+				customer.state + ' ' + 
+				customer.zip,
+		], '<br>'),
+		orders: customer.getOrders().map(function(order){
+			return {
+				orderNumber: order.orderNumber,
+				date: order.date,
+				status: order.status,
+				url: '/orders/' + order.orderNumber,
+			}
+		}),
+	});
+}
+----
+
+Note that we are also using JavaScript's +.map+ method to set the order list for the customer view model.  In essence, what we're doing is creating an ad hoc (or anonymous) view model.  The alternate approach would be to create a "customer order view model" object.  That would be a better approach if we needed to use that view model in multiple places.
+
+=== Controllers
+
+The controller is responsible for handling user interaction and choosing the appropriate views to display based on that user interaction.((("routers", "controllers (MVC) versus")))((("controllers (in model-view-controller pattern)", "creating")))((("model-view-controller (MVC) pattern", "implementing in Express", "controllers")))((("routing", "routers versus controllers")))  Sounds a lot like request routing, doesn't it?  In reality, the only difference between a controller and a router is that controllers typically group related functionality.  We've already seen some ways we can group related routes: now we're just going to make it more formal by calling it a controller.
+
+Let's imagine a "customer controller": it would be responsible for viewing and editing a customer's information, including the orders a customer has placed.  Let's create such a controller, _controllers/customer.js_:
+
+[source,js]
+----
+var Customer = require('../models/customer.js');
+var customerViewModel = require('../viewModels/customer.js');
+
+exports = {
+
+	registerRoutes: function(app) {
+		app.get('/customer/:id', this.home);
+		app.get('/customer/:id/preferences', this.preferences);
+		app.get('/orders/:id', this.orders);
+
+		app.post('/customer/:id/update', this.ajaxUpdate);
+	}
+
+	home: function(req, res, next) {
+		var customer = Customer.findById(req.params.id);
+		if(!customer) return next(); 	// pass this on to 404 handler
+		res.render('customer/home', customerViewModel(customer));
+	}
+
+	preferences: function(req, res, next) {
+		var customer = Customer.findById(req.params.id);
+		if(!customer) return next(); 	// pass this on to 404 handler
+		res.render('customer/preferences', customerViewModel(customer));
+	}
+
+	orders: function(req, res, next) {
+		var customer = Customer.findById(req.params.id);
+		if(!customer) return next(); 	// pass this on to 404 handler
+		res.render('customer/preferences', customerViewModel(customer));
+	}
+
+	ajaxUpdate: function(req, res) {
+		var customer = Customer.findById(req.params.id);
+		if(!customer) return res.json({ error: 'Invalid ID.'});
+		if(req.body.firstName){
+			if(typeof req.body.firstName !== 'string' ||
+				req.body.firstName.trim() === '')
+				return res.json({ error: 'Invalid name.'});
+			customer.firstName = req.body.firstName;
+		}
+		// and so on....
+		customer.save();
+		return res.json({ success: true });
+	}
+}
+----
+
+Note that in our controller, we separate route management from actual functionality.  In this case, the +home+, +preferences+, and +orders+ methods are identical except for the choice of view.  If that's all we were doing, I would probably combine those into a generic method, but the idea here is that they might be further customized.
+
+The most complicated method in this controller is +ajaxUpdate+.  It's clear from the name that we'll be using AJAX to do updates on the frontend.  Notice that we don't just blindly update the customer object from the parameters passed in the request body: that would open us up to possible attacks.  It's more work, but much safer, to handle the fields individually.  Also, we want to perform validation here, even if we're doing it on the frontend as well.  Remember that an attacker can examine your JavaScript and construct an AJAX query that bypasses your frontend validation in attempt to compromise your application, so always do validation on the server, even if it's redundant.
+
+Your options are once again limited by your imagination.  If you wanted to completely separate controllers from routing, you could certainly do that.  In my opinion, that would be an unnecessary abstraction, but it might make sense if you were trying to write a controller that could also handle different kinds of UIs attached to it (like a native app, for example).
+
+=== Conclusion
+
+Like many programming paradigms or patterns, MVC is more of a general concept than a specific technique.  As you've seen in this chapter, the approach we've been taking is already mostly there: we just made it a little more formal by calling our route handler a "controller" and separating the routing from the functionality.  We also introduced the concept of a view model, which I feel is critical to preserving the integrity of your model.((("Express", "model-view-controller (MVC) pattern, implementing", range="endofrange", startref="ix_ExpMVC")))((("model-view-controller (MVC) pattern", "implementing in Express", range="endofrange", startref="ix_MVCExp")))

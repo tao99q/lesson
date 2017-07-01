@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figures 6.4 A Horizontal Menu</title>
+<style>
+* {margin:0; padding:0;}
+nav {font:16px helvetica, arial, serif; overflow:hidden; margin:20px 50px;}
+.list1 ul {overflow:hidden;} 
+.list1 li {
+	float:left; /* forces ul to enclose floated li's */
+	list-style-type:none; 
+	}
+.list1 a {
+	display:block; /* makes list horizontal*/
+	padding:0 16px;
+	text-decoration:none; /* removes underlining from links */
+	color:#999;
+	}
+.list1 li + li a {border-left:1px solid #aaa;} /* left border on all links but first links */
+.list1 a:hover {color:#555;}
+</style>
+</head>
+
+<body>
+
+<nav class="list1">
+	<ul>
+    	<li><a href="#">Shirts</a></li>
+        <li><a href="#">Pants</a></li>
+        <li><a href="#">Dresses</a></li>
+		<li><a href="#">Shoes</a></li>
+        <li><a href="#">Accessories</a></li>
+    </ul>
+</nav>  
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+
+</body>
+
+</html>

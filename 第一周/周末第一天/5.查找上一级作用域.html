@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script type="text/javascript">
+    //上一级作用域：看当前作用域对应的那个堆内存是在那个作用域下定义的，那个作用域就是他的上一级
+    var d=1;
+    function F1() {
+        var  d=0;
+        function f1() {
+            d++;
+            console.log(d);
+            return d
+        }
+        return f1
+    }
+    var f1=F1();
+    console.log(f1());//1
+    //f1=F1()
+    //F1()形成一个私有作用域
+    //预解释：var d  function f1=xxxfff111
+    //全局f1=xxxfff111
+
+
+    //当遇到变量的时候，先看是不是自己的私有变量，如果是就是用私有的，不是的话往上一级作用域去找，没有继续找。，一直找到全局下，再没有就报错了
+</script>
+</body>
+</html>
+<script type="text/javascript">
+    var a=1;
+    var obj={a:1};
+    function ff() {
+        var a=12;
+        obj.num=a;
+        obj.a=f;
+        function f() {
+            a++;
+            console.log(a);
+            return obj
+        }
+        console.log(a);//12
+        return f
+    }
+    var f=ff();
+    var ff=ff()();
+    console.log(a++);//1,全局的a=2
+    obj=obj.a();
+    console.log(obj);
+</script>

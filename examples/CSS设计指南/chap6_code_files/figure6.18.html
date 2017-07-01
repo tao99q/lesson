@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 6.13 A Stylin' Form With Labels Above or to the Left</title>
+<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link type="text/css" href="css/fig6-13.css" rel="stylesheet" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<style>
+/* these styles are just for this demo *
+/* remove and drop the form element into your container */
+body {
+	font-family:helvetica, arial, sans-serif;
+	/* Firefox (10.0.2) styles textarea in Courier by default and does not inherit font-family from body */
+	}
+a#toggleLeftLabels, a#hiliteErrors {
+	color:#555;
+	font-size:.8em;
+	margin-left:.5em;
+	}
+</style>
+
+<script>
+// script for switching layout and demo'ing error highlights - needed for demo only */
+	$(document).ready(function() {
+		$("#toggleLeftLabels").click(function() {
+  			$('form.stylin_form1').toggleClass('labels_left')
+			return false;
+		});
+	});
+	$(document).ready(function() {
+		$("#hiliteErrors").click(function() {
+  			$('form.stylin_form1 p').toggleClass('error')
+			return false;
+		});
+	});
+</script>
+
+</head>
+
+<body>
+    <div id="wrapper">  <!-- temp - for this demo only - use your container -->
+    
+    <!--FORM WIITH LABELS ABOVE OR TO LEFT OF CONTROLS-->
+    <a href="#" id="toggleLeftLabels">Toggle Left Labels</a>&nbsp;<a href="#" id="hiliteErrors">Demo error messages</a>
+    <form class="stylin_form1" action="process_form.php" method="post"> <!-- the required form tag -->
+        <h3>A Stylin' Form</h3>
+        <!--START OF FORM ELEMENTS-->
+        <!-- A SINGLE LINE TEXT FIELD -->	
+        <fieldset> <!-- the container for a group of controls -->
+        <legend><span>Part 1 &#8226; Basic Controls</span></legend> <!-- the title for a fieldset -->
+        <section> <!-- control, label and direction wrapper for styling -->
+            <p class="note">* indicates required field</p>
+            <label for="user_name">User Name<span> *</span></label> <!-- the for attribute ties the label to its control - same as contol's ID -->
+            <input type="text" id="user_name" name="user_name" />  <!-- the text attribute makes this input display as a text field -->
+            <p>Please select a user name</p>
+        </section>
+        <!-- END SINGLE LINE TEXT FIELD -->
+        <!-- A PASSWORD FIELD -->
+        <section>	
+            <label for="password">Password<span> *</span></label>
+            <input type="password" id="password" name="password" maxlength="20" /> <!-- password input text displays as bullets -->
+            <p>Password must be 8 or more characters</p>
+        </section>
+        <!-- END PASSWORD FIELD -->
+        <!-- A MULTI-LINE TEXT FIELD -->
+        <section>	
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Enter the description here."></textarea>
+        </section>
+        <!-- END MULTI-LINE TEXT FIELD -->
+        <!-- A HTML5 DATE FIELD -->
+        <section>	
+            <label for="description">Date</label>
+            <input type="date" id="special_date" name="event_date" min="2012-09-05" />
+        </section>
+        <!-- END DATE FIELD -->
+        </fieldset>
+        
+        <fieldset>
+        <legend><span>Part 2 &#8226; Multiple-Choice Controls</span></legend>
+        <!-- CHECKBOXES -->
+       <section>
+            <h4>Select Any Number</h4>
+                <section>
+                    <input type="checkbox" id="check1" name="checkset" value="1" tabindex="4" />
+                    <label for="check1">Choice 1</label>
+                </section>
+                <section>
+                    <input type="checkbox" checked="checked" id="check2" name="checkset" value="2" />
+                    <label for="check2">Choice 2 is pre-checked</label>
+                </section>
+                <section>
+                    <input type="checkbox"  id="check3" name="checkset" value="3" />
+                    <label for="check3">Choice 3&mdash;add as many as you need!</label>
+                </section>
+        	<p>You must choose one or more</p>
+        </section>
+        <!-- END CHECKBOXES -->
+        <!-- RADIO BUTTONS -->
+        <section>
+            <h4>Select Only One</h4>
+            <section>
+                <input checked="checked" id="radio1" name="radioset" type="radio" value="Choice_1" />
+                <label for="radio1">Choice 1 is pre-selected and shows the text wraps nicely if it goes to multiple lines.</label>
+            </section>
+            <section>
+                <input id="radio2" name="radioset" type="radio" value="Choice_2" />
+                <label for="radio2">Choice 2</label>
+            </section>
+            <section>
+                <input id="radio3" name="radioset" type="radio" value="Choice_3" />
+                <label for="radio3">Choice 3</label>        
+            </section><!--end buttongroup-->
+        </section>
+        <!-- END RADIO BUTTONS -->
+        <!-- SELECT (drop-down menu) -->
+        <section>
+            <label for="select_choice">Select Your Choice</label>
+            <select id="select_choice" name="select_choice">
+                <option value="0">None</option>
+                <option value="1">Choice 1</option>
+                <option value="2">Choice 2</option>
+                <option value="3">Choice 3</option>
+                <option value="4">Choice 4</option>
+            </select>
+        </section>
+        <!-- END SELECT-->
+        </fieldset>
+        
+        <!-- SUBMIT BUTTON -->
+        <section> <!-- input must be wrapped in a block level element to validate -->
+        <input type="submit" value="Submit This Form" />
+        </section>
+    </form>
+    
+     </div> <!-- wrapper -->
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

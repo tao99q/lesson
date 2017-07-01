@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			div{
+				display: inline-block;
+			}
+			#box1{
+				width: 200px;
+				height: 200px;
+				border:5px solid #000;
+				/*border-top-left-radius:50px  100px;*/
+				border: 50px 100px 100px 50px/40px 50px 100px 50px;
+				border-top-left-radius: 50px 40px;
+				border-top-right-radius: 100px 50px ;
+				border-bottom-right-radius: 100px 100px;
+				border-bottom-left-radius: 50px 50px;
+			}
+			#box2{
+				width: 200px;
+				height: 400px;
+				border:5px solid #000;
+				border-radius:200px 0px 0px 200px ;
+			}
+			#box3{
+				width: 200px;
+				height: 400px;
+				border:5px solid #000;
+				border-radius:0 200px 200px 0 /0 200px 200px 0;
+			}
+			#box4{
+				width: 400px;
+				height: 400px;
+				border:5px solid #000;
+				border-top-right-radius:400px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box1"></div>
+		<div id="box2"></div>
+		<div id="box3"></div>
+		<div id="box4"></div>
+	</body>
+</html>

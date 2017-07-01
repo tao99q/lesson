@@ -1,0 +1,248 @@
+[[ch_maintenance]]
+== Maintenance
+
+You launched the site!  Congratulations, now you never have to think about it again.  What's that?  You _do_ have to keep thinking about it?  Well, in that case, keep reading.((("maintenance", id="ix_maint", range="startofrange")))
+
+While it has happened a couple of times in my career, it has been the exception to the rule that you finish a site and then never have to touch it again (and when it does happen, it's usually because someone else is doing the work, not that work doesn't need to be done).  I distinctly remember one website launch "postmortem."  I piped up and said, "Shouldn't we really call it a _postpartum_?"footnote:[As it happened, the term "postpartum" was a little too visceral.  We now call them "retrospectives."]  Launching a website really is more of a birth than a death.  Once it launches, you're glued to the analytics, anxiously awaiting the client's reaction, waking up at three in the morning to check to see if the site is still up...it's your baby.
+
+Scoping a website, designing a website, building a website: these are all activities that can be planned to death.  But what usually receives short shrift is _planning the maintenance_ of a website.  This chapter will give you some advice on navigating those waters.
+
+=== The Principles of Maintenance
+
+==== Have a Longevity Plan
+
+It always surprises me when a client agrees on a price to build a website, but it's never discussed how long the site is expected to last.((("longevity plan")))((("maintenance", "principles of", "longevity plan")))  My experience is that if you do good work, clients are happy to pay for it.  What clients do _not_ appreciate is the unexpected: being told after three years that their site has to be rebuilt when they had an unspoken expectation that it would last five.
+
+The Internet moves fast.  If you built a website with the absolute best and newest technology you could find, it might feel like a creaky relic in two short years.  Or it could truck along for seven, aging, but doing so gracefully (this is a lot less common!).
+
+Setting expectations about website longevity is part art, part salesmanship, and part science.  The science of it involves something that all scientists, but very few web developers, do: keep records.  Imagine if you had a record of every website your team had ever launched, the history of maintenance requests and failures, the technologies used, and how long before each site was rebuilt.  There are many variables, obviously, from the team members involved to the economy to the shifting winds of technology, but that doesn't mean that meaningful trends can't be discovered in the data.  You may find that certain development approaches work better for your team, or certain platforms or technologies.  What I almost guarantee you will find is a correlation between "procrastination" and defects: the longer you put off an infrastructure update or platform upgrade that's causing pain, the worse it will be.  Having a good issue tracking system and keeping meticulous records will allow you to give your client a much better (and more realistic) picture of what the life cycle of their project is going to be.
+
+The salesmanship of it boils down to money, of course.  If a client can afford to have their website completely rebuilt every three years, then they won't be very likely to suffer from aging infrastructure (they will have other problems, though).  On the flip side, there will be clients who need their dollar to stretch as far as possible, wanting a website that will last for five or even seven years (I've known websites that have dragged on for even longer than that, but I feel that seven years is the maximum realistic life expectancy for websites that have any hope of continuing to be useful).  You have a responsibility to both of these clients, and both come with their own challenge.  With the clients who have a lot of money, don't just take their money because they have it: use that extra money to give them something extraordinary.  With the clients on a tight budget, you will have to find creative ways to design their website for greater longevity in the face of constantly changing technology.  Both of these extremes have their own challenges, but ones that can be solved.  What's important, though is that you _know_ what the expectations are.
+
+Lastly, there's the art of the matter.  This is what ties it all together: understanding what the client can afford, and where you can honestly convince the client to spend more money so they get value where they need it.  It is also the art of understanding technology futures, and being able to predict what technologies will be painfully obsolete in five years and which will be going strong.
+
+There's no way to predict anything with absolute certainty, of course.  You could bet wrong on technologies, personnel shifts can completely change the technical culture of your organization, and technology vendors can go out of business (though this is usually less of a problem in the open source world).  The technology that you thought would be solid for the lifetime of your product may turn out to be a fad, and you'll find yourself facing the decision to rebuild sooner than you expected.  On the flip side, sometimes the exactly right team comes together at the exact right time with the exact right technology, and something is created that far outlives any reasonable expectations.  None of this uncertainty should deter you from having a plan, however: better to have a plan that goes awry than to always be rudderless.
+
+It should be clear to you by now that I feel that JavaScript and Node are technologies that are going to be around for a while.  The Node community is vibrant and enthusiastic, and wisely based on a language that has clearly _won_.  Most important, perhaps, is that JavaScript is a multiparadigm language: object-oriented, functional, procedural, synchronous, asynchronous--it's all there.  This makes JavaScript an inviting platform for developers from many different backgrounds, and is in large part responsible for the pace of innovation in the JavaScript ecosystem.
+
+==== Use Source Control
+
+This probably seems obvious to you, but it's not just about _using_ source control, it's about using it _well_. ((("maintenance", "principles of", "using source control")))((("source control"))) Why are you using source control?  Understand the reasons, and make sure the tools are supporting those reasons.  There are many reasons to use source control, but the one that always seems to me to have the biggest payoff is attribution: knowing exactly what change was made when and who did it, so I can ask for more information if necessary.  Version control is one of our greatest tools for understanding the history of our projects and how we work together as a team.
+
+==== Use an Issue Tracker
+
+Issue trackers go back to the science of development.((("maintenance", "principles of", "using an issue tracker")))((("issue tracking")))  Without a systematic way to record the history of a project, no insight is possible.  You've probably heard it said that the definition of insanity is "doing the same thing over and over again and expecting different results" (often dubiously attributed to Albert Einstein).  It does seem crazy to repeat your mistakes over and over again, but how can you avoid it if you don't know what mistakes you're making?  Record everything: every defect the client reports; every defect you find before the client sees it; every complaint, every question, every bit of praise.  Record how long it took, who fixed it, what Git commits were involved, and who approved the fix.  The art here is finding tools that don't make this overly time-consuming or onerous.  A bad issue tracking system will languish, unused, and it will be worse than useless.  A good issue tracking system will yield vital insights into your business, your team, and your clients.
+
+==== Exercise Good Hygiene
+
+I'm not talking about brushing your teeth--though you should do that too--I'm talking about version control, testing, code reviews, and issue tracking.((("code reviews")))((("testing")))((("version control")))((("maintenance", "principles of", "exercising good hygiene")))  The tools you use are useful only if you use them, and use them correctly.  Code reviews are a great way to encourage hygiene because _everything_ can be touched on, from discussing the use of the issue tracking system in which the request originated to the tests that had to be added to verify the fix to the version control commit comments.
+
+The data you collect from your issue tracking system should be reviewed on a periodic basis and discussed with the team.  From this data, you can gain insights about what's working and what's not.  You might be surprised by what you find.
+
+==== Don't Procrastinate
+
+Institutional procrastination can be one of the hardest things to combat.((("maintenance", "principles of", "don't procrastinate")))((("procrastination")))  Usually it's something that doesn't seem so bad: you notice that your team is routinely eating up a lot of hours on a weekly update that could be drastically improved by a little refactoring.  Every week you delay refactoring is another week you're paying the((("Fuel")))((("Wilson, Mike"))) inefficiency cost.footnote:[Mike Wilson of http://www.fuelyouth.com[Fuel]’s rule of thumb is "the third time you do something, take the time to automate it."] Worse, some costs may increase over time.  A great example of this is failing to update software dependencies.  As the software ages, and team members change, it's harder to find people who remember (or ever understood) the creaky old software.  The support community starts to evaporate, and before long, the technology is deprecated and you can't get any kind of support for it.  You often hear this described as _technical debt_,((("technical debt"))) and it's a very real thing.  While you should avoid procrastinating, understanding the website longevity can factor into these decisions: if you're just about to redesign the whole website, there's little value in eliminating technical debt that's been building up.
+
+==== Do Routine QA Checks
+
+For each of your websites, you should have a _documented_ routine QA check.((("maintenance", "principles of", "doing routine QA checks")))((("quality assurance", "doing routine QA checks")))  That check should include a link checker, HTML and CSS validation, and running your tests.  The key here is _documented_: if the items that compose the QA check aren't documented, you will inevitably miss things.  A documented QA checklist for each site not only helps prevent overlooked checks, but it allows new team members to be effective immediately.  Ideally, the QA checklist can be executed by a nontechnical team member.  Not only will this give your (possibly) nontechnical manager confidence in your team, it will allow you to spread QA responsibilities around if you don't have a dedicated QA department.  Depending on your relationship with your client, you may also want to share your QA checklist (or part of it) with the client; it's a good way to remind them what they're paying for, and that you are looking out for their best interests.
+
+As part of your routine QA check,((("Webmaster Tools")))((("Bing", "Webmaster Tools")))((("Google", "Webmaster Tools"))) I recommend using https://www.google.com/webmasters[Google Webmaster Tools] and http://www.bing.com/toolbox/webmaster[Bing Webmaster Tools].  They are easy to set up, and they give you a very important view of your site: how the major search engines see it.((("search engine optimization (SEO)")))  It will alert you to any problems with your _robots.txt_ file, HTML issues that are interfering with good search results, security issues, and more.
+
+==== Monitor Analytics
+
+If you're not running analytics on your website, you need to start now: it provides a vital insight into not just the popularity of your website,((("analytics")))((("maintenance", "principles of", "monitoring analytics"))) but also how your users are using it.  Google Analytics (GA) is excellent (and free!), and even if you supplement it with additional analytics services, there's little reason not to include GA on your site.((("Google Analytics (GA)")))  Often, you will be able to spot subtle UX issues by keeping an eye on your analytics.  Are there certain pages that are not getting the traffic that you expect?  That could indicate a problem with your navigation or promotions, or an SEO issue.  Are your bounce rates high?  That could indicate the content on your pages needs some tailoring (people are getting to your site by searching, but when they arrive on your site, they realize it's not what they're looking for).  You should have an analytics checklist to go along with your QA checklist (it could even be part of your QA checklist).  That checklist should be a "living document"; over the lifetime of your website, you or your client may have shifting priorities about what content is most important.
+
+==== Optimize Performance
+
+Study after study has shown the dramatic effect of performance on website traffic.  It's a fast-paced world, and people expect their content delivered((("maintenance", "principles of", "optimizing performance")))((("performance", "optimizing"))) quickly,especially on mobile platforms.  The number one principle in performance tuning is to _profile first, then optimize_.  "Profiling" means finding out what it actually is that's slowing your site down.((("profile first, then optimize")))  If you spend days speeding up your content rendering when the problem is actually your social media plugins, you're wasting precious time and money.
+
+Google PageSpeed is a great way to measure the performance of your website (and now PageSpeed data is recorded in Google Analytics so you can monitor performance trends).((("PageSpeed")))((("Google", "PageSpeed")))  Not only will it give you an overall score for mobile and desktop performance, it will also make prioritized suggestions about how to improve performance.
+
+Unless you currently have performance issues, it's probably not necessary to do periodic performance checks (monitoring Google Analytics for significant changes in performance scores should be sufficient); however, it is gratifying to watch your boost in traffic when you improve performance.
+
+==== Prioritize Lead Tracking
+
+In the Internet world, the strongest signal your visitors can give you that they are interested in your product or service is to give you contact information: you should treat this information with the utmost care.((("lead tracking, prioritizing")))((("maintenance", "principles of", "prioritizing lead tracking")))  Any form that collects an email or phone number should be tested routinely as part of your QA checklist, and there should _always_ be redundancy when you collect that information.  The worst thing you can do to a potential customer is collect contact information and then lose it.
+
+Because lead tracking is so critical to the success of your website, I recommend these five principles for collecting information:
+
+Have a fallback in case JavaScript fails::
+	Collecting customer information via AJAX is fine--it often results ((("JavaScript", "failure of, fallback for")))in a better user experience.  However, if JavaScript should fail for any reason (the user could disable it, or a script on your website could have an error, preventing your AJAX from functioning correctly), the form submission should work anyway.  A great way to test this is to disable JavaScript and use your form.  It's okay if the user experience is not ideal: the point is that user data is not lost.  To implement this, _always_ have a valid and working +action+ parameter in your +<form>+ tag, even if you normally pass:[<phrase role="keep-together">use AJAX.</phrase>]((("AJAX")))
+
+If you use AJAX, get the URL from the form's +action+ parameter::
+	While not strictly necessary, this helps prevent you from accidentally forgetting the +action+ parameter on your +<form>+ tags.  If you tie your AJAX to successful no-JavaScript submission, it's much harder to lose customer data.  For example, your form tag could be +<form action="/submit/email" method="POST">+; then in your AJAX handler, you would do the following: pass:[<literal>$('form').on('submit', function(evt){ evt.preventDefault(); var action = $(this).attr(\'action'); /* perform AJAX submission */ });</literal>].
+
+Provide at least one level of redundancy::
+	You'll probably want to save leads to a database or an external service such as Campaign Monitor.  But what if your database fails,((("redundancy")))((("Campaign Monitor"))) or Campaign Monitor goes down, or there's a network issue?  You still don't want to lose that lead.  A common way to provide redundancy is to send an email in addition to storing the lead.  If you take this approach, you should not use a person's email address, but a shared email address (such as _dev@meadowlarktravel.com_): the redundancy does no good if you send it to a person and that person leaves the organization.  You could also store the lead in a backup database, or even a CSV file.  However, _whenever_ your primary storage fails, there should be some mechanism to alert you of the failure.  Collecting a redundant backup is the first half of the battle: being aware of failures and taking appropriate action is the second half.
+
+In case of total storage failure, inform the user::
+    Let's say you have three levels of redundancy: your primary storage is Campaign Monitor, and if that fails, you back up to a CSV file((("storage failure, total"))) and send an email to _dev@meadowlarktravel.com_.  If _all_ of these channels fail, the user should receive a message that says something like "We're sorry, we're experiencing technical difficulties.  Please try again later, or contact __support@meadowlarktravel.com__."
+
+Check for positive confirmation, not absence of an error::
+	It's quite common to have your AJAX handler return an object((("errors", "AJAX handler returning object with err property"))) with an +err+ property in the case of failure; the client code then has something that looks like this: +if(data.err){ /* inform user of failure \*/ } else { /* thank user for successful submission \*/ }+.  *Avoid this approach.*  There's nothing wrong with setting an +err+ property, but if there's an error in your AJAX handler, leading the server to respond with a 500 response code or a response that isn't valid JSON, *this approach will fail silently*.  The user's lead will disappear into the void, and they will be none the wiser.  Instead, provide a +success+ property for successful submission (even if the primary storage failed: if the user's information was recorded by _something_, you may return +success+).  Then your client-side code becomes +if(data.success){ /* thank user for successful submission \*/ } else { /* inform user of failure \*/ }+.
+
+==== Prevent "Invisible" Failures
+
+I see it all the time: because developers are in a hurry,((("maintenance", "principles of", "preventing invisible failures")))((("invisible failures, preventing")))((("errors", "invisible failures"))) they record errors in ways that never get checked.  Whether it is a logfile, a table in a database, a client-side console log, or an email that goes to a dead address, the end result is the same: *your website has quality problems that are going unnoticed*.  The number one defense you can have against this problem is to *provide an _easy_, standard method for logging errors*.  Document it.((("logging", "errors")))  Don't make it difficult.  Don't make it obscure.  Make sure every developer that touches your project is aware of it.  It can be as simple as exposing a +meadowlarkLog+ function (+log+ is often used by other packages).  It doesn't matter if the function is recording to a database, flat file, email, or some combination thereof: the important thing is that it is standard.  It also allows you to improve your logging mechanism (for example, flat files are less useful when you scale out your server, so you would modify your +meadowlarkLog+ function to record to a database instead).  Once you have the logging mechanism in place, documented, and everyone on your team knows about it, add "check logs" to your QA checklist, and have instructions on how to do that.
+
+
+=== Code Reuse and Refactoring
+
+One tragedy I see all the time is the reinvention of the wheel, over and over and over again.  Usually it's just small things: tidbits that feel easier to just rewrite than to dig up in some project that you did months ago. ((("code reuse and refactoring")))((("maintenance", "code reuse and refactoring"))) All of those little rewritten snippets add up.  Worse, it flies in the face of good QA: you're probably not going to go to the trouble to write tests for all these little snippets (and if you do, you're doubling the time that you're wasting by not reusing existing code).  Each snippet--doing the same thing--can have different bugs.  It's a bad habit.
+
+Development in Node and Express offers some great ways to combat this problem.  Node brought namespacing (via modules) and packages (via npm), and Express brings the concept of middleware (via Connect).  With these tools at your disposal, it makes it a lot easier to develop reusable code.
+
+==== Private npm Registry
+
+npm registries are a great place to store shared code; it's what npm was designed for, after all.  In addition to simple storage, you get versioning, and a convenient way to include those packages in other projects.((("npm (package manager)", "private npm registries")))((("code reuse and refactoring", "private npm registry")))
+
+There's a fly in the ointment, though: unless you're working in a completely open source organization, you may not want to create npm packages for all of your reusable code.  (There can be other reasons than intellectual property protection, too: your packages could be so organization- or project-specific that it doesn't make sense to make them available on a public registry.)
+
+One way to handle this is _private npm registries_.  Setting up a private npm registry can be an involved process, but it is possible.((("private npm registries")))
+
+The biggest hurdle to creating your own private registry is that npm currently doesn't allow you to pull from multiple repositories.  So if your _package.json_ file contains a mix of packages from the public npm registry (and it will) and packages from a private registry, npm will fail (if you specify the public registry, the private dependencies will fail, and if you specify the private registry, the public dependencies will fail).  The npm team has said they don't have the resources to implement this feature (see https://github.com/npm/npm/issues/1401), but there are alternatives.
+
+One way to handle that problem is to replicate the entire public npm.  If that sounds daunting and expensive (in terms of storage, bandwidth, and maintenance), you're right.  A better approach is to provide a proxy to the public npm, which will pass requests for a public package through to the public registry, while serving private packages from its own database.  Fortunately, there is just such a project: https://github.com/rlidwka/sinopia[Sinopia].((("Sinopia")))
+
+Sinopia is incredibly easy to install and, in addition to supporting private packages, provides a handy cache of packages for your organization.  If you choose to use Sinopia, you should be aware that it uses the local filesystem to store private packages: you would definitely want to add the package directory to your backup plan!  Sinopia suggests using the prefix +test-+ for local packages: if you're creating a private registry for your organization, I recommend you use the organization's name (+meadowlark-+).
+
+Since npm is configured to support only one registry, once you "switch over" to using Sinopia (using +npm set registry+ and +npm adduser+), you will be unable to use the public npm registry (except through Sinopia).  To switch back to using the public npm registry, you can either use +npm set registry+ pass:[<literal>https://registry.npmjs.org/</literal>], or simply delete the file _~/.npmjs_.  You will have to do this if you want to publish packages to the public registry.
+
+A much easier solution is to use a hosted private repository.  https://www.nodejitsu.com/[Nodejitsu] and http://www.gemfury.com/l/npm-registry[Gemfury] both offer private npm repositories.  Unfortunately, both these services are rather expensive.((("Gemfury")))((("Ninjitsu")))  Ninjitsu's service starts at $25/month and offers only 10 packages.  To get a more manageable number of packages (50), it'll set you back $100/month.  Gemfury's pricing is comparable.  If budget is not an issue, this is certainly a no-fuss way to go.
+
+==== Middleware
+
+As we've seen throughout this book, writing middleware is not some big, scary, complicated thing: we've done it a dozen times in this book and, after a while, you will do it without even thinking about it.((("middleware", "reusable, packaging")))((("code reuse and refactoring", "middleware")))  The next step, then, is to put reusable middleware in a package and put it in a npm registry.
+
+If you find that your middleware is too project-specific to put in a reusable package, you should consider refactoring the middleware to be configured for more general use.  Remember that you can pass configuration objects into middleware to make them useful in a whole range of situations.  Here is an overview of the most common ways to expose middleware in a Node module.  All of the following assume that you're using exporting these modules as a package, and that package is called +meadowlark-stuff+:((("modules", "exposing middleware function directly")))((("middleware", "reusable, packaging", "module exposing middleware function directly")))
+
+===== Module exposes middleware function directly
+
+Use this method if your middleware doesn't need a configuration object:
+
+[source,js]
+----
+module.exports = function(req, res, next){
+    // your middleware goes here...remember to call next()
+    // or next('route') unless this middleware is expected
+    // to be an endpoint
+    next();
+}
+----
+
+To use this middleware:
+
+[source,js]
+----
+var stuff = require('meadowlark-stuff');
+
+app.use(stuff);
+----
+
+===== Module exposes a function that returns middleware
+
+Use this method if your middleware needs((("middleware", "reusable, packaging", "module exposing a function returning middleware")))((("modules", "exposing a function returning middleware"))) a configuration object or other information:
+
+[source,js]
+----
+module.exports = function(config){
+	// it's common to create the config object
+	// if it wasn't passed in:
+	if(!config) config = {};
+
+	return function(req, res, next){
+	    // your middleware goes here...remember to call next()
+	    // or next('route') unless this middleware is expected
+	    // to be an endpoint
+	    next();
+	}
+}
+----
+
+To use this middleware:
+
+[source,js]
+----
+var stuff = require('meadowlark-stuff')({ option: 'my choice' });
+
+app.use(stuff);
+----
+
+===== Module exposes an object that contains middleware
+
+Use this option if you want to expose((("middleware", "reusable, packaging", "module exposing an object containing middleware")))((("modules", "exposing an object containing middleware"))) multiple related middleware:
+
+[source,js]
+----
+module.exports = function(config){
+	// it's common to create the config object
+	// if it wasn't passed in:
+	if(!config) config = {};
+
+	return {
+		m1: function(req, res, next){
+		    // your middleware goes here...remember to call next()
+		    // or next('route') unless this middleware is expected
+		    // to be an endpoint
+		    next();
+		},
+		m2: function(req, res, next){
+			next();
+		}
+	}
+}
+----
+
+To use this middleware:
+
+[source,js]
+----
+var stuff = require('meadowlark-stuff')({ option: 'my choice' });
+
+app.use(stuff.m1);
+app.use(stuff.m2);
+----
+
+===== Module exposes an object constructor
+
+This is probably the most uncommon method for returning middleware, but is useful if your middleware is well suited for an object-oriented implementation.((("middleware", "reusable, packaging", "module exposing an object constructor")))((("modules", "exposing an object constructor")))  It is also the trickiest way to implement middleware, because if you expose your middleware as instance methods, they will not be invoked against the object instance by Express, so +this+ will not be what you expect it to be.  If you need to access instance properties, see +m2+:
+
+[source,js]
+----
+function Stuff(config){
+	this.config = config || {};
+}
+Stuff.prototype.m1 = function(req, res, next){
+	// BEWARE: 'this' will not be what you expect; don't use it
+	next();
+};
+Stuff.prototype.m2 = function(){
+	// we use Function.prototype.bind to associate this instance
+	// to the 'this property
+	return (function(req, res, next){
+		// 'this' will now be the Stuff instance
+		next();
+	}).bind(this);
+);
+
+module.exports = Stuff;
+----
+
+To use this middleware:
+
+[source,js]
+----
+var Stuff = require('meadowlark-stuff');
+
+var stuff = new Stuff({ option: 'my choice' });
+
+app.use(stuff.m1);
+app.use(stuff.m2());
+----
+
+Note that we can link in the +m1+ middleware directly, but we have to invoke +m2+ (which then returns middleware that we can link in).
+
+=== Conclusion
+
+When you're building a website, the focus is often on the launch, and for good reason: there's a lot of excitement surrounding a launch.  However, a client that is delighted by a newly launched website will quickly become a dissatisfied customer if care isn't taken in maintaining the website.  Approaching your maintenance plan with the same care with which you launch websites will provide the kind of experience that keeps clients coming back.((("maintenance", range="endofrange", startref="ix_maint")))

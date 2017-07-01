@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 7 A Striped Table</title>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400italic,700italic,600italic,600,400,700,900,900italic' rel='stylesheet' type='text/css'>
+<style>
+body {background:#fff;}
+table {
+	margin:20px auto;
+	border-collapse:collapse;
+	font:16px 'Source Sans Pro', helvetica, arial, sans-serif;
+	font-weight:400;
+	border-bottom:2px solid #333;
+	}
+caption {
+	box-sizing:border-box;
+	position:relative; 
+	width:100%; 
+	left:0%;
+	padding:0em 1em; 
+	border-top:2px solid #666;
+	border-top-left-radius:12px; 
+	border-top-right-radius:12px;
+	font:28px 'Source Sans Pro', helvetica, arial, sans-serif;
+	font-weight:900;
+	color:#666; 
+	}
+th {
+	font-weight:600;
+	text-align:center;
+	background:-webkit-linear-gradient(left, #fff, #d9ebf4);
+	padding:.25em;
+	color:#333;
+	}
+td {
+	padding:.2em .5em;
+	color:#333;
+	}
+td.ital, td span {
+	font-family:'Source Sans Pro', helvetica, sans-serif;
+	font-weight:400;
+	font-style:italic;
+	}
+td a {color:inherit;}
+td a:hover {color:#f00;}
+tr:nth-child(odd) {background:#d9ebf4;}
+tr:nth-child(even) {background:#fff;}
+th[scope=row], td:last-child {
+	text-align:center;	
+	}
+</style>
+</head>
+
+<body>
+<table>
+  <caption>Basic and Contextual Selectors</caption>
+  <tr>
+  	<th scope="col">Selector</th>
+	<th scope="col">Description</th>
+	<th scope="col">Type</th>
+	<th scope="col">CSS Version</th>
+	
+  <tr>
+    <td>*</td>
+    <td>any element</td>
+    <td><a href="http://www.w3.org/TR/selectors/#universal-selector">Universal selector</a></td>
+    <td>CSS2</td>
+  </tr>
+  <tr>
+    <td class="ital">e</td>
+    <td>an element of type <span>e</span></td>
+    <td><a href="http://www.w3.org/TR/selectors/#type-selectors">Type selector</a></td>
+    <td>CSS1</td>
+  </tr>
+  <tr>
+    <td class="ital">e f</td>
+    <td>an <span>f&nbsp;</span> element descendant of an <span>e</span> element</td>
+    <td><a href="http://www.w3.org/TR/selectors/#descendant-combinators">Descendant combinator</a></td>
+    <td>CSS1</td>
+  </tr>
+  <tr>
+    <td class="ital">e &gt; f</td>
+    <td>an <span>f&nbsp;</span> element child of an <span>e</span> element</td>
+    <td><a href="http://www.w3.org/TR/selectors/#child-combinators">Child combinator</a></td>
+    <td>CSS2</td>
+  </tr>
+  <tr>
+    <td class="ital">e + f</td>
+    <td>an <span>f&nbsp;</span> element immediately preceded by an <span>e</span> element</td>
+    <td><a href="http://www.w3.org/TR/selectors/#adjacent-sibling-combinators">Adjacent sibling combinator</a></td>
+    <td>CSS2</td>
+  </tr>
+  <tr>
+    <td class="ital">e ~ f</td>
+    <td>an <span>f&nbsp;</span> element preceded by an <span>e</span> element</td>
+    <td><a href="http://www.w3.org/TR/selectors/#general-sibling-combinators">General sibling combinator</a></td>
+    <td>CSS3</td>
+  </tr>
+</table>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        html,body,ul,li{
+            margin: 0;
+            padding: 0;
+        }
+        ul,li{
+            list-style: none;
+        }
+        #news{
+            width: 300px;
+            margin: 20px auto;
+            border: 2px dashed #ffb515;
+            padding-left: 20px;
+            text-align: left;
+            height: 200px;
+            overflow: auto;
+        }
+        #news li{
+            line-height: 50px;
+            font-size: 16px;
+            color: #666;
+        }
+        #news li:hover{
+            background-color: beige;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<ul id="news">
+    <li>新闻1:春天来了</li>
+    <li>新闻2:夏天来了</li>
+    <li>新闻3:秋天来了</li>
+    <li>新闻4:冬天来了</li>
+    <li>新闻5:狼天来了</li>
+    <li>新闻6:姗姗来了</li>
+    <li>新闻7:女朋友来了</li>
+    <li>新闻8:丈母娘来了</li>
+    <li>新闻9:婆婆来了</li>
+    <li>新闻10:警察来了</li>
+    <li>新闻11:孟倩来了</li>
+</ul>
+</body>
+</html>
+<script>
+    var news=document.getElementById("news");
+    console.log(news.scrollTop);
+    //news.scrollTop=-100;
+    news.scrollTop=100;
+    news.scrollTop=200;
+    //onscroll 只要滚动条发生改变就会触发onscroll事件
+    news.onscroll=function(){
+        console.log(this.scrollTop);
+    }
+</script>

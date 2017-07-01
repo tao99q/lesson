@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //括号表达式
+    //一:保证一些操作语法能被浏览器识别
+    //1.(function(){})():自执行函数
+    //2.基本数据类型中的数字不可以直接调取属性和方法(因为;在浏览器中数字后面出现的第一个点表示数字的小数点)比如:1.toString是错误的, 应该写成1..toString或者是(1).toString
+    console.log(1..toString());
+    console.log((1).toString());
+    console.log(2..toFixed(2));//保留2位小数
+    //3.引用数据类型中的对象不能直接调用方法和属性,必须通过对象名.属性名,或者({}).属性名 例如:
+    var obj={a:1,b:2};
+    //console.log(obj.a);
+    //{a:1,b:2}.a
+    console.log(({a: 1, b: 2}).a);
+    //4.注意再用eval遇到{}表示对象的时候用小括号包起来
+
+    //二:计算的时候优先级最高
+    var s="1";
+    var n=2;
+    //s=s+n+1;//"121"
+    s=s+(n+1);//"13"
+    //三:正则中()表示小分组,优先级也高
+
+    //四 :本身也是有计算的效果
+    //一个括号中如果包含多项,他只会把最后一项的值(对于基本数据类型很容易理解因为就是值类型的,对于引用数据类型就是他的地址值拿过来)copy过来,然后进行后续的处理
+    var a=(1,2,3,4);
+    console.log(a);
+    //最后一项是个函数,那么函数执行的时候里面的this是window(就算函数前面有点也不管)
+    //注意一点:如果括号中只有一项, 和不加括号没有区别
+    function f1(){console.log(this)};
+    function f2(){console.log(this)};
+    var obj={f1:f1,f2:f2};
+    (f1,f2)();//f2()
+    (f1,f2,obj.f1)();
+    (obj.f1)();
+</script>
+</body>
+</html>

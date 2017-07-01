@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轮播图渐显</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="banner" class="banner">
+        <div class="bannerInner"></div>
+        <ul class="focusList"></ul>
+        <a  class="left" href="javascript:void 0"></a>
+        <a class="right" href="javascript:void 0"></a>
+    </div>
+    <div id="banner2" class="banner">
+        <div class="bannerInner"></div>
+        <ul class="focusList"></ul>
+        <a  class="left" href="javascript:void 0"></a>
+        <a class="right" href="javascript:void 0"></a>
+    </div>
+
+</body>
+</html>
+<script src="js/public.js"></script>
+<script src="js/animation.js"></script>
+<script src="js/bannerClass.js"></script>
+
+
+<script>
+
+    var b1=new Banner("banner",'data.txt',3000);
+    var b2=new Banner("banner2",'data2.txt',2000);
+
+    b1.init();
+    b2.init();
+
+</script>

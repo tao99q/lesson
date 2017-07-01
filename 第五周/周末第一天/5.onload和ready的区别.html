@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+    <link rel="stylesheet" href="css/menu.css"/>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script>
+        // DOM0级事件  window.onload=function(){} 只能写一次
+        // DOM2级事件 实现多次绑定 window.addEventListener("load",function)
+
+        //window.onload=function(){
+        //页面上所有的东西都加载完成(DOM,音频,视频,CSS,外部引入的文件,图片...)才开始执行里面的代码
+        //alert("JS");
+        // };
+        //$(document).ready 实现多次
+        //下面三种是一样的
+        /*
+         $(document).ready(function(){
+         //只要页面上所有的DOM结构(图片)加载完成后才开始执行
+         alert("JQ");
+         });
+         jQuery(function($){
+         alert("jQ");
+         });
+         $(function(){
+         alert("jQ");
+         });
+         */
+
+    </script>
+</head>
+<body>
+<img src="img/1.jpg" alt=""/>
+<audio src=""></audio>
+</body>
+</html>
+<script>
+    document.addEventListener("DOMContentLoaded",function(){
+        //只要页面上所有的DOM结构(图片)加载完成后才开始执行
+        //跟JQ中ready相似
+    },false);
+    document.onreadystatechange=function (e) {
+        if(document.readyState=="complete"){
+            console.log("complete");
+        }
+    }
+</script>
+

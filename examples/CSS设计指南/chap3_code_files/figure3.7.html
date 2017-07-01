@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 3.7 Collapsing Margins</title>
+<style type="text/css">
+
+body {font-family:helvetica, arial, sans-serif; font-size:.8em; background-color:#caebff;}
+p {height:50px; border:1px solid #000; background-color:#fff; margin-top:50px; margin-bottom:30px;}
+	
+</style>
+</head>
+<body>
+	<p>Here I've made the paragraphs 50 pixels high and turned their borders on so you can see what fifty pixels looks like.</p>
+	<p>The top margin of each paragraph is 50 pixels and the bottom margin is 30 pixels, so you might expect 80 pixels of space between them.</p>
+	<p>As you can see, the margin is equal to the paragraph height&#8212;50 pixels; the margins have collapsed and only the larger of the two touching margins has effect.</p>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+</html>

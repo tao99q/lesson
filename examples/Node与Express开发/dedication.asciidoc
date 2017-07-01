@@ -1,0 +1,8 @@
+[dedication]
+== Dedication
+
+This book is dedicated to my family:
+
+My father, Tom, who gave me a love of engineering;
+my mother, Ann, who gave me a love of writing;
+and my sister, Meris, who has been a constant companion.

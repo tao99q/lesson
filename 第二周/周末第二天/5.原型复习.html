@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+//    function FF(){
+//        this.x=10;
+//        this.y=20;
+//        return {x:10,y:20}
+//    }
+//    FF();
+//    var ff=FF();
+
+    function FF(){
+        console.log(this);
+        this.y=10;
+        this.x=20;
+    }
+    FF.prototype.getX=function(){};
+    var ff=new FF();
+    var gg=new FF();
+    //可以理解:看到new那就是后面的类中的this就变成前面的实例
+    //例如var gg=new FF(); FF中this就变成了gg
+   /*1.ff={}
+    2.FF执行:
+       1.预解释
+       2.先创建一个this={}
+       3.通过this.属性=值,往这个对象中增加属性名和属性值
+       4.自动return出this
+    3.ff=FF return出来的this
+    */
+
+
+    //判断对象中的属性是不是自己私有的属性的一个方法
+     //对象.hasOwnProperty("属性名")
+//先用in判断一下有没有这个属性,没有的话就算了,有的话,再用hasOwnProperty这个方法来判断是不是私有的属性
+console.log(ff.hasOwnProperty("x"));
+console.log("getX" in ff);
+console.log(ff.hasOwnProperty("getX"));
+
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    "use strict"//严格模式
+    function fn(){
+        console.log(this);
+    };
+    fn.f=function(){
+        console.log(this);
+    };
+    //1.函数执行的时候前面没有点,那么this就是undefined
+    fn();
+    window.fn();
+    fn.f();//this->fn
+    //2.call(),this->undefined
+    fn.call();//this->undefined
+    //2.call(null);this->null
+    fn.call(null);//this->null
+    //3.call(undefined) this->undefined
+    fn.call(undefined);//this->undefined
+
+    (function(){
+        console.log(this);
+    })()
+
+</script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+<head>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400italic,700italic,600italic,600,400,700|Lato:700italic,400,400italic,700,900italic,900' rel='stylesheet' type='text/css'>
+
+<meta charset="UTF-8" />
+<title>Stylin' with CSS - A CSS3-Enhanced Web Page</title>
+<meta name="viewport" content="width=device-width" maximum-scale="1.0" /> <!-- stops iPhone scaling -->
+
+<link type="text/css" href="css/menu.css" rel="stylesheet" />
+<link type="text/css" href="css/form.css" rel="stylesheet" />
+<link type="text/css" href="css/search.css" rel="stylesheet" />
+<link type="text/css" href="css/styles.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="helpers/modernizr.css3_touch_html5shiv.20120920.js"></script>
+<script src="helpers/imsky-cssFx-CSS3prefixing/cssfx.min.js"></script>
+<script>
+
+/*20_cws */
+/* iPhone rotate redraw/scale bug fix */
+
+(function(doc) {
+
+	var addEvent = 'addEventListener',
+	    type = 'gesturestart',
+	    qsa = 'querySelectorAll',
+	    scales = [1, 1],
+	    meta = qsa in doc ? doc[qsa]('meta[name=viewport]') : [];
+
+	function fix() {
+		meta.content = 'width=device-width,minimum-scale=' + scales[0] + ',maximum-scale=' + scales[1];
+		doc.removeEventListener(type, fix, true);
+	}
+
+	if ((meta = meta[meta.length - 1]) && addEvent in doc) {
+		fix();
+		scales = [.25, 1.6];
+		doc[addEvent](type, fix, true);
+	}
+
+}(document)); 
+
+
+</script>
+
+
+<!-- use PIE for rounded corners and basic gradients in  = or < IE9 -->
+<!-- add a ref to each element that you want to have PIE'd -->
+
+<!--[if lt IE 10]>
+<script src="../../helpers/PIE-1.0.0/PIE.js"></script>
+<script>
+$(document).ready(function() {
+    $(function() {
+        if (window.PIE) {
+			$('#promo_area article .inner, footer').each(function() {
+                PIE.attach(this);
+            });
+        }
+    });
+});
+</script>
+<![endif]-->
+
+</head>
+
+<body ontouchstart="">
+	<div id="wrapper">
+        <header>
+       		<section id="title">
+            	<h1>Stylin&#8217; with CSS</h1>
+        		<h2>The Blog and Books of Charles Wyke-Smith</h2>
+        	</section>
+            <nav class="menu">
+                 <ul>
+                 	<li class="choice1"><a href="#">Articles</a></li>
+                    <li class="choice2"><a href="#">Books</a>
+                    	<ul><!-- drop down menu items -->
+                            <li><a href="#">Stylin&#8217; with CSS</a></li>
+                            <li><a href="#">Scriptin&#8217; with Ajax</a></li>
+                            <li><a href="#">Codin&#8217; for the Web</a></li>
+                            <li><a href="#">Visual Stylin' with CSS3</a></li>
+                            
+                         </ul>
+                      </li>
+                   <li class="choice3" ><a href="#">Resources</a>
+                         <ul><!-- drop down menu items -->
+                            <li><a href="#">Resource 1</a></li>
+                            <li><a href="#">Resource 2</a></li>
+                            <li><a href="#">Resource 3</a></li>
+                         </ul>
+                      </li>
+                    <li class="choice4"><a href="#">Bookshelf</a></li>
+                    <li class="choice5"><a href="#">Contact Me</a></li>
+                   
+                 </ul>
+            </nav> 
+            <form class="search" action="#" method="post"> 
+        		<label for="user_name">search</label> <!-- the for attribute ties the label to its control - same as contol's ID -->
+        		<input type="text" id="user_name" name="user_name" placeholder="search" /> 
+       	 	</form>
+        </header>
+        <section id="feature_area">
+       		<article id="blog_leadoff">
+            	<div class="inner">
+                	<h4>September 7, 2012</h4>
+                    <a href="#"><h3>Managing CSS Classes with jQuery</h3></a>
+                    	<img src="images/charles_wyke-smith.jpg" alt="Charles Wyke-Smith photo" />
+                        <p>Sintus at neque in magna lacinia bibendum sit amet sit amet dolor. Phasellus pretium gravida interdum. Nam interdum posuere tempus. Ut commodo laoreet dolor, non hendrerit mi dictum vitae. Nam nec egestas libero. Quisque sodales tortor ut tortor egestas eu adipiscing enim pellentesque. Cras condimentum tellus in nisl sodales tortor ut tortor egestas eu adipiscing enimtincidunt et ornare augue dignissim. Nam laoreet elit vitae lorem tincidunt adipiscing. Maecenas pharetra mattis sodales tortor ut tortor egestas eu adipiscing enim urna, eu adipi  scing diam pharetra ac.</p>
+                </div>
+            </article>
+            
+       		<aside>
+            	<form  autocomplete="off" class="signin" action="process_form.php" method="post"> <!-- the required form tag -->
+                    <!--START OF FORM ELEMENTS-->
+                    <!-- A SINGLE LINE TEXT FIELD -->	
+                    <fieldset> <!-- the container for a group of controls -->
+                    <legend><span>Sign In for Code and Updates</span></legend> <!-- the text label for a fieldset -->
+                    <section> <!-- control, label and direction wrapper for styling -->
+                        <label for="email">Email</label> <!-- the for attribute ties the label to its control - same as contol's ID -->
+                        <input type="text" id="email" name="email" />  <!-- the text attribute makes this input display as a text field -->
+                    </section>
+                    <!-- END SINGLE LINE TEXT FIELD -->
+                    <!-- A PASSWORD FIELD -->
+                    <section>	
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" maxlength="20" /> <!-- password input text displays as bullets -->
+                        <p class="direction">Wrong user name or password</p>
+                    </section>
+                    <!-- END PASSWORD FIELD -->
+                    <!-- SUBMIT BUTTON -->
+                    <section> <!-- input must be wrapped in a block level element to validate -->
+                    <input type="submit" value="Sign In" />
+                    <p class="signup">Not signed up? <a href="#">Register now!</a></p>
+                    </section>
+                    </fieldset>
+                 </form>
+            	 <nav>
+        			<h3>Recent Articles</h3>
+                    <ul>
+                        <li><a href="#">Z-index&mdash;Layers of Confusion</a></li>
+                        <li><a href="#">Box-Image Techniques</a></li>
+                        <li><a href="#">Shadow FX with CSS3</a></li>
+                    </ul>
+                </nav>
+        	</aside>
+        </section>
+        
+        <section id="book_area">
+            <article class="left">
+            	<div class="inner">
+                    <h3>HTML5 + CSS3</h3>
+                    <img src="images/stylin_cover.png" alt="Stylin' with CSS cover" />
+                    <aside>                        
+                    	<ol>
+                            <li><a href="#">Download the Code</a></li>
+                        	<li><a href="#">Table of Contents</a></li>
+                        	<li><a href="#">Buy this Book</a></li> 
+                        </ol>
+					</aside>
+                </div>
+            </article>
+            
+            <article class="left">
+                <div class="inner">
+                	<h3>JavaScript</h3>
+                	<img src="images/scriptin_cover.png" alt="Scriptin' with Ajax cover" />
+                    <aside>
+                        <ol>
+                            <li><a href="#">Download the Code</a></li>
+                            <li><a href="#">Table of Contents</a></li>
+                            <li><a href="#">Buy this Book</a></li>
+                        </ol>
+                    </aside>
+                </div>
+            </article>
+            
+            <article class="right">
+                <div class="inner">
+                	<h3>PHP + SQL</h3>
+                	<span><img src="images/codin_cover.png" alt="Codin' for the Web cover" /></span>
+                   	  <aside>                        
+                    	<ol>
+                            <li><a href="#">Download the Code</a></li>
+                        	<li><a href="#">Table of Contents</a></li>
+                        	<li><a href="#">Buy this Book</a></li>
+                        </ol>
+					</aside>
+                </div>
+            </article>
+        	<article class="right">
+                <div class="inner">
+                <h3>Presentation</h3>
+                <img src="images/visual_stylin_cover.png" alt="Visual Stylin' cover" />
+                    <aside>                        
+                    	<ol>
+                            <li><a href="#">Download the Code</a></li>
+                        	<li><a href="#">Table of Contents</a></li>
+                        	<li><a href="#">Buy this Book</a></li> 
+                        </ol>
+					</aside>
+                </div>
+            </article>
+            
+        </section><!--end section '.feature'-->
+    <footer>
+      <p>A CSS template from <a href="http://www.stylinwithcss.com"><em>Stylin'
+            with CSS, Third Edition</em></a> by Charles Wyke-Smith</p>
+            <nav>
+            	<ul>
+            		<li><a href="#">Privacy Policy</a></li>
+                	<li><a href="#">Contact Charles</a></li>
+           	 	</ul>
+           	</nav>
+    </footer>
+   </div>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //正则捕获exec:分俩阶段,
+    //1.先匹配,没有匹配的返回值就是null
+    //2.捕获:把匹配内容捕获出来,返回值是个数组
+    //第一项:捕获出来的内容
+    //index:捕获的内容首字符的索引
+    //input:原字符串
+
+    var reg=/\d+/;
+    var str="zhufeng";
+    reg.exec(str);//null
+    var str="zhufeng2017peixunjs6html5css3";
+    //console.log(reg.exec(str));
+    //console.log(reg.exec(str));
+    //正则的懒惰性 :每一次捕获的时候都是从头开始,捕获一次就不捕获了
+    //解决他的懒惰性  给正则加上全局修饰符g
+    var reg=/\d+/g;
+    var str="zhufeng2017peixunjs6html5css3";
+//    console.log(reg.exec(str));//2017
+//    console.log(reg.exec(str));//6
+//    console.log(reg.exec(str));//5
+//    console.log(reg.exec(str));//3
+//    console.log(reg.exec(str));//null
+    var ary=[];
+    var re=reg.exec(str);
+    while(re){
+        ary.push(re[0]);
+        re=reg.exec(str)
+    }
+    console.log(ary);
+
+    //match(正则)
+    //正则不加修饰符g,得到的结构跟exec一样
+    //加上修饰符g,就会把匹配的内容一次性全部捕获出来,返回一个数组,但是这个数组没有index和input这俩属性
+    var reg=/\d+/;
+    var str="zhufeng2017peixunjs6html5css3";
+    console.log(str.match(reg));
+    var reg=/\d+/g;
+    var str="zhufeng2017peixunjs6html5css3";
+    console.log(str.match(reg));//["2017", "6", "5", "3"]
+</script>
+</body>
+</html>

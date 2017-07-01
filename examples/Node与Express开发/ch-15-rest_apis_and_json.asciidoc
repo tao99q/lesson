@@ -1,0 +1,358 @@
+[[ch_rest_apis_and_json]]
+== REST APIs and JSON
+
+So far, we've been designing a website to be consumed by browsers. Now we turn our attention to making data and functionality available to other programs.((("REST APIs", id="ix_RESTAPI", range="startofrange")))  Increasingly, the Internet is no longer a collections of siloed websites, but a true web: websites communicate freely with each other in order to provide a richer experience for the user.  It's a programmer's dream come true: the Internet is becoming as accessible to your code as it has traditionally been to real people.
+
+In this chapter, we'll add a web service to our app (there's no reason that a web server and a web service can't coexist in the same application).((("web services", seealso="REST APIs")))  The term "web service" is a general term that means any application programming interface (API) that's accessible over HTTP.  The idea of web services has been around for quite some time, but until recently, the technologies that enabled them were stuffy, byzantine, and overcomplicated.  There are still systems that use those technologies (such as SOAP and WSDL), and there are Node packages that will help you interface with these systems.  We won't be covering those, though: instead, we will be focused on providing so-called "RESTful" services, which are much more straightforward to interface with.
+
+The acronym REST stands for "representational state transfer," and the grammatically troubling "RESTful" is used as an adjective to describe a web service ((("representational state transfer", see="REST APIs")))((("RESTful services")))that satisfies the principles of REST.  The formal description of REST is complicated, and steeped in computer science formality, but the basics are that REST is a stateless connection between a client and a server.  The formal definition of REST also specifies that the service can be cached and that services can be layered (that is, when you use a REST API, there may be other REST APIs beneath it).
+
+From a practical standpoint, the constraints of HTTP actually make it difficult to create an API that's not RESTful; you'd have to go out of your way to establish state, for example.  So our work is mostly cut out for us.
+
+We'll be adding a REST API to the Meadowlark Travel website.  To encourage travel to Oregon, Meadowlark Travel maintains a database of attractions, complete with interesting historical facts.  An API allows the creation of apps that enable visitors to go on self-guided tours with their phones or tablets: if the device is location-aware, the app can let them know if they are near an interesting site.  So that the database can grow, the API also supports the addition of landmarks and attractions (which go into an approval queue to prevent abuse).
+
+=== JSON and XML
+
+Vital to providing an API is having a common language to speak in.((("REST APIs", "JSON and XML")))  Part of the communication is dictated for us: we must use HTTP methods to communicate with the server.  But past that, we are free to use whatever data language we choose.((("XML")))  Traditionally, XML has been a popular choice, and it remains an important markup language.  While XML is not particularly complicated, Douglas Crockford saw that there was room for something more lightweight, and JavaScript object notation (JSON) was born.((("Crockford, Douglas")))((("JSON")))  In addition to being very JavaScript-friendly (though it is by no means proprietary: it is an easy format for any language to parse), it also has the advantage of being generally easier to write by hand than XML.
+
+I prefer JSON over XML for most applications: there's better JavaScript support, and it's a simpler, more compact format.  I recommend focusing on JSON and providing XML only if existing systems require XML to communicate with your app.
+
+=== Our API
+
+We'll plan our API out before we start implementing it.((("HTTP verbs", "in a REST API")))((("REST APIs", "planning an API")))  We will want the following functionality:
+
++GET /api/attractions+::
+    Retrieves attractions.((("GET method", "in a REST API")))  Takes +lat+, +lng+, and +radius+ as querystring parameters and returns a list of attractions.
+
++GET /api/attraction/:id+::
+    Returns an attraction by ID.
+
++POST /api/attraction+::
+    Takes +lat+, +lng+, +name+, +description+, and +email+ in the request body.  The newly added attraction goes into an approval queue.((("POST method", "in a REST API")))
+
++PUT /api/attraction/:id+::
+    Updates an existing attraction.  Takes an attraction ID, +lat+, +lng+, +name+, +description+, and +email+.  Update goes into approval queue.((("PUT method", "in a REST API")))
+
++DEL /api/attraction/:id+::
+    Deletes an attraction.  Takes an attraction ID, +email+, and +reason+.  Delete goes into approval queue.
+
+There are many ways we could have described our API.  Here, we've chosen to use pass:[<phrase role="keep-together">combinations</phrase>] of HTTP methods and paths to distinguish our API calls, and a mix of querystring and body parameters for passing data.  As an alternative, we could have had different paths (such as __/api/attractions/delete__) with all the same method.footnote:[If your client can't use different HTTP methods, see https://github.com/expressjs/method-override, which allows you to "fake" different HTTP methods.]  We could also have passed data in a consistent way.  For example, we might have chosen to pass all the necessary information for retrieving parameters in the URL instead of using a querystring: +GET /api/attractions/:lat/:lng/:radius+.  To avoid excessively long URLs, I recommend using the request body to pass large blocks of data (for example, the attraction description).
+
+[NOTE]
+====
+It has become a standard to use +POST+ for _creating_ something, and +PUT+ for _updating_ (or modifying) something.  The English meaning of these words doesn't support this distinction in any way, so you may want to consider using the path to distinguish between these two operations to avoid confusion.
+====
+
+For brevity, we will implement only three of these functions: adding an attraction, retrieving an attraction, and listing attractions.  If you download the book source, you can see the whole implementation.
+
+=== API Error Reporting
+
+Error reporting in HTTP APIs is usually ((("errors", "reporting in a REST API")))((("REST APIs", "error reporting")))((("HTTP status codes", "error reporting in a REST API")))achieved through HTTP status codes: if the request returns 200 (OK), the client knows the request was successful.  If the request returns 500 (Internal Server Error), the request failed.  In most applications, however, not everything can (or should be) categorized coarsely into "success" or "failure."  For example, what if you request something by an ID, but that ID doesn't exist?  This does not represent a server error: the client has asked for something that doesn't exist.  In general, errors can be grouped into the following categories:
+
+Catastrophic errors::
+    Errors that result in an unstable or unknown state for the server.((("catastrophic errors")))  Usually, this is the result of an unhandled exception.  The only safe way to recover from a catastrophic error is to restart the server.  Ideally, any pending requests would receive a 500 response code, but if the failure is severe enough, the server may not be able to respond at all, and the request will time out.
+
+Recoverable server errors::
+    Recoverable errors do not require a server restart, or any other heroic action.((("recoverable server errors")))  The error is a result of an unexpected error condition on the server (for example, a database connection being unavailable).  The problem may be transient or permanent.  A 500 response code is appropriate in this situation.
+
+Client error::
+    Client errors are a result of the client making the mistake, usually missing or invalid parameters. ((("client errors"))) It isn't appropriate to use a 500 response code: after all, the server has not failed.  Everything is working normally, the client just isn't using the API correctly.  You have a couple of options here: you could respond with a status code of 200 and describe the error in the response body, or you could additionally try to describe the error with an appropriate HTTP status code.  I recommend the latter approach.  The most useful response codes in this case are 404 (Not Found), 400 (Bad Request), and 401 (Unauthorized).  Additionally, the response body should contain an explanation of the specifics of the error.  If you want to go above and beyond, the error message would even contain a link to documentation.  Note that if the user requests a list of things, and there's nothing to return, this is not an error condition: it's appropriate to simply return an empty list.
+
+In our application, we'll be using a combination of HTTP response codes and error messages in the body.  Note that this approach is compatible with jQuery, which is an important consideration given the prevalance of API access using jQuery.
+
+=== Cross-Origin Resource Sharing (CORS)
+
+If you're publishing an API, you'll likely want to make the API available to others.((("CORS", see="cross-origin resource sharing")))((("cross-origin resource sharing (CORS)")))((("cross-site HTTP requests")))((("REST APIs", "cross-origin resource sharing (CORS)")))  This will result in a _cross-site HTTP request_.  Cross-site HTTP requests have been the subject of many attacks and have therefore been restricted by the _same-origin policy_, which restricts where scripts can be loaded from.  Specifically, the protocol, domain, and port must match.((("same-origin policy")))  This makes it impossible for your API to be used by another site, which is where CORS comes in.  CORS allows you to lift this restriction on a case-by-case basis, even allowing you to list which domains specifically are allowed to access the script.  CORS is implemented through the +Access-Control-Allow-Origin+ header.((("Access-Control-Allow-Origin header")))  The easiest way to implement it in an Express application is to use the +cors+ package (+npm install --save cors+).  To enable CORS for your application:
+
+[source,js]
+----
+app.use(require('cors')());
+----
+
+Because the same-origin API is there for a reason (to prevent attacks), I recommend applying CORS only where necessary.  In our case, we want to expose our entire API (but only the API), so we're going to restrict CORS to paths starting with __/api__:
+
+[source,js]
+----
+app.use('/api', require('cors')());
+----
+
+See the https://www.npmjs.org/package/cors[package documentation] for information about more advanced use of CORS.
+
+=== Our Data Store
+
+Once again, we'll use Mongoose to create a schema for our attraction model in the database.((("REST APIs", "data store")))((("database persistence", "for REST API")))((("Mongoose", "creating schema and model for REST API data store")))  Create  the file __models/attraction.js__:
+
+[source,js]
+----
+var mongoose = require('mongoose');
+
+var attractionSchema = mongoose.Schema({
+    name: String,
+    description: String,
+    location: { lat: Number, lng: Number },
+    history: {
+        event: String,
+        notes: String,
+        email: String,
+        date: Date,
+    },
+    updateId: String,
+    approved: Boolean,
+});
+var Attraction = mongoose.model('Attraction', attractionSchema);
+module.exports = Attraction;
+----
+
+Since we wish to approve updates, we can't let the API simply update the original record.  Our approach will be to create a new record that references the original record (in its +updateId+ property).  Once the record is approved, we can update the original record with the information in the update record and then delete the update record.
+
+=== Our Tests
+
+If we use HTTP verbs other than +GET+, it can be a hassle to test our API, since browsers only know how to issue +GET+ requests (and +POST+ requests for forms).((("GET method", "in REST API tests")))((("HTTP verbs", "testing our REST API")))((("REST APIs", "testing our API")))  There are ways around this, such as the excellent "Postman - REST Client" Chrome plugin.((("Postman - REST Client Chrome plugin")))((("Chrome", "Postman - REST Client plugin")))  However, whether or not you use such a utility, it's good to have automated tests.  Before we write tests for our API, we need a way to actually _call_ a REST API.  For that, we'll be using a Node((("restler package"))) package called ++restler++:
+
+----
+npm install --save-dev restler
+----
+
+We'll put the tests for the API calls we're going to implement in __qa/tests-api.js__:
+
+[source,js]
+----
+var assert = require('chai').assert;
+var http = require('http');
+var rest = require('restler');
+
+suite('API tests', function(){
+
+    var attraction = {
+        lat: 45.516011,
+        lng: -122.682062,
+        name: 'Portland Art Museum',
+        description: 'Founded in 1892, the Portland Art Museum\'s colleciton ' +
+            'of native art is not to be missed.  If modern art is more to your ' +
+            'liking, there are six stories of modern art for your enjoyment.',
+        email: 'test@meadowlarktravel.com',
+    };
+
+    var base = 'http://localhost:3000';
+
+    test('should be able to add an attraction', function(done){
+        rest.post(base+'/api/attraction', {data:attraction}).on('success',
+                function(data){
+            assert.match(data.id, /\w/, 'id must be set');
+            done();
+        });
+    });
+
+    test('should be able to retrieve an attraction', function(done){
+        rest.post(base+'/api/attraction', {data:attraction}).on('success', 
+                function(data){
+            rest.get(base+'/api/attraction/'+data.id).on('success', 
+                    function(data){
+                assert(data.name===attraction.name);
+                assert(data.description===attraction.description);
+                done();
+            })
+        })
+    });
+
+});
+----
+
+Note that in the test that retrieves an attraction, we add an attraction first.  You might think that we don't need to do this because the first test already does that, but there are two reasons for this.  The first is practical: even though the tests appear in that order in the file, because of the asynchronous nature of JavaScript, there's no guarantee that the API calls will execute in that order.  The second reason is a matter of principle: any test should be completely standalone and not rely on any other test.
+
+The syntax should be straightforward: we call +rest.get+ or +rest.put+, ((("rest.put")))((("rest.get")))pass it the URL, and an options object containing a +data+ property, which will be used for the request body.  The method returns a promise that raises events.  We're concerned with the +success+ event.  When using +restler+ in your application, you may want to also listen for other events, like +fail+ (server responded with 4xx status code) or +error+ (connection or parsing error).  See the https://github.com/danwrong/restler[+restler+ documentation] for more information.
+
+=== Using Express to Provide an API
+
+Express is quite capable of providing an API.((("Express", "REST API")))((("REST APIs", "using Express to provide")))  Later on in this chapter, we'll learn how to do it with a Node module that provides some extra functionality, but we'll start with a pure Express implementation:
+
+[source,js]
+----
+var Attraction = require('./models/attraction.js');
+
+app.get('/api/attractions', function(req, res){
+    Attraction.find({ approved: true }, function(err, attractions){
+        if(err) return res.send(500, 'Error occurred: database error.');
+        res.json(attractions.map(function(a){
+            return {
+                name: a.name,
+                id: a._id,
+                description: a.description,
+                location: a.location, 
+            }
+        }));
+    });
+});
+
+app.post('/api/attraction', function(req, res){
+    var a = new Attraction({
+        name: req.body.name,
+        description: req.body.description,
+        location: { lat: req.body.lat, lng: req.body.lng },
+        history: {
+            event: 'created',
+            email: req.body.email,
+            date: new Date(),
+        },
+        approved: false,
+    });
+    a.save(function(err, a){
+        if(err) return res.send(500, 'Error occurred: database error.');
+        res.json({ id: a._id });
+    }); 
+});
+
+app.get('/api/attraction/:id', function(req,res){
+    Attraction.findById(req.params.id, function(err, a){
+        if(err) return res.send(500, 'Error occurred: database error.');
+        res.json({
+            name: a.name,
+            id: a._id,
+            description: a.description,
+            location: a.location,
+        });
+    });
+});
+----
+
+Note that when we return an attraction, we don't simply return the model as returned from the database.  That would expose internal implementation details. Instead, we pick the information we need and construct a new object to return.
+
+Now if we run our tests (either with Grunt, or +mocha -u tdd -R spec qa/tests-api.js+), we should see that our tests are passing.
+
+=== Using a REST Plugin
+
+As you can see, it's easy to write an API using only Express.  However, there are advantages to using a REST plugin.((("REST APIs", "using a REST plugin")))  Let's use the robust +connect-rest+ to future-proof our API.((("connect-rest plugin")))  First, install it:
+
+----
+npm install --save connect-rest
+----
+
+And import it in __meadowlark.js__:
+
+[source,js]
+----
+var rest = require('connect-rest');
+----
+
+Our API shouldn't conflict with our normal website routes (make sure you don't create any website routes that start with __/api__).  I recommend adding the API routes after the website routes: the +connect-rest+ module will examine every request and add properties to the request object, as well as do extra logging.  For this reason, it fits better after you link in your website routes, but before your 404 handler:
+
+[source,js]
+----
+// website routes go here
+
+// define API routes here with rest.VERB....
+
+// API configuration
+var apiOptions = {
+    context: '/api',
+    domain: require('domain').create(),
+};
+
+// link API into pipeline
+app.use(rest.rester(apiOptions));
+
+// 404 handler goes here
+----
+
+[NOTE]
+====
+If you're looking for maximum separation between your website and your API, consider using a subdomain, such as pass:[<emphasis role="keep-together">api.meadowlark.com</emphasis>].  We will see an example of this later.
+====
+
+Already, +connect-rest+ has given us a little efficiency: it's allowed us to automatically prefix all of our API calls with +/api+.  This reduces the possibility of typos, and enables us to easily change the base URL if we wanted to.
+
+Let's now look at how we add our API methods:
+
+[source,js]
+----
+rest.get('/attractions', function(req, content, cb){
+    Attraction.find({ approved: true }, function(err, attractions){
+        if(err) return cb({ error: 'Internal error.' });
+        cb(null, attractions.map(function(a){
+            return {
+                name: a.name,
+                description: a.description,
+                location: a.location,
+            };
+        }));
+    });
+});
+
+rest.post('/attraction', function(req, content, cb){
+    var a = new Attraction({
+        name: req.body.name,
+        description: req.body.description,
+        location: { lat: req.body.lat, lng: req.body.lng },
+        history: {
+            event: 'created',
+            email: req.body.email,
+            date: new Date(),
+        },
+        approved: false,
+    });
+    a.save(function(err, a){
+        if(err) return cb({ error: 'Unable to add attraction.' });
+        cb(null, { id: a._id });
+    }); 
+});
+
+rest.get('/attraction/:id', function(req, content, cb){
+    Attraction.findById(req.params.id, function(err, a){
+        if(err) return cb({ error: 'Unable to retrieve attraction.' });
+        cb(null, { 
+            name: attraction.name,
+            description: attraction.description,
+            location: attraction.location,
+        });
+    });
+});
+----
+
+REST functions, instead of taking the usual request/response pair, take((("REST functions"))) up to three parameters: the request (as normal); a _content_ object, which is the parsed body of the request; and a callback function, which can be used for asynchronous API calls.  Since we're using a database, which is asynchronous, we have to use the callback to send a response to the client (there is a synchronous API, which you can read about in the https://github.com/imrefazekas/connect-rest[+connect-rest+ documentation]).
+
+Note also that when we created the API, we specified a domain (see <<ch_production_concerns>>).((("domains", "specifying for REST API")))  This allows us to isolate API errors and take appropriate action.  +connect-rest+ will automatically send a response code of 500 when an error is detected in the domain, so all that remains for you to do is logging and shutting down the server.  For example:
+
+[source,js]
+----
+apiOptions.domain.on('error', function(err){
+    console.log('API domain error.\n', err.stack);
+    setTimeout(function(){
+        console.log('Server shutting down after API domain error.');
+        process.exit(1);
+    }, 5000);
+    server.close();
+    var worker = require('cluster').worker;
+    if(worker) worker.disconnect();
+});
+----
+
+=== Using a Subdomain
+
+Because an API is substantially different from a website, it's a popular choice to use a subdomain to partition the API from the rest of your website.((("subdomains", "using for REST APIs")))((("REST APIs", "using a subdomain")))  This is quite easy to do, so let's refactor our example to use __api.meadowlarktravel.com__ instead of __meadowlarktravel.com/api__.
+
+First, make sure the +vhost+ middleware is installed (+npm install --save vhost+). ((("vhost middleware"))) In your development environment, you probably don't have your own domain nameserver (DNS) set up, so we need a way to trick Express into thinking that you're connecting to a subdomain.  To do this, we'll add an entry to our _hosts file_.((("hosts file")))  On Linux and OS X systems, your hosts file is __/etc/hosts__; for Windows, it's located at __%SystemRoot%\system32\drivers\etc\hosts__.((("operating systems", "hosts file")))  If the IP address of your test server is 192.168.0.100, you would add the following line to your hosts file:
+
+----
+192.168.0.100   api.meadowlark
+----
+
+If you're working directly on your development server, you can use 127.0.0.1 (the numeric equivalent of __localhost__) instead((("localhost"))) of the actual IP address.
+
+Now we simply link in a new +vhost+ to create our subdomain:
+
+[source,js]
+----
+app.use(vhost('api.*', rest.rester(apiOptions));
+----
+
+You'll also need to change the context:
+
+[source,js]
+----
+var apiOptions = {
+    context: '/',
+    domain: require('domain').create(),
+};
+----
+
+That's all there is to it.  All of the API routes you defined via +rest.VERB+ calls will now be available on the __api__ subdomain.((("REST APIs", range="endofrange", startref="ix_RESTAPI")))

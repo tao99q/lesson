@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script TYPE="text/javascript">
+    //call是个函数,是定义在Function原型上的函数属性,所有函数都可以通过__proto__找到Function类原型上的call方法
+    //call方法在执行的时候里面的this,就是call前面的点之前的东西
+    //call方法中有个核心的代码就是this(),也就是call前面的函数执行
+    Function.prototype.call=function(obj,n,m){
+        if(obj==undefined){
+            this(n,m);//当前函数中的this明显是window
+        }else{
+            this(n,m);//先把当前函数中的this变成obj,然后再执行
+        }
+    };
+    function fn(){
+        console.log(this)
+    }
+    var obj={};
+    fn.call(null,1,2);
+    fn.call(obj,1,2);
+
+    Function.prototype.zf=function(){
+        this()
+    };
+    function ff(){console.log(1)};
+    ff.zf();//ff.__proto__找到所属类的原型Function.prototype
+    //找到了这个zf方法,ff.zf(),zf这个方法中的this是ff,执行里面的代码,this()-->ff()->输出1
+</script>
+</body>
+</html>

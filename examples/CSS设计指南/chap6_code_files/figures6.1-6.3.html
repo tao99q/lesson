@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figures 6.1-6.3 A Vertical Menu</title>
+
+<link href='http://fonts.googleapis.com/css?family=Exo' rel='stylesheet' type='text/css'>
+
+<style>
+/* container stylings */
+* {margin:0; padding:0;}
+nav {
+	margin:20px 50px;
+	width:150px;
+	}
+/* figure 6.1 */	
+.list0 ul {
+	border:1px solid #f00;
+	border-radius:3px; padding:5px 10px 3px;
+	}
+.list0 li {
+	list-style-type:none;
+	padding:3px 10px;
+	}
+.list0 li + li {
+	border-top:1px solid #f00;
+	}
+.list0 a {
+	text-decoration:none;
+	font:20px 'Exo', helvetica, arial, sans-serif;
+	font-weight:400;
+	color:#000;
+	}
+.list0 a:hover {
+	color:#069;
+	}	
+/* figure 6.2a and 6.2b - text-only hot areas */	
+.list1 ul {
+	border:1px solid #f00;
+	border-radius:3px; padding:5px 10px 3px;
+	}
+.list1 li {
+	list-style-type:none;
+	padding:3px 10px;
+	}
+.list1 li + li {
+	border-top:1px solid #f00;
+	}
+.list1 a {
+	text-decoration:none;
+	font:20px 'Exo', helvetica, arial, sans-serif;
+	font-weight:400;
+	color:#000;
+	background:#ffed53;
+	}
+.list1 a:hover {
+	color:#069;
+	}
+/* figure 6.3a - correctly coded links showing enlarged hot area */
+* {margin:0; padding:0;}
+article {
+	margin:50px;
+	width:180px;
+	}
+.list2 ul {
+	border:1px solid #f00;
+	border-radius:3px; padding:5px 10px 3px;
+	}
+.list2 li {
+	list-style-type:none;	
+	}
+.list2 li + li a {
+	border-top:1px solid #f00;
+	}
+.list2 a {
+	display:block;
+	padding:3px 10px;
+	text-decoration:none;
+	font:20px 'Exo', helvetica, arial, sans-serif;
+	font-weight:400;
+	color:#000;
+	background:#ffed53;
+	}
+.list2 a:hover {
+	color:#069;
+	}
+/* figure 6.3b - List in finished state */
+.list3 ul {
+	border:1px solid #f00;
+	border-radius:3px; padding:5px 10px 3px;
+	}
+.list3 li {
+	list-style-type:none;	
+	}
+.list3 li + li a {
+	border-top:1px solid #f00;
+	}
+.list3 a {
+	text-decoration:none;
+	font:20px 'Exo', helvetica, arial, sans-serif;
+	font-weight:400;
+	color:#000;
+	padding:3px 10px;
+	display:block;
+	}
+.list3 a:hover {
+	color:#069;
+	}
+</style>
+</head>
+
+<body>
+    <nav class="list0">
+        <ul>
+            <li><a href="#">Alternative</a></li>
+            <li><a href="#">Country</a></li>
+            <li><a href="#">Jazz</a></li>
+            <li><a href="#">Rock</a></li>
+        </ul>
+    </nav> 	
+    <nav class="list1">
+        <ul>
+            <li><a href="#">Alternative</a></li>
+            <li><a href="#">Country</a></li>
+            <li><a href="#">Jazz</a></li>
+            <li><a href="#">Rock</a></li>
+        </ul>
+    </nav>  
+    
+    <nav class="list2">
+        <ul>
+            <li><a href="#">Alternative</a></li>
+            <li><a href="#">Country</a></li>
+            <li><a href="#">Jazz</a></li>
+            <li><a href="#">Rock</a></li>
+        </ul>
+    </nav> 
+    
+    <nav class="list3">
+        <ul>
+            <li><a href="#">Alternative</a></li>
+            <li><a href="#">Country</a></li>
+            <li><a href="#">Jazz</a></li>
+            <li><a href="#">Rock</a></li>
+        </ul>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

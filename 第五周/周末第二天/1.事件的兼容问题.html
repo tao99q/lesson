@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body id="body">
+<!--
+在标准浏览器中
+在DOM2级事件中 addEventListener/removeEventListener
+1.给同一个事件行为绑定多个函数，按照绑定顺序执行
+2.给同一个元素的同一个事件行为，绑定同一个函数，在同一个阶段，绑定多次只会执行一个
+3.绑定的那个函数中this就是绑定事件的元素
+
+
+在IE低版本
+attachEvent/detachEvent
+1.事件类型需要加上“on”  "onclick"
+2.不能设置发生阶段，他们都在冒泡阶段发生
+3.同一个事件行为，同一个函数可以绑定多次，都会执行
+4.给同一个事件行为，绑定多个函数，执行顺序混乱
+5.绑定的那个函数中this就widow
+-->
+</body>
+<script>
+    var Body = document.getElementById("body");
+    function f1(e) {
+        //console.log(window.event.srcElement.id);
+        console.log(e.target.id);
+    }
+    //   Body.addEventListener("click",f1,false);
+    //   Body.addEventListener("click",f1,false);
+    //   Body.addEventListener("click",f1,false);
+    //   Body.addEventListener("click",f1,false);
+    //      Body.attachEvent("onclick",f1);
+    //      Body.attachEvent("onclick",f1);
+    //      Body.attachEvent("onclick",f1);
+    //      Body.attachEvent("onclick",f1);
+
+    function on(ele,type,callback,bool) {
+        //ele当前元素，type：事件类型,callback:绑定的函数，bool：执行事件阶段
+        if(ele.addEventListener){
+            ele.addEventListener(type,callback,bool);
+        }else {
+            ele.attachEvent("on"+type,callback)
+        }
+    }
+    function off(ele,type,callback,bool) {
+        if(ele.removeEventListener){
+            ele.removeEventListener(type,callback,bool)
+        }else {
+            ele.detachEvent("on"+type,callback)
+        }
+    }
+</script>
+</html>

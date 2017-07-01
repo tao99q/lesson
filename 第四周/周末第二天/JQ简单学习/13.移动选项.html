@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			html,body,div,select,option,span{
+				margin: 0;
+				padding: 0;
+				font-family: "微软雅黑";
+				font-size: 14px;
+				-webkit-user-select: none;
+			}
+			.centent{
+				float: left;
+				margin: 30px;
+				text-align: center;
+			}
+			select{
+				width: 100px;
+				height: 140px;
+			}
+			select option{
+				height: 20px;
+			}
+			.centent span{
+				display: block;
+				margin: 4px 4px;
+				padding: 4px 10px;
+				background-color: skyblue;
+				cursor: pointer;
+				color: #fff;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="centent">
+			<select name="" id="select1" multiple="multiple">
+				<option value="1">选项一</option>
+				<option value="2">选项二</option>
+				<option value="3">选项三</option>
+				<option value="4">选项四</option>
+				<option value="5">选项五</option>
+				<option value="6">选项六</option>
+			</select>
+			<div>
+				<span id="addR">选中添加到右边</span>
+				<span id="addR_all">全部添加到右边</span>
+			</div>
+		</div>
+		<div class="centent">
+			<select name="" id="select2" multiple="multiple">
+				<option value="7">选项七</option>
+			</select>
+			<div>
+				<span id="addL">选中添加到左边</span>
+				<span id="addL_all">全部添加到左边</span>
+			</div>
+		</div>
+		<!--<select style="height: 30px">-->
+			<!--<option value="1">选项一</option>-->
+			<!--<option value="2">选项二</option>-->
+			<!--<option value="3">选项三</option>-->
+			<!--<option value="4">选项四</option>-->
+			<!--<option value="5">选项五</option>-->
+			<!--<option value="6">选项六</option>-->
+		<!--</select>-->
+	</body>
+	<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+
+	//添加到右边
+		$("#addR").click(function(){
+			if($("#select1 option:selected").length<1){
+				$(this).css("backgroundColor","orange");
+				$(this).html("哦!no~");
+			}else{
+				$(this).css("backgroundColor","skyblue");
+				$(this).html("选中添加到右边");
+				$("#select1 option:selected").appendTo($("#select2")).prop("selected",false);
+				//$("#select2 option").prop("selected",false);
+			}
+		});
+	//添加到左边
+	$("#addL").click(function(){
+		if($("#select2 option:selected").length<1){
+			$(this).css("backgroundColor","orange");
+			$(this).html("哦!no~");
+		}else{
+			$(this).css("backgroundColor","skyblue");
+			$(this).html("选中添加到左边");
+			$("#select2 option:selected").appendTo($("#select1")).prop("selected",false);
+		}
+	});
+
+		//
+		$("#addR_all").click(function(){
+			$("#select1 option").appendTo($("#select2"));
+		});
+	$("#addL_all").click(function(){
+		$("#select2 option").appendTo($("#select1"));
+	});
+
+
+		//双击事件
+	$("#select1").dblclick(function(){
+		$("#select1 option:selected").appendTo($("#select2")).prop("selected",false);
+	});
+
+	$("#select2").dblclick(function(){
+		$("#select2 option:selected").appendTo($("#select1")).prop("selected",false);
+	});
+	</script>
+</html>

@@ -1,0 +1,425 @@
+[[ch_form_handling]]
+== Form Handling
+
+The usual way you collect information from your users is to use HTML _forms_.((("forms", id="ix_forms", range="startofrange")))  Whether you let the browser submit the form normally, use AJAX, or employ fancy frontend controls, the underlying mechanism is generally still an HTML form.  In this chapter, we'll discuss the different methods for handling forms, form validation, and file uploads.
+
+=== Sending Client Data to the Server
+
+Broadly speaking, your two options for sending client data to the server are the querystring and the request body.((("forms", "sending client data to the server")))  Normally, if you're using the querystring, you're making a +GET+ request,((("GET method")))((("POST method"))) and if you're using the request body, you're using a +POST+ request (the HTTP protocol doesn't prevent you from doing it the other way around, but there's no point to it: best to stick to standard practice here).
+
+It is a common misperception that +POST+ is secure and +GET+ is not: in reality, both are secure if you use HTTPS, and neither is secure if you don't.  If you're not using HTTPS, an intruder can look at the body data for a +POST+ just as easily as the querystring of a +GET+ request.  However, if you're using +GET+ requests, your users will see all of their input (including hidden fields) in the querystring, which is ugly and messy.((("POST method", "using for form submission")))  Also, browsers often place limits on querystring length (there is no such restriction for body length).  For these reasons, I generally recommend using +POST+ for form submission.
+
+=== HTML Forms
+
+This book is focusing on the server side, but it's important to understand some basics about constructing HTML forms.((("forms", "constructing HTML forms")))  Here's a simple example:
+
+[source,html]
+----
+<form action="/process" method="POST">
+    <input type="hidden" name="hush" val="hidden, but not secret!">
+    <div>
+        <label for="fieldColor">Your favorite color: </label>
+        <input type="text" id="fieldColor" name="color">
+    </div>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+----
+
+Notice the method is specified explicitly as +POST+ in the +<form>+ tag; if you don't do this, it defaults to +GET+.((("POST method", "specifying in the +<form>+ tag")))((("action attribute, +<form>+ tag")))  The +action+ attribute specifies the URL that will receive the form when it's posted.  If you omit this field, the form will be submitted to the same URL the form was loaded from.  I recommend that you always provide a valid +action+, even if you're using AJAX (this is to prevent you from losing data; see <<ch_maintenance>> for more pass:[<phrase role="keep-together">information).</phrase>]
+
+From the server's perspective, the important attribute in the +<input>+ fields are the +name+ attributes: that's ((("name attribute in +<input>+ fields")))how the server identifies the field.  It's important to understand that the +name+ attribute is distinct from the +id+ attribute, which should be used for styling and frontend functionality only (it is not passed to the server).
+
+Note the hidden field: this will not render in the user's browser.  However, you should not use it for secret or sensitive information: all the user has to do is examine the page source, and the hidden field will be exposed.
+
+HTML does not restrict you from having multiple forms on the same page (this was an unfortunate restriction of some early server frameworks; ASP, I'm looking at you).footnote:[Very old browsers can sometimes have issues with multiple forms, so if you're aiming for maximum compatability, you might want to consider using only one form per page.]  I recommend keeping your forms logically consistent: a form should contain all the fields you would like submitted (optional/empty fields are okay), and none that you don't.  If you have two different actions on a page, use two different forms.  An example of this would be to have a form for a site search and a separate form for signing up for an email newsletter.  It is possible to use one large form and figure out what action to take based on what button a person clicked, but it is a headache, and often not friendly for people with disabilities (because of the way accessibility browsers render forms).
+
+When the user submits the form, the _/process_ URL will be invoked, and the field values will be transmitted to the server in the request body.
+
+=== Encoding
+
+When the form is submitted (either by the browser or via AJAX), it must be encoded somehow.((("forms", "encoding")))((("encoding for forms")))  If you don't explicitly specify an encoding, it defaults to +application/x-www-form-urlencoded+ (this is just a lengthy media type for "URL encoded").((("URL encoding")))  This is a basic, easy-to-use encoding that's supported by Express out of the box.
+
+If you need to upload files, things get more complicated.  There's no easy way to send files using URL encoding, so you're((("multipart/form-data encoding"))) forced to use the +multipart/form-data+ encoding type, which is and is not handled directly by Express (actually, Express still supports this encoding, but it will be removed in the next version of Express, and its use is not recommended: we will be discussing an alternative shortly).
+
+=== Different Approaches to Form Handling
+
+If you're not using AJAX, your only option is to submit the form through the browser, which will reload the page.((("forms", "handling", "different approaches to")))  However, how the page is reloaded is up to you.  There are two things to consider when processing forms: what path handles the form (the action), and what response is sent to the browser.
+
+If your form uses +method="POST"+ (which is recommended), it is quite common to use the same path for displaying the form and processing the form: these can be distinguished because the former is a +GET+ request, and the latter is a +POST+ request.  If you take this approach, you can omit the +action+ attribute on the form.
+
+The other option is to use a separate path to process the form.  For example, if your contact page uses the path __/contact__, you might use the path __/process-contact__ to process the form (by specifying +action="/process-contact"+).  If you use this approach, you have the option of submitting the form via +GET+ (which I do not recommend; it needlessly exposes your form fields on the URL).  This approach might be preferred if you have multiple URLs that use the same submission mechanism (for example, you might have an email sign-up box on multiple pages on the site).
+
+Whatever path you use to process the form, you have to decide what response to send back to the browser.((("forms", "handling", "deciding on response to send back to browser")))  Here are your options:
+
+Direct HTML response::
+    After processing the form, you can send HTML directly back to the browser (a view, for example).  This approach will produce a warning if the user attempts to reload the page and can interfere with bookmarking and the Back button, and for these reasons, it is not recommended.((("redirects", "responding to form submissions")))((("HTML", "sending direct HTML response in form handling")))
+
+302 redirect::
+    While this is a common approach, it is a misuse of the original meaning of the 302 (Found) response code.((("302 redirect")))  HTTP 1.1 added the 303 (See Other) response code, which is preferable.  Unless you have reason to target browsers made before 1996, you should use 303 instead.
+
+303 redirect::
+    The 303 (See Other) response code ((("303 redirect")))was added in HTTP 1.1 to address the misuse of the 302 redirect.  The HTTP specification specifically indicates that the browser should use a +GET+ request when following a 303 redirect, regardless of the original method.  This is the recommended method for responding to a form submission request.
+
+Since the recommendation is that you respond to a form submission with a 303 redirect, the next question is "Where does the redirection point to?"  The answer to that is up to you.  Here are the most common((("redirects", "responding to form submissions", "choices of where redirection points"))) approaches:
+
+Redirect to dedicated success/failure pages::
+    This method requires that you dedicate URLs for appropriate success or failure messages.  For example, if the user signs up for promotional emails, but there was a database error, you might want to redirect to __/error/database__.  If a user's email address were invalid, you could redirect to __/error/invalid-email__, and if everything was successful, you could redirect to __/promo-email/thank-you__.  One of the advantages of this method is that it's very analytics friendly: the number of visits to your __/promo-email/thank-you__ page should roughly correlate to the number of pass:[<phrase role="keep-together">people</phrase>] signing up for your promotional email.  It is also very straightforward to implement.  It has some downsides, however.  It does mean you have to allocate URLs to every possibility, which means pages to design, write copy for, and maintain.  Another disadvantage is that the user experience can be suboptimal: users like to be thanked, but then they have to navigate back to where they were or where they want to go next.  This is the approach we'll be using for now: we'll switch to using "flash messages" (not to be confused with Adobe Flash) in <<ch_cookies_and_sessions>>.
+
+Redirect to the original location with a flash message::
+    For small forms that are scattered throughout your site (like an email sign-up, for example), the best user experience is not to interrupt the user's navigation flow.  That is, provide a way to submit an email address without leaving the page.  One way to do this, of course, is AJAX, but if you don't want to use AJAX (or you want your fallback mechanism to provide a good user experience), you can redirect back to the page the user was originally on.  The easiest way to do this is to use a hidden field in the form that's populated with the current URL.  Since you want there to be some feedback that the user's submission was received, you can use flash messages.
+
+Redirect to a new location with a flash message::
+    Large forms generally have their own page, and it doesn't make sense to stay on that page once you've submitted the form.  In this situation, you have to make an intelligent guess about where the user might want to go next and redirect accordingly.  For example, if you're building an admin interface, and you have a form to create a new vacation package, you might reasonably expect your user to want to go to the admin page that lists all vacation packages after submitting the form.  However, you should still employ a flash message to give the user feedback about the result of the submission.
+
+If you are using AJAX, I recommend a dedicated URL.((("AJAX", "form handling, using dedicated URL")))  It's tempting to start AJAX pass:[<phrase role="keep-together">handlers</phrase>] with a prefix (for example, __/ajax/enter__), but I discourage this approach: it's attaching implementation details to a URL.  Also, as we'll see shortly, your AJAX handler should handle regular browser submissions as a failsafe.
+
+=== Form Handling with Express
+
+If you're using +GET+ for your form handling, your fields((("Express", "form handling")))((("forms", "handling", "with Express"))) will be available on the +req.query+ object.  For example, if you have an HTML input field with a name attribute of ++email++, its value will be passed to the handler as +req.query.email+.  There's really not much more that needs to be said about this approach: it's just that simple.
+
+If you're using +POST+ (which I recommend), you'll have to link in middleware to parse the URL-encoded body.  First, install ((("body-parser middleware")))the +body-parser+ middleware (+npm install --save body-parser+), then link it in:
+
+[source,js]
+----
+app.use(require('body-parser')());
+----
+
+[NOTE]
+====
+Ocassionally, you will see the use of +express.bodyParser+ discouraged, and for good reason.  However, this issue went away with Express 4.0, and the +body-parser+ middleware is safe and recommended.
+====
+
+Once you've linked in +body-parser+, you'll find that +req.body+ now becomes available for you, and that's where all of your form fields will be made available.  Note that +req.body+ doesn't prevent you from using the querystring.  Let's go ahead and add a form to Meadowlark Travel that lets the user sign up for a mailing list.  For demonstration's sake, we'll use the querystring, a hidden field, and visible fields in +/views/newsletter.handlebars+:
+
+[source,html]
+----
+<h2>Sign up for our newsletter to receive news and specials!</h2>
+<form class="form-horizontal" role="form" 
+        action="/process?form=newsletter" method="POST">
+    <input type="hidden" name="_csrf" value="{{csrf}}">
+    <div class="form-group">
+        <label for="fieldName" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" 
+            id="fieldName" name="name">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="fieldEmail" class="col-sm-2 control-label">Email</label>
+        <div class="col-sm-4">
+            <input type="email" class="form-control" required 
+                id="fieldName" name="email">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-4">
+            <button type="submit" class="btn btn-default">Register</button>
+        </div>
+    </div>
+</form>
+----
+
+Note we are using Twitter Bootstrap styles, as we will be throughout the rest of the book.  If you are unfamiliar with Bootstrap, ((("Twitter Bootstrap", seealso="Bootstrap")))((("Bootstrap")))you may want to refer to the http://getbootstrap.com[Twitter Bootstrap documentation]. Then see <<form_handling_application>>.
+
+[[form_handling_application]]
+.Application file
+====
+[source,js]
+----
+app.use(require('body-parser')());
+
+app.get('/newsletter', function(req, res){
+    // we will learn about CSRF later...for now, we just
+    // provide a dummy value
+    res.render('newsletter', { csrf: 'CSRF token goes here' });
+});
+
+app.post('/process', function(req, res){
+    console.log('Form (from querystring): ' + req.query.form);
+    console.log('CSRF token (from hidden form field): ' + req.body._csrf);
+    console.log('Name (from visible form field): ' + req.body.name);
+    console.log('Email (from visible form field): ' + req.body.email);
+    res.redirect(303, '/thank-you');
+});
+----
+====
+
+That's all there is to it.  Note that in our handler, we're redirecting to a "thank you" view.  We could render a view here, but if we did, the URL field in the visitor's browser would remain __/process__, which could be confusing: issuing a redirect solves that problem.
+
+[NOTE]
+====
+It's very important that you use a 303 (or 302) redirect, not a 301 redirect in this instance.  301 redirects are "permanent," meaning your browser may cache the redirection destination.  If you use a 301 redirect and try to submit the form a second time, your browser may bypass the +/process+ handler altogether and go directly to +/thank-you+ since it correctly believes the redirect to be permanent.  The 303 redirect, on the other hand, tells your browser "Yes, your request is valid, and you can find your response here," and does not cache the redirect destination.
+====
+
+=== Handling AJAX Forms
+
+Handling AJAX forms is very easy in((("forms", "handling", "AJAX forms")))((("AJAX", "handling AJAX forms in Express")))((("Express", "form handling with", "AJAX forms"))) Express; it's even easy to use the same handler for AJAX and regular browser fallbacks.  Consider Examples pass:[<xref linkend="handling_AJAX_HTML" xrefstyle="select: labelnumber" />] and pass:[<xref linkend="handling_AJAX_application" xrefstyle="select: labelnumber"/>].
+
+[[handling_AJAX_HTML]]
+.HTML (in /views/newsletter.handlebars)
+====
+[source,html]
+----
+<div class="formContainer">
+    <form class="form-horizontal newsletterForm" role="form" 
+            action="/process?form=newsletter" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrf}}">
+        <div class="form-group">
+            <label for="fieldName" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" 
+                id="fieldName" name="name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="fieldEmail" class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-4">
+                <input type="email" class="form-control" required 
+                    id="fieldName" name="email">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-4">
+                <button type="submit" class="btn btn-default">Register</button>
+            </div>
+        </div>
+    </form>
+</div>
+{{#section 'jquery'}}
+    <script>
+        $(document).ready(function(){
+            $('.newsletterForm').on('submit', function(evt){
+                evt.preventDefault();
+                var action = $(this).attr('action');
+                var $container = $(this).closest('.formContainer');
+                $.ajax({
+                    url: action,
+                    type: 'POST',
+                    success: function(data){
+                        if(data.success){
+                            $container.html('<h2>Thank you!</h2>');
+                        } else {
+                            $container.html('There was a problem.');
+                        }
+                    },
+                    error: function(){
+                        $container.html('There was a problem.');
+                    }
+                });
+            });
+        });
+    </script>
+{{/section}}
+----
+====
+
+[[handling_AJAX_application]]
+.Application file
+====
+[source,js]
+----
+app.post('/process', function(req, res){
+    if(req.xhr || req.accepts('json,html')==='json'){
+        // if there were an error, we would send { error: 'error description' }
+        res.send({ success: true });
+    } else {
+        // if there were an error, we would redirect to an error page
+        res.redirect(303, '/thank-you');
+    }
+});
+----
+====
+
+Express provides us with a couple of((("req.accepts property")))((("req.xhr property"))) convenience properties, +req.xhr+ and +req.accepts+.  +req.xhr+ will be true if the request is an AJAX request (XHR is short for XML HTTP Request, which is what AJAX relies on).  +req.accepts+ will try to determine the most appropriate response type to return.  In our case, +req.accepts(\'json,html')+ is asking if the best format to return is JSON or HTML: this is inferred from the +Accepts+ HTTP header, which is an ordered list of acceptable response types provided by the browser.((("Accepts HTTP header")))  If the request is an AJAX request, or if the user agent has specifically requested that JSON is better than HTML, appropriate JSON will be returned; otherwise, a redirect would be returned.
+
+We can do whatever processing we need in this function: usually we would be saving the data to the database.((("errors", "in AJAX form handling")))((("JSON", "returning in AJAX form handling")))  If there are problems, we send back a JSON object with an +err+ property (instead of +success+), or redirect to an error page (if it's not an AJAX request).
+
+[TIP]
+====
+In this example, we're assuming all AJAX requests are looking for JSON, but there's no requirement that AJAX must use JSON for communication (as a matter of fact, the "X" in AJAX stands for XML).  This approach is very jQuery-friendly, as jQuery routinely assumes everything is going to be in JSON.  If you're making your AJAX endpoints generally available, or if you know your AJAX requests might be using something other than JSON, you should return an appropriate response _exclusively_ based on the +Accepts+ header, which we can conveniently access through the +req.accepts+ helper method.  If you're responding based only on the +Accepts+ header, you might want to also look at http://expressjs.com/api.html#res.format[+c+], which is a handy convenience method that makes it easy to respond appropriately depending on what the client expects.((("res.format")))  If you do that, you'll have to make sure to set the +dataType+ or +accepts+ properties when making AJAX requests with jQuery.
+====
+
+=== File Uploads
+
+We've already mentioned that file uploads bring a raft of complications.  Fortunately, there are some great projects that help make file handling a snap.((("file uploads")))((("forms", "handling", "file uploads")))
+
+Currently, file uploads can be handled with Connect's built-in +multipart+ middleware; however, that middleware has already been removed from Connect, and as soon as Express updates its dependency on Connect, it will vanish from Express as well, so I strongly recommend that you do not use that middleware.((("multipart form processing")))
+
+There are two popular and robust options for multipart form processing: Busboy and Formidable.  I find Formidable to be slightly easier, because it has a convenience callback that provides objects containing the fields and the files, whereas with Busboy, you must listen for each field and file event.  We'll be using Formidable for this reason.
+
+[NOTE]
+====
+While it is possible to use AJAX for file uploads using XMLHttpRequest Level 2's https://developer.mozilla.org/en-US/docs/Web/API/FormData[+FormData+ interface], it is supported only on modern browsers and requires some massaging to use with jQuery.((("XMLHttpRequest Level 2's FormData interface")))((("FormData interface")))  We'll be discussing an AJAX alternative later on.
+====
+
+Let's create a file upload form ((("file uploads", "creating for Meadowlark Travel example website")))((("Meadowlark Travel example website", "creating file upload for photo contest")))for a Meadowlark Travel vacation photo contest (_views/contest/vacation-photo.handlebars_): 
+
+[source,js]
+----
+<form class="form-horizontal" role="form" 
+        enctype="multipart/form-data" method="POST"
+        action="/contest/vacation-photo/{year}/{month}">
+    <div class="form-group">
+        <label for="fieldName" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" 
+            id="fieldName" name="name">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="fieldEmail" class="col-sm-2 control-label">Email</label>
+        <div class="col-sm-4">
+            <input type="email" class="form-control" required 
+                id="fieldName" name="email">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="fieldPhoto" class="col-sm-2 control-label">Vacation photo
+        </label>
+        <div class="col-sm-4">
+            <input type="file" class="form-control" required accept="image/*"
+                id="fieldPhoto" name="photo">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-4">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>
+----
+
+Note that we must specify +enctype="multipart/form-data"+ to enable file uploads.((("multipart/form-data encoding", "specifying for file uploads")))  We're also restricting the type of files that can be uploaded by using the +accept+ attribute (which is optional).
+
+Now install Formidable (+npm install --save formidable+) and create((("Formidable"))) the following route handlers:
+
+[source,js]
+----
+var formidable = require('formidable');
+
+app.get('/contest/vacation-photo',function(req,res){
+    var now = new Date();
+    res.render('contest/vacation-photo',{
+        year: now.getFullYear(),month: now.getMont()
+    });
+});
+
+app.post('/contest/vacation-photo/:year/:month', function(req, res){
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files){
+        if(err) return res.redirect(303, '/error');
+        console.log('received fields:');
+        console.log(fields);
+        console.log('received files:');
+        console.log(files);
+        res.redirect(303, '/thank-you');
+    });
+});
+----
+
+(Year and month are being specified as _route parameters_, which you'll learn about in <<ch_routing>>.) Go ahead and run this and examine the console log.  You'll see that your form fields come across as you would expect: as an object with properties corresponding to your field names.  The +files+ object contains more data, but it's relatively straightforward.  For each file uploaded, you'll see there are properties for size, the path it was uploaded to (usually a random name in a temporary directory), and the original name of the file that the user uploaded (just the filename, not the whole path, for security and privacy reasons).
+
+What you do with this file is now up to you: you can store it in a database, copy it to a more permanent location, or upload it to a cloud-based file storage system.  Remember that if you're relying on local storage for saving files, your application won't scale well, making this a poor choice for cloud-based hosting.  We will be revisiting this example in <<ch_persistence>>.
+
+=== jQuery File Upload
+
+If you want to offer really fancy file uploads to your users—with the ability to drag and drop, see thumbnails of the uploaded files, and see progress bars—then I recommend http://blueimp.github.io/jQuery-File-Upload[Sebastian Tschan's jQuery File Upload].((("forms", "handling", "jQuery file upload")))((("jQuery", "File Upload middleware")))((("file uploads", "jQuery")))
+
+Setting up jQuery File Upload is not a walk in the park.  Fortunately, there's an npm package to help you with the server-side intricacies.  The frontend scripting is another matter.  The jQuery File Upload package uses jQuery UI and Bootstrap, and looks pretty good out of the box.  If you want to customize it, though, there's a lot to work through.
+
+To display file thumbnails, +jquery-file-upload-middleware+ uses http://www.imagemagick.org[_ImageMagick_], a venerable image manipulation library.((("ImageMagick")))  This does mean your app has a dependency on ImageMagick, which could cause problems depending on your hosting situation.((("operating systems", "installing ImageMagick")))  On Ubuntu and Debian systems, you can install ImageMagick with +apt-get install imagemagick+, and on OS X, you can use +brew install imagemagick+.  For other operating systems, consult the http://www.imagemagick.org/script/binary-releases.php[ImageMagick documentation].
+
+Let's start with the server-side setup.((("middleware", "jquery-file-upload-middleware package")))  First, install the ++jquery-file-upload-middleware++ package (+npm install --save jquery-file-upload-middleware+), then add the following to your app file:
+
+[source,js]
+----
+var jqupload = require('jquery-file-upload-middleware');
+
+app.use('/upload', function(req, res, next){
+    var now = Date.now();
+    jqupload.fileHandler({
+        uploadDir: function(){
+            return __dirname + '/public/uploads/' + now;
+        },
+        uploadUrl: function(){
+            return '/uploads/' + now;
+        },
+    })(req, res, next);
+});
+----
+
+If you look at the documentation, you'll see something similar under "more sophisticated examples."  Unless you are implementing a file upload area that's quite literally shared by all of your visitors, you'll probably want to be able to partition off the file uploads.  The example simply creates a timestamped directory to store the file uploads.  A more realistic example would be to create a subdirectory that uses the user's ID or some other unique ID.  For example, if you were implementing a chat program that supports shared files, you might want to use the ID of the chat room.
+
+Note that we are mounting the jQuery File Upload middleware on the __/upload__ prefix.  You can use whatever you want here, but make sure you don't use that prefix for other routes or middleware, as it will interfere with the operation of your file uploads.
+
+To hook up your views to the file uploader, you can replicate the demo uploader: you can upload the latest bundle on the https://github.com/blueimp/jQuery-File-Upload/releases[project's GitHub page].  It will inevitably include a lot of things you don't need, like PHP scripts and other implementation examples, which you are free to delete.  Most of the files, you'll put in your __public__ directory (so they can be served statically), but the HTML files you'll have to copy over to views.
+
+If you just want a minimal example that you can build on, you'll need the following scripts from the bundle: __js/vendor/jquery.ui.widget.js__, __js/jquery.iframe-transport.js__, and __js/jquery.fileupload.js__.  You'll also need jQuery, obviously.  I generally prefer to put all of these scripts in __public/vendor/jqfu__ for neatness.  In this minimal implementation, we wrap the +<input type="file">+ element in a +<span>+, and add a +<div>+ in which we will list the names of uploaded files:
+
+[source,html]
+----
+<span class="btn btn-default btn-file">
+    Upload
+    <input type="file" class="form-control" required accept="image/*"
+        id="fieldPhoto" data-url="/upload" multiple name="photo">
+</span>
+<div id="uploads"></div>
+----
+
+Then we attach jQuery File Upload:
+
+[source,html]
+----
+{{#section 'jquery'}}
+    <script src="/vendor/jqfu/js/vendor/jquery.ui.widget.js"></script>
+    <script src="/vendor/jqfu/js/jquery.iframe-transport.js"></script>
+    <script src="/vendor/jqfu/js/jquery.fileupload.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            $('#fieldPhoto').fileupload({
+                dataType: 'json',
+                done: function(e, data){
+                    $.each(data.result.files, function(index, file){
+                        $('#fileUploads').append($('<div class="upload">' +
+                            '<span class="glyphicon glyphicon-ok"></span>' +
+                            '&nbsp;' + file.originalName + '</div>'));
+                    });
+                }
+            });
+
+        });
+    </script>
+{{/section}}
+----
+
+We have to do some CSS gymnastics((("CSS", "styling file upload button"))) to style the upload button:
+
+[source,css]
+----
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 999px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+----
+
+Note that the +data-url+ attribute of the +<input>+ tag must match the route prefix you used for the middleware.  In this simple example, when a file upload successfully completes, a +<div class="upload">+ element is appended to +<div id="uploads">+.  This lists only filename and size, and does not offer controls for deletion, progress, or thumbnails.  But it's a good place to start.  Customizing the jQuery File Upload demo can be daunting, and if your vision is significantly different, it might be easier to start from the minimum and build your way up instead of starting with the demo and customizing.((("jQuery", "File Upload middleware", "documentation")))  Either way, you will find the resources you need on the https://github.com/blueimp/jQuery-File-Upload/wiki[jQuery File Upload documentation page].
+
+For simplicity, the Meadowlark Travel example will not continue to use jQuery File Upload, but if you wish to see this approach in action, refer to the +jquery-file-upload-example+ branch in the repository.((("forms", range="endofrange", startref="ix_forms")))

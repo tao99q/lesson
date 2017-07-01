@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 6.23 Creating a CSS Triangle</title>
+<style>
+div {margin:20px 30px; float:left;}
+div.step1 {
+	border:12px solid;
+	border-color:red;
+	height:30px; width:30px;
+	bottom:100%; left:140px;
+	color:#000;
+	}
+div.step2 {
+	border:12px solid;
+	border-color:orange red green gray;
+	height:30px; width:30px;
+	bottom:100%; left:140px;
+	color:#000;
+	}
+div.step3 {
+	border:12px solid;
+	border-color:orange red green gray;
+	height:0px; width:0px;
+	bottom:100%; left:140px;
+	color:#000;
+	}
+div.step4 {
+	border:12px solid;
+	border-color:transparent red transparent transparent;
+	height:0px; width:0px;
+	bottom:100%; left:140px;
+	color:#000;
+	}
+</style>
+</head>
+
+<body>
+	<div class="step1"></div>
+    <div class="step2"></div>
+    <div class="step3"></div>
+    <div class="step4"></div>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

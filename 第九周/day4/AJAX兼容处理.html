@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AJAX兼容处理</title>
+</head>
+<body>
+<script>
+    /*
+    * //正常情况下的浏览器
+     var xhr =new XMLHttpRequest();
+     //在IE6 及以下不兼容
+     xhr=new ActiveXObject("Microsoft.XMLHTTP");
+     xhr=new ActiveXObject("Msxml2.XMLHTTP");
+     xhr=new ActiveXObject("Msxml3.XMLHTTP");
+     */
+    function createXHR () {
+        var xhr=null;
+        if(window.XMLHttpRequest){
+            xhr=new XMLHttpRequest;
+        }else {
+            //IE6及以下
+            try {
+               xhr=new ActiveXObject("Microsoft.XMLHTTP");
+            }catch (e){
+                try {
+                    xhr=new ActiveXObject("Msxml2.XMLHTTP");
+                }catch (e){
+                    xhr=new ActiveXObject("Msxml3.XMLHTTP");
+                }
+            }
+        }
+    }
+
+    var xhr1=createXHR();
+    var xhr2=createXHR();
+    /*
+    * 每一次执行createXHR都需要重新验证当前浏览器支持那个方法,但是我们不希望是这样的,我们希望,这个函数执行一次之后我们就已经知道当前浏览器支持哪个了,以后就不用再做判断了
+    * 教给大家一种思想     惰性思想
+    * */
+
+    function createXHR() {
+        var xhr=null,
+            ary=[
+                function () {
+                    return new XMLHttpRequest;
+                },
+                function () {
+                    return new ActiveXObject("Microsoft.XMLHTTP");
+                },
+                function () {
+                    return new ActiveXObject("Msxml2.XMLHTTP");
+                },
+                function () {
+                    return new ActiveXObject("Msxml3.XMLHTTP");
+                }
+            ];
+        //循环数组ary中的每一项,依次执行
+        for(var i=0;i<ary.length;i++){
+            try {
+                xhr=ary[i]();
+                createXHR=ary[i];
+                break;
+            }catch (e){}
+        }
+        return xhr;
+    }
+    var xhr1=createXHR();
+    var xhr2=createXHR();//这个时候createXHR就是数组ary中的一个函数
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 3.28 Positioning Context</title>
+<style type="text/css">
+body {background-color:#caebff;}
+div#outer {width:250px; margin:100px 40px; border-top:3px solid red;}
+div#inner {font-family:Helvetica, Arial, sans-serif; top:10px; left:20px; background:#ccc;}
+</style>
+</head>
+
+<body>
+	<div id="outer">
+  		<div id="inner"> This is text for a paragraph to demonstrate contextual
+    positioning. Here are two divs, one nested in the other. The outer div has
+    a red top border and the inner div has a gray background. 
+    Both elements have default static positioning.</div>
+	</div>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

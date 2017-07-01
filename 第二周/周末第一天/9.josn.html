@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    console.log("JSON" in window);
+    var obj={a:1};
+    //json对象:属性名必须用双引号包起来,属性值如果是字符串的话必须用双引号包起来
+    var jsonObj={"name":"zf","age":12};
+    //json字符串:就是将接json 对象用单引号包起来;
+    var jsonStr='{"name":"zf","age":"12"}';
+
+    //
+    console.dir(JSON);
+    //parse 将json字符串转为json对象
+    console.log(JSON.parse(jsonStr));
+    //stringify 将json对象转为json字符串
+    console.log(JSON.stringify(jsonObj));
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 4.37 An Exercise in Classic Typography</title>
+<link href='http://fonts.googleapis.com/css?family=Pinyon+Script' rel='stylesheet' type='text/css'>
+<style type="text/css">
+@font-face {
+    font-family: 'CrimsonRoman';
+    src: url('Crimson-fontfacekit/Crimson-Roman-webfont.eot');
+    src: url('Crimson-fontfacekit/Crimson-Roman-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Crimson-fontfacekit/Crimson-Roman-webfont.woff') format('woff'),
+         url('Crimson-fontfacekit/Crimson-Roman-webfont.ttf') format('truetype'),
+         url('Crimson-fontfacekit/Crimson-Roman-webfont.svg#CrimsonRoman') format('svg');
+    font-weight: normal;
+    font-style: normal;
+	}
+* {margin:0; padding:0;}
+body {font-family:"CrimsonRoman", Georgia, Times, serif; background-color:#FFF; margin:29px 10% 0; background-image:url(images/grid_24px.png);}
+h2 {font-size:18px; line-height:24px; font-weight:bold; text-align:center; font-variant:small-caps; word-spacing:.5em; letter-spacing:.6em;}
+h1 {font-size:60px; line-height:96px; font-family:'Pinyon Script', cursive; margin:4px 0 -4px; text-align:center; font-weight:normal;position:relative;}
+p {font-size:18px; line-height:24px;}
+blockquote {margin:0px 20%;}
+q {font-size:18px; font-style:italic; line-height:24px;}
+h1 + p {text-indent:0;}
+h1 + p:first-letter {font-family:Times, serif; font-size:90px; float:left; padding:.085em 3px 0 0; line-height:.65;}
+h1 + p:first-line {font-variant:small-caps; letter-spacing:.15em;}
+</style>
+</head>
+
+<body>
+    <h2>an excerpt from</h2>
+    <h1>The Hound of the Baskervilles</h1>
+    <p>Holmes stretched out his hand for the manuscript and flattened it upon his knee. &ldquo;You will observe, Watson, the alternative use of the long s and the short. It is one of several indications which enabled me to fix the date.&rdquo; At the head was written: &ldquo;Baskerville Hall,&rdquo; and below in large, scrawling figures: &ldquo;1742.&rdquo;</p>
+    
+    <p>&ldquo;It appears to be a statement of some sort.&rdquo;</p>
+    
+    <p>&ldquo;Yes&mdash;it is a statement of a certain legend which runs in the Baskerville family.&rdquo;</p>
+    
+    <blockquote>
+        <q>Of the origin of the Hound of the Baskervilles there
+            have been many statements, yet as I come in a direct
+            line from Hugo Baskerville, and as I had the story from
+            my father&hellip;</q>
+    </blockquote>
+    
+    <p>When Dr. Mortimer had finished reading this singular narrative he pushed his spectacles up on his forehead and stared across at Mr. Sherlock Holmes.</p>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

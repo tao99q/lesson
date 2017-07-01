@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //有分组的时候 一个小括号代表一个分组
+    //exec 返回值是个数组
+    //第一项:大正则捕获的内容
+    //第二项:第一个分组捕获的内容
+    //第三项:第二个分组捕获的内容
+    ////......
+    //index:大正则捕获的内容首字符的索引
+    //input:原字符串
+
+    var str="js6,html5,css3,f4";
+    var reg=/([a-z]{1,4})(\d{1,2})(,?)/g;
+    //console.log(reg.exec(str));
+
+//    var ary=[];
+    //    var re=reg.exec(str);
+    //    while(re){
+    //        ary.push(re[0]);
+    //        re=reg.exec(str)
+    //    }
+    //    console.log(ary);
+    var obj={};
+    var re=reg.exec(str);
+    while(re){
+        obj[re[1]]=re[2];
+        re=reg.exec(str)
+    }
+    console.log(obj);
+
+    //match 正则加上g,捕获不到分组的内容
+    //不加g跟exec结果一样,只捕获第一个
+
+
+    //总结一下:没有分组的情况,想要把所有的匹配内容一次性捕获出来就用match
+    //有分组的情况下 想要捕获分组的内容只能用exec
+</script>
+</body>
+</html>

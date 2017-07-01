@@ -1,0 +1,32 @@
+form.stylin_form1 {
+	width:14em; /* overall width of form */
+	margin:20px auto; /* centers form in container */
+	border:1px solid #bbb7ae;
+	padding:.5em .5em .15em;
+	}
+.stylin_form1 h3 { /* form main heading */
+	margin:0;
+	padding:0 0 .2em .2em;
+	font-weight:600;
+	color:#bbb7ae;
+	}
+.stylin_form1 fieldset {
+	margin:0;
+	padding:0 0 .2em 0;
+	width:100%;
+	border:0;
+	}
+/* legend has weird position behavior, so I wrap the text in block-leveled span and style that instead */
+.stylin_form1 legend {
+	width:100%;
+	padding:.3em 0;
+	background:#bbb7ae;
+	}
+.stylin_form1 legend span { /* size of legend headings text */
+	display:block;
+	font-size:1em;
+	line-height:1.1em;
+	padding: 0 0 0 .4em;
+	font-weight:700;
+	color:#fff;
+	}

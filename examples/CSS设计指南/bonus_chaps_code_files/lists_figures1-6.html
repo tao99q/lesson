@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figures 1 - 6 Lists</title>
+<style>	
+div {
+	border:1px solid #069; 
+	border-radius:6px;
+	margin:20px; 
+	float:left; 
+	padding:10px;
+	font-family:helvetica,sans-serif;
+	}
+h3 {
+	margin:0;	
+	}
+.list1 ul {border:1px solid red;}
+.list1 li {
+	border:1px solid green; 
+	margin-left:0;
+	}
+.list1.inside li {list-style-position:inside;}
+.list2 ul {padding:0;}
+.list2 li {
+	list-style-position:inside;
+	list-style-image:url(images/red_donut_10px.gif); 
+	font-size:16px; margin-left:0px;
+	}
+.list3 ul {padding:0;}
+.list3 li {
+	list-style-type:none; 
+	line-height:2em;
+	background-image:url(images/red_donut_20px.gif);
+	background-repeat:no-repeat;
+	background-position:0px 5px;
+	padding-left:28px;
+	}
+</style>
+</head>
+
+<body>
+    <div>
+         <h3>Prep Steps</h3>
+         <ol>
+            <li>Open</li>
+            <li>Heat</li>
+            <li>Serve</li>
+            <li>Enjoy!</li>
+         </ol>
+    </div>
+    <div>
+        <h3>World Capitals</h3>
+        <ul>
+            <li>New York</li>
+            <li>London</li>
+            <li>Paris</li>
+            <li>Rome</li>
+         </ul>
+    </div>
+    <div>
+        <h3>Attractions</h3>
+        <ul>
+            <li>New York
+                <ul>
+                    <li>Empire State Building</li>
+                    <li>Statue of Liberty</li>
+                </ul>
+            </li>
+            <li>London
+                <ul>
+                    <li>Houses of Parliament</li>
+                    <li>Tower of London</li>
+                </ul>
+            </li>
+         </ul>
+    </div>
+    
+    <div>
+        <h3>Coding the UI</h3>
+        <dl>
+            <dt>HTML</dt>
+            <dd>A mechanism for marking up content</dd>
+            <dt>CSS</dt>
+            <dd>A mechanism for styling HTML</dd>
+            <dt>JavaScript</dt>
+            <dd>A browser-based scripting language</dd>
+        </dl>
+    </div>
+    <div class="list2">
+        <h3>World Capitals</h3>
+        <ul>
+            <li>New York</li>
+            <li>London</li>
+            <li>Paris</li>
+            <li>Rome</li>
+         </ul>
+    </div>
+    <div class="list3">
+        <h3>World Capitals</h3>
+        <ul>
+            <li>New York</li>
+            <li>London</li>
+            <li>Paris</li>
+            <li>Rome</li>
+         </ul>
+    </div>
+    <div class="list1">
+        <p>Some short text</p>
+        <ul>
+            <li>New York</li>
+            <li>London</li>
+            <li>Paris</li>
+            <li>Rome</li>
+         </ul>
+        <p>Some more text</p>
+    </div>
+    
+    <div class="list1 inside">
+        <p>Some short text</p>
+        <ul>
+            <li>New York</li>
+            <li>London</li>
+            <li>Paris</li>
+            <li>Rome</li>
+         </ul>
+        <p>Some more text</p>
+    </div>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

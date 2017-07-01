@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			@font-face {
+				font-family: 'icomoon';
+				src: url('fonts/icomoon.eot?vphno9');
+				src: url('fonts/icomoon.eot?vphno9#iefix') format('embedded-opentype'), url('fonts/icomoon.ttf?vphno9') format('truetype'), url('fonts/icomoon.woff?vphno9') format('woff'), url('fonts/icomoon.svg?vphno9#icomoon') format('svg');
+				font-weight: normal;
+				font-style: normal;
+			}
+			
+			.icon {
+				/* use !important to prevent issues with browser extensions that change fonts */
+				font-family: 'icomoon' !important;
+				speak: none;
+				font-style: normal;
+				font-weight: normal;
+				font-variant: normal;
+				text-transform: none;
+				line-height: 1;
+				/* Better Font Rendering =========== */
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+			html,body{
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				background: rgba(0,0,0,.3);
+			}
+			.btn{
+				display: block;
+				width: 80px;
+				height: 80px;
+				border-radius:50% ;
+				position: relative;
+				left: 100px;
+				top:100px;
+				font-size: 0;
+				background: #e982ab;
+				box-shadow: 0 1px 5px rgba(255,255,255,0.5) inset,0 -2px 5px rgba(0,0,0,.5),0 3px 8px rgba(0,0,0,.8);
+				background: -webkit-radial-gradient(circle at top,#f28fb8,#e982ab,#ec568c);
+				background: radial-gradient(circle at top,#f28fb8,#e982ab,#ec568c);
+			}
+			.icon{
+				text-decoration: none;
+				color: #ccc;
+			}
+			.icon:before{
+				display: block;
+				content: "\ead9";
+				width: 80px;
+				height: 80px;
+				color:#ec568c;
+				font-size: 50px;
+				text-align: center;
+				line-height: 80px;
+			}
+			.btn:hover:before{
+				color: #fff;
+				text-shadow: 0 1px 20px #fccdda,1px 0px 15px #fccdda;
+			}
+		</style>
+	</head>
+
+	<body>
+		<a class="icon btn" href="JavaScript:;"></a>
+	</body>
+
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    function FF(){
+        this.x=100
+    }
+    function WW(){
+        this.w=400;
+    }
+    FF.prototype.y=200;
+    var ff=new  FF();
+    console.log(ff.constructor);//FF
+    FF.prototype=Object.prototype;
+    console.log(ff.constructor);//Object
+    FF.prototype={
+        x:300,
+        constructor:WW
+    };
+    console.log(ff.constructor);//WW
+
+
+    function arg(){
+       // console.log(arguments.__proto__);
+        //arguments.__proto__==Object.prototype
+        arguments.__proto__=Array.prototype;
+        return arguments.sort(function(n,m){
+            return n-m;
+        })
+    }
+    console.log(arg(1, 2, 3, 4, 56, 12, 34));
+    //在IE下为了防止用户恶意篡改原型指向就把__proto__给屏蔽了,所以你找不到__proto__
+    //但是在移动端没有IE所以很好用,不用担心
+
+
+</script>
+</body>
+</html>

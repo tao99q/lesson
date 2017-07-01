@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 4.11 Line-Height Property</title>
+<style type="text/css">
+body {font-family:helvetica, arial, sans-serif; font-size:1em;}
+.tight {line-height:.8;}
+.loose {line-height:1.5}
+</style>
+</head>
+
+<body>
+    <p>Here is a paragraph of text with default line height. Line height is the vertical
+      distance between the baseline of one line of type and the next. This distance
+      is a proportion of the font-size.</p>
+    <p class="tight">The default line spacing is typically 1.2, but this paragraph
+      has a tighter setting of .8, meaning the descenders of one line will touch
+      the ascenders of the one below if they appear above one another.</p>
+    <!--end footer-->
+    <p class="loose">This paragraph has a looser setting of 1.5. The font-size is 12 pixels
+      and the line-height is 1.5 so the distance between the lines is 18 pixels. This gives an elegant
+      look to your typography, but is a less efficient use of the vertical space.</p>
+    <!--end footer-->
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>
+<!--end sample doc-->

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        div{
+            border: 20px solid red;
+            margin: 30px;
+            padding: 20px;
+        }
+        .box1{
+            margin-top: 1000px;
+            width: 300px;
+            height: 300px;
+        }
+        .box2{
+            width: 100px;
+            height: 100px;
+            border-color:blue;
+        }
+        .box3{
+            border-color:green ;
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+<div style="position: relative" class="box1">
+    <div class="box2">
+        <div class="box3"></div>
+    </div>
+</div>
+</body>
+</html>
+<!--
+为了页面操作性更强,我们一般都是以body作为参照物来,所以最好试求当前元素距离body的偏移量
+注意:offsetLeft和offsetTop值:是从当前元素的外边框到父级参照物的内边框(也就是说不包括边框)
+
+-->
+<script>
+   var box1=document.getElementsByClassName("box1")[0];
+   var box2=document.getElementsByClassName("box2")[0];
+   var box3=document.getElementsByClassName("box3")[0];
+   console.log(box2.offsetParent);//box1
+   console.log(box3.offsetParent);//box1
+   console.log(box3.offsetLeft);
+   console.log(box2.scrollHeight);
+   //box2中的真实内容高度:box3.height+box3.padding*2+box3.border*2+box3.marginTop+box3.marginBottom=box3.offsetHeight+上下margin
+
+
+   console.log(document.body.offsetParent);//null
+
+    //求当前元素距离body偏移量(return:{left:,top:})
+    function offset(curEle){
+        //先求一次当前元素的偏移量和父级参照物
+        var l=curEle.offsetLeft;
+        var t=curEle.offsetTop;
+        var p=curEle.offsetParent;
+        while(p){
+            //在IE8浏览器中,偏移量包含了父级 参照物的边框
+            if(window.navigator.userAgent.indexOf("MSIE 8")===-1){
+                l+= p.clientLeft;
+                t+= p.clientTop;
+            }
+            l+= p.offsetLeft;
+            t+= p.offsetTop;
+            p= p.offsetParent;
+        }
+        return{
+            left:l,
+            top:t
+        }
+    }
+    offset(box3).left;
+    offset(box3).top;
+
+
+
+    win("scrollTop");
+    win("clientHeight");
+    win("scrollHeight");
+    box3.offsetHeight
+
+</script>

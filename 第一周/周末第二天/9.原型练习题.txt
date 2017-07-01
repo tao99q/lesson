@@ -1,0 +1,17 @@
+
+f0=F();this->window
+私有:A=window.A=11;
+window.a=11;
+window.A=11;
+window.b=function b
+window.B=function(){}
+f0=22;
+f1=new F;this->f1
+A=undefined
+f1={A:11,a:undefined,b:function (){},B:function (){}}
+f2={A:11,a:undefined,b:function (){},B:function (){}}
+f1.B()//this->f1
+f1={A:12,a:NaN,b:function (){},B:function (){}}
+f2={A:12,a:NaN,b:function (){},B:function (){}}
+f1.C()
+f1={A:13,a:NaN,b:function (){},B:function (){}}

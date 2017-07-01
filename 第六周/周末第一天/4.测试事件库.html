@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="box">11111111111111111111111</div>
+<script src="js/Events第二次封装.js"></script>
+<script>
+    var obj={};
+    function fn1() {
+        console.log("点餐！");
+        fire(this,"selfEat");
+    }
+    function fn2() {
+        console.log("玩手机！");
+    }
+    function fn3() {
+        console.log("菜来了！")
+    }
+    function fn4() {
+        console.log("吃光！")
+    }
+    function fn5() {
+        console.log("结账！")
+    }
+
+    /*
+    on(obj,"selfEat",fn1);
+    on(obj,"selfEat",fn2);
+    on(obj,"selfEat",fn3);
+    on(obj,"selfEat",fn4);
+    on(obj,"selfEat",fn5);
+    on(obj,"selfDrink",fn1);
+    on(obj,"selfDrink",fn5);
+    on(obj,"selfDrink",fn5);
+    on(obj,"selfDrink",fn5);
+    fire(obj,"selfEat");
+    fire(obj,"selfDrink");
+    */
+    var box=document.getElementById("box");
+    on(box,"click",fn1);
+    on(box,"selfEat",fn2);
+    on(box,"selfEat",fn3);
+    on(box,"selfEat",fn5);
+</script>
+</body>
+</html>

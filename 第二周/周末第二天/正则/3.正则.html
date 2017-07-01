@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //身份证号:18位  首位是1-8 末尾是数字或者X
+    var reg=/^[1-8]\d{16}(\d|X)$/;
+    //姓名
+    var reg=/^[\u4e00-\u9fa5]{2,4}$/;
+    //密码:数字,大小写字母,_,所有的标点符号 6-16
+    var reg=/^(\w|,|\.|\?|~|!|@|#|\$|%|\^|&|\*|-|\+|'|"|:|;){6,16}$/;
+    //邮箱  (数字,大小写字母,_,-,+,.)@(数字,大小写字母-,_).(数字大小写字母)
+    var reg=/^(\w|-|\+|\.)+@((\w|-)+\.)+([0-9a-zA-Z])+$/;
+    console.log(reg.test("zf-mq@zhu_feng01.com.cn"));
+
+    //正则的构造函数创建方式  注意:用构造函数方式创建因为是写在字符串中,所以遇到\变成\\
+    //好处:可以实现变量的拼接
+    var reg=new RegExp("^\\w\\d{4}$");//   /^\w\d{4}$/
+
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+form.stylin_form1 {
+	width:14em; /* overall width of form */
+	margin:20px auto; /* centers form in container */
+	border:1px solid #bbb7ae;
+	padding:.5em .5em .15em;
+	}
+.stylin_form1 h3 { /* form main heading */
+	margin:0;
+	padding:0 0 .2em .2em;
+	font-weight:600;
+	color:#bbb7ae;
+	}
+.stylin_form1 fieldset {
+	margin:0;
+	padding:0 0 .2em 0;
+	width:100%;
+	border:0;
+	}
+/* legend has weird position behavior, so I wrap the text in a block-leveled span and style that instead */
+.stylin_form1 legend {
+	width:100%;
+	padding:.3em 0;
+	background:#bbb7ae;
+	}
+.stylin_form1 legend span { /* size of legend headings text */
+	display:block;
+	font-size:1em;
+	line-height:1.1em;
+	padding: 0 0 0 .4em;
+	font-weight:700;
+	color:#fff;
+	}
+/* EACH LABEL/INPUT COMBO IS WRAPPED IN A section */ 
+.stylin_form1 section {
+	overflow:hidden; /* forces section to enclose the form control and label */
+	padding:.2em 0 .4em 0; 
+	border-bottom:8px solid #e7e5df; /* visual separation between each section if wanted */
+	}
+.stylin_form1 section:last-child { /* no border on last section of each group */
+	border-bottom:0px;
+	}
+/* TEXT FIELDS */
+.stylin_form1 section label,
+.stylin_form1 section h4 { /* h4 is used to title groups of checkboxes and radio buttonss */
+	display:block;
+	clear:both;
+	margin:.3em .3em 0 0; /* right margin ensures label text wraps before touching input */
+	padding-bottom:.1em;
+	font-size:.8em;
+	font-family:'Droid Sans';
+	font-weight:400; 
+	line-height:1.1;
+	}
+.stylin_form1 section label span, /* asterisk for required fields */
+.stylin_form1 section h4 span {
+	font-size:.75em;
+	vertical-align:text-top;
+	color:#f00;
+	}	
+.stylin_form1 section p.note {
+	font-size:.7em;
+	color:#f00;
+	margin:0;
+	padding:0 0 .3em 0;
+	}	
+.stylin_form1 section input, 
+.stylin_form1 section textarea, 
+.stylin_form1 section select {
+	margin:.2em .5em .2em 0;
+	padding:.2em .4em; /* creates space around the text in the input */
+	color:#000;
+	box-shadow:1px 1px 3px #ccc;
+	font-size:.8em;
+	font-family:inherit; /* for Firefox - uses Courier on textarea without this */
+	outline:none; /* removes default blue focus outline */
+	}
+/* style the text fields (text, password, date, textarea, etc) with rounded corners */
+.stylin_form1 section input,
+.stylin_form1 section textarea {
+	width:12em;
+	border:1px solid #bbb7ae;
+	border-radius:3px;
+	}
+.stylin_form1 section textarea {
+	height:5em;  /* vertical height of textarea box */
+	margin-top:.3em; /*space below label */
+	line-height:1.1;
+	}
+.stylin_form1 section p {
+	margin:.3em .75em 0;
+	clear:both;
+	font-size:.7em;
+	line-height:1.1;
+	color:#000;
+	}
+.stylin_form1 section p.error {
+	color:#f00;  /* colors direction text red when error class added */
+	}
+.stylin_form1 section section { /* an inner wrpper for the label/control pairs */
+	overflow:hidden; /* forces element to enclose the floated labels */
+	margin:.2em 0 .3em .4em;
+	padding:0 0 .1em 0;
+	border-bottom:none;
+	}
+.stylin_form1 section section input {
+	float:left;
+	clear:both;
+	width:auto; /* resets inherited width */
+	margin:.1em 0 0em .3em; /* top aligns with label, left stops input clipping */
+	}
+.stylin_form1 section section label {
+	float:left;
+	clear:none; /* reset the inherited value */
+	width:15em; 
+	margin:.15em 0 0 .6em; /* creates spacing betwen adjacent c/boxes, and btw each c/box and its label */
+	font-weight:normal; /* reset the inherited value */
+	font-size:.7em;
+	line-height:1.2;
+	}
+.stylin_form1 section select {
+	margin-left:.4em;
+	font-size:.85em;
+	}
+.stylin_form1 section input[type="submit"] {
+	width:auto; /* resets width setting for fields */
+	margin:.4em .3em 0 0;
+	font-size:1em;
+	font-weight:800;
+	color:#fff;
+	background-color:#bbb7ae;
+	cursor:pointer;
+	}
+.stylin_form1 > section:last-child {
+	text-align:center;
+	}
+/* LEFT-LABELS LAYOUT STYLES */
+/* additional styles for option of labels to the left of the inputs */
+/* ADD labels_left CLASS TO FORM TAG */
+form.stylin_form1.labels_left {
+	width:22em;
+	}
+form.stylin_form1.labels_left label,
+form.stylin_form1.labels_left h4 {
+	float:left;
+	width:8em;
+}
+form.stylin_form1.labels_left p {
+	margin:0 0 0 9.35em;
+	padding:.3em 0 0 0;
+	clear:both;	
+	}
+form.stylin_form1.labels_left p.note {
+	margin:0 0 .2em 0;
+	}
+form.stylin_form1.labels_left section section {
+	width:10em;
+	margin-left:6.5em;
+	padding-top:0;
+	}
+form.stylin_form1.labels_left section section input {
+	width:1.25em;
+	margin-left:0;
+	}
+.stylin_form1.labels_left section input, 
+.stylin_form1.labels_left section textarea, 
+.stylin_form1.labels_left section select {
+	float:left;
+	width:12em;
+	}
+.stylin_form1.labels_left section select {
+	margin-left:.2em;
+	}
+.stylin_form1.labels_left > section input[type=submit] {
+	float:none;
+	}

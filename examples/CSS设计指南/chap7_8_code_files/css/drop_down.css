@@ -1,0 +1,130 @@
+@charset "UTF-8";
+/* CSS Document */
+nav.multi_drop_menu  {
+	height:30px;
+	margin:20px auto; 
+	text-align:center; /*aligns menu in container */
+	font-size:.8em;
+	padding:0;
+	}
+nav.multi_drop_menu > ul {
+	display:inline-block;float:none;
+	/*background:#f58c21;padding:0 14px;*/
+	}
+li.choice1 a {
+	background:#f58c21;
+	border-top-left-radius:10px;
+}
+li.choice2 a {
+	background:#4eb8ea;
+	}
+li.choice3 a {
+	background:#d6e636;
+	}
+li.choice4 a {
+	background:#ee4c98;
+	}
+li.choice5 a {
+	background:#f58c21;
+	border-bottom-right-radius:10px;
+	}
+	
+/* IE 6 only */
+* html nav.multi_drop_menu ul ul {
+	width:500px;
+	float:none;
+	margin-left:300px;
+	border-radius:12px;
+	border:1px solid #fff;
+	padding:0 14px;
+	}
+nav.multi_drop_menu ul ul {
+	}
+nav.multi_drop_menu ul li a {
+	border:0;
+	font-family:"Source Sans Pro", helvetica, sans-serif;
+	font-style: normal;
+	font-weight:600;
+	font-size:2em;
+	color:#fff;
+	padding:.5em .8em;
+	text-align:left;
+	}
+nav.multi_drop_menu > ul > li a {
+	/*border-right:1px solid #AAA;*/
+	}
+nav.multi_drop_menu > ul > li:first-child > a {
+	/*border-left:1px solid #AAA;*/
+}
+nav.multi_drop_menu li:hover > a {
+	color:#555;
+}
+nav.multi_drop_menu li li a {
+	border:0;
+	color:#555;
+	font-size:.8em;
+	border-top:2px solid #fff;
+}
+nav.multi_drop_menu li li a:hover {
+	background:#EEE;
+}
+nav.multi_drop_menu li li:last-child a 
+ {border-radius:0 0 12px 12px;}
+
+/* "MECHANICAL" STYLINGS - ADJUST WITH CARE! */
+/* menu mechanics */
+/* level 1 */
+.multi_drop_menu * {margin:0; padding:0;}
+.multi_drop_menu ul {float:left;} /* forces ul to enclose floated li elements */
+.multi_drop_menu li {  
+	float:left; /* makes menu horizontal */
+	list-style-type:none; /* removes default bullets off lists */
+	position:relative; /* position context for child list */
+	}
+.multi_drop_menu li a {   
+	display:block; /* makes link fill li */
+	border-right-style:solid; /* adds a right border on the links */
+	background-clip:padding-box; /* background only under padding, not border */  
+	text-decoration:none; /* removes link underlining */
+	-webkit-font-smoothing: antialiased; /* prevents pop of anti-alias change at end of opacity transition */
+	}
+	
+/* level 2*/
+.multi_drop_menu li ul {
+	/* display:none; /* hides levels 2, 3, etc. */
+	opacity:0; 	
+	visibility:hidden;
+	position:absolute; /* position relative to parent menu */
+	width:10em;
+	display:block;
+	left:0; /* aligns left of sub-menu to parent */
+	top:100%; /* aligns to bottom of parent */
+	-webkit-transition: .6s all;
+	-moz-transition: .6s all;
+	}
+.multi_drop_menu li:hover > ul {
+	/*display:block; /* displays menu when parent hovered */
+	opacity:.99;
+	visibility:visible;
+	}
+.multi_drop_menu li li {
+	position:relative; /* position context for child list */
+	float:none; /* kills inherited float - makes list stack */
+	}
+		
+/* level 3 */
+.multi_drop_menu li li ul {
+	position:absolute; /* position relative to parent menu */
+	left:100%; /* aligns menu with right of parent */
+	top:0; /* aligns with parent menu choice top */
+	}
+
+/* for vertical top level, add 'vertical' class to nav */
+.multi_drop_menu.vertical ul,
+.multi_drop_menu.vertical li {
+	float:none; /* makes top level menu vertical */
+	}
+.multi_drop_menu.vertical li ul {
+	left:100%; /* aligns level 2 menu to right of level 1 */
+	top:0; /* aligns sub-menu with top of menu choice */
+	}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<label for="input1">用户名:</label>
+<input id="input1" name="user" type="text"/>
+<br/>
+<br/>
+<label for="input2">密码:</label>
+<input id="input2" name="password" type="text"/>
+<span class="warning" style="display: none">
+    <!--密码跟用户名不能相同-->
+</span>
+</body>
+</html>
+<script type="text/javascript">
+    var oInput1=document.getElementById("input1");
+    var oInput2=document.getElementById("input2");
+    var warn=document.getElementsByClassName("warning")[0];
+    oInput2.onfocus=function(){
+        //当oInput2获取焦点,就是鼠标一点上oInput2
+        var val=oInput1.value;
+        if(val==""){
+            warn.style.display="inline-block";
+            warn.style.color="red";
+            warn.innerHTML="用户名不能为空~"
+        }
+
+        oInput2.oninput=function(){
+            warn.style.display="none";
+            warn.innerHTML="";
+            var val1=this.value;
+            var reg=new RegExp(val);
+            if(reg.test(val1)){
+                warn.style.display="inline-block";
+                warn.style.color="red";
+                warn.innerHTML="密码跟用户名不能相同"
+            }
+        }
+    }
+</script>

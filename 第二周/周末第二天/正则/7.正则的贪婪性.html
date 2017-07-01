@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //正则的贪婪性  捕获的时候把每次匹配的内容最长的捕获出来来
+    var reg=/\d{1,4}/g;
+    var str= "a12b123c1234";
+    console.log(reg.exec(str));
+    console.log(reg.exec(str));
+    console.log(reg.exec(str));
+
+    //解决正则的贪婪性 在量词元字符后面加上?,就会捕获最短的内容
+    var reg=/\d{1,4}?/g;
+    var str= "a12b123c1234";
+    console.log(reg.exec(str));
+    console.log(reg.exec(str));
+
+    //注意:在(?:)表示只匹配不捕获
+    var reg=/([a-zA-z]+)(\d+)(?:,?)/g;
+    var str="Js12,Html34,Css56,Node78,Vue90";
+    console.log(reg.exec(str));
+    //["Js12","js","12",","]
+    //["Js12","js","12"]
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Thumbnail Proximity Effect with jQuery and CSS3</title>
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/demo.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style1.css"/>
+</head>
+<body id="page">
+<div class="container">
+    <!-- Codrops top bar -->
+    <section class="pe-container">
+        <ul id="pe-thumbs" class="pe-thumbs">
+            <li>
+                <a href="#"><img src="images/thumbs/1.jpg"/></a>
+            </li>
+        </ul>
+    </section>
+</div>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+
+    $(function () {
+        //绑定数据
+        var strHtml = ``;
+        for (var i = 1; i < 37; i++) {
+            strHtml += `<li>
+						<a href="#"><img src="images/thumbs/${Math.round(Math.random() * (37 - 1) + 1)}.jpg" /></a>
+					</li>`
+        }
+        $("#pe-thumbs").html(strHtml);
+
+//        Photo = (function () {
+//
+//            var $list = $('#pe-thumbs'),
+//                $elems = $list.find('img'),
+//                settings = {
+//                    maxScale: 1.4,
+//                    maxOpacity: 0.9,
+//                    minOpacity: Number($elems.css('opacity'))
+//                },
+//                init = function () {
+//                    settings.minScale = _getScaleVal() || 1;
+//                    _initEvents();
+//
+//                },
+//                _getScaleVal = function () {
+//                    var st = window.getComputedStyle($elems.get(0), null),
+//                        tr = st.getPropertyValue("-webkit-transform") ||
+//                            st.getPropertyValue("-moz-transform") ||
+//                            st.getPropertyValue("-ms-transform") ||
+//                            st.getPropertyValue("-o-transform") ||
+//                            st.getPropertyValue("transform") ||
+//                            "fail...";
+//
+//                    if (tr !== 'none') {
+//
+//                        values = tr.split('(')[1].split(')')[0].split(','),
+//                            a = values[0],
+//                            b = values[1],
+//                            c = values[2],
+//                            d = values[3];
+//
+//                        return Math.sqrt(a * a + b * b);
+//
+//                    }
+//
+//                },
+//                _initEvents = function () {
+//                    $elems.on('proximity.Photo', {
+//                        max: 80,
+//                        throttle: 10,
+//                        fireOutOfBounds: true
+//                    }, function (event, proximity, distance) {
+//
+//                        var $el = $(this),
+//                            $li = $el.closest('li'),
+//                            scaleVal = proximity * ( settings.maxScale - settings.minScale ) + settings.minScale,
+//                            scaleExp = 'scale(' + scaleVal + ')';
+//                        ( scaleVal === settings.maxScale ) ? $li.css('z-index', 1000) : $li.css('z-index', 1);
+//
+//                        $el.css({
+//                            '-webkit-transform': scaleExp,
+//                            '-moz-transform': scaleExp,
+//                            '-o-transform': scaleExp,
+//                            '-ms-transform': scaleExp,
+//                            'transform': scaleExp,
+//                            'opacity': ( proximity * ( settings.maxOpacity - settings.minOpacity ) + settings.minOpacity )
+//                        });
+//
+//                    });
+//
+//                };
+//
+//            return {
+//                init: init
+//            };
+//
+//        })();
+//
+//        Photo.init();
+
+    });
+</script>
+</body>
+</html>

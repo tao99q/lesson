@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #box {
+            width: 100px;
+            height: 30px;
+            background-color: yellowgreen;
+        }
+    </style>
+</head>
+<script>
+</script>
+<body>
+<!--
+事件分为两部分
+1.事件行为  元素天生自带的行为属性，就算不写也是存在的
+2.事件绑定
+
+
+
+常用的事件行为(事件属性)
+onabort 图像加载被中断触发的行为
+onload  当图片或者一个网页加载完成后触发的行为
+onerror 当加载文档或者图片发生错误后触发的行为
+onblur 元素失去焦点
+onfocus 元素获取焦点
+onchange 域的内容改变 <input type="text/file"> textarea select
+onclick 当元素被单击
+ondblclick 当元素被双击
+onreset 当重置按钮被点击的时候  form
+onsubmit 当提交按钮被点击的时候  form
+onunload 当用户退出页面之后触发 的行为  window.onunload
+onresize 当浏览窗口发生改变 window.onresize
+onmouseup鼠标按键松开
+onmousedown鼠标按键按下
+onmousemove 鼠标按住拖动
+onmouseover/onmouseenter 鼠标放上
+onmouseout/onmouseleave 鼠标移开
+onmousewheel 鼠标的滚轮
+
+
+onkeydown 键盘键按下
+onkeyup 键盘键松开
+onkeypress键盘键按下再松开
+当一个输入框按下键盘触发onkeydown 松开先触发onkeypress再触发onkeyup
+注意:没有输入内容(enter,tab,中文的时候输入法会阻止一下)就不会触发onkeypress
+
+-->
+<div id="box"></div>
+<!--<img id="img1" src="img/5.jpg" alt="">-->
+<img id="img" src="img/1.jpg" alt="">
+
+<form id="form" action="">
+    <input type="text">
+    <select name="" id="sel">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+    </select>
+    <textarea></textarea>
+    <input type="file">
+    <input type="reset" value="重置">
+    <input type="submit" value="提交">
+</form>
+</body>
+<script>
+var  box=document.getElementById("box");
+console.dir(box);
+</script>
+</html>

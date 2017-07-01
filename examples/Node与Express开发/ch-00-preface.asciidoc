@@ -1,0 +1,142 @@
+[[ch_preface]]
+== Preface
+
+=== Who This Book Is For
+
+Clearly, this book is for programmers who want to create web applications (traditional websites, RESTful APIs, or anything in between) using JavaScript, Node, and Express.((("web applications", "creating with JavaScript, Node, and Express")))((("Express")))((("Node")))  One of the exciting aspects of Node development is that it has attracted a whole new audience of programmers.  The accessibility and flexibility of JavaScript has attracted self-taught programmers from all over the world.  At no time in the history of computer science has programming been so accessible.  The number and quality of online resources for learning to program (and getting help when you get stuck) is truly astonishing and inspiring.  So to those new (possibly self-taught) programmers, I welcome you.
+
+Then, of course, there are the programmers like me, who have been around for a while.  Like many programmers of my era, I started off with assembler and BASIC, and went through Pascal, C++, Perl, Java, PHP, Ruby, C, C#, and JavaScript.  At university, I was exposed to more niche languages such as ML, LISP, and PROLOG.  Many of these languages are near and dear to my heart, but in none of these languages do I see so much promise as I do in JavaScript.  So I am also writing this book for programmers like myself, who have a lot of experience, and perhaps a more philosophical outlook on specific technologies.
+
+No experience with Node is necessary, but you should have some experience with JavaScript.((("JavaScript", "resources for learning")))  If you're new to programming, I recommend http://www.codecademy.com/tracks/javascript[Codecademy].  If you're an experienced programmer, I recommend Douglas Crockford's pass:[<emphasis><ulink role="orm:hideurl" url="http://bit.ly/java-good-parts">JavaScript: The Good Parts</ulink></emphasis>] (O'Reilly).  The examples in this book can be used with any system that Node works on (which covers Windows, OS X, and Linux).  The examples are geared toward command-line (terminal) users, so you should have some familiarity with your system's terminal.
+
+Most important, this book is for programmers who are excited.  Excited about the future of the Internet, and want to be part of it.  Excited about learning new things, new techniques, and new ways of looking at web development.  If, dear reader, you are not excited, I hope you will be by the time you reach the end of this book....
+
+=== How This Book Is Organized
+
+Chapters pass:[<xref linkend="ch_introduction" xrefstyle="select: labelnumber"/>] and pass:[<xref linkend="ch_getting_started_with_node" xrefstyle="select: labelnumber"/>] will introduce you to Node and Express and some of the tools you'll be using throughout the book.  In Chapters pass:[<xref linkend="ch_saving_time_with_express" xrefstyle="select: labelnumber"/>] and pass:[<xref linkend="ch_tidying_up" xrefstyle="select: labelnumber"/>], you start using Express and build the skeleton of a sample website that will be used as a running example throughout the rest of the book.
+
+<<ch_qa>> discusses testing and QA, and <<ch_the_request_and_response_objects>> covers some of Node's more important constructs and how they are extended and used by Express. <<ch_templating>> covers templating (using Handlebars), which lays the foundation of building useful websites with Express.  Chapters pass:[<xref linkend="ch_form_handling" xrefstyle="select: labelnumber"/>] and pass:[<xref linkend="ch_cookies_and_sessions" xrefstyle="select: labelnumber"/>] cover cookies, sessions, and form handlers, rounding out the things you need to know to build basic functional websites with Express.
+
+<<ch_middleware>> delves into "middleware," a concept central to Connect (one of Express's major components).  <<ch_sending_email>> explains how to use middleware to send email from the server and discusses security and layout issues inherent to email.
+
+<<ch_production_concerns>> offers a preview into production concerns.  Even though, at this stage in the book, you don't have all the information you need to build a production-ready website, thinking about production now can save you from major headaches in the future.
+
+<<ch_persistence>> is about persistence, with a focus on MongoDB (one of the leading document databases).
+
+<<ch_routing>> gets into the details of routing with Express (how URLs are mapped to content), and <<ch_rest_apis_and_json>> takes a diversion into writing APIs with Express.  <<ch_static_content>> covers the details of serving static content, with a focus on maximizing performance.  <<ch_implementing_mvc_in_express>> reviews the popular model-view-controller (MVC) paradigm, and how it fits into Express.
+
+<<ch_security>> discusses security: how to build authentication and authorization into your app (with a focus on using a third-party authentication provider), as well as how to run your site over HTTPS.
+
+<<ch_integrating_with_third_party_rest_apis>> explains how to integrate with third-party services.  Examples used are Twitter, Google Maps, and Weather Underground.
+
+Chapters pass:[<xref linkend="ch_debugging" xrefstyle="select: labelnumber"/>] and pass:[<xref linkend="ch_going_live" xrefstyle="select: labelnumber"/>] get your ready for the big day: your site launch.  They cover debugging, so you can root out any defects before launch, and the process of going live.  <<ch_maintenance>> talks about the next important (and oft-neglected) phase: maintenance.
+
+The book concludes with <<ch_additional_resources>>, which points you to additional resources, should you want to further your education about Node and Express, and where you can go to get help.
+
+=== Example Website
+
+Starting in <<ch_saving_time_with_express>>, a running example will be used throughout the book: the Meadowlark Travel website.((("websites", "Meadowlark Travel (example)")))((("Meadowlark Travel example website")))((("example website")))  Just having gotten back from a trip to Lisbon, I have travel on my mind, so the example website I have chosen is for a fictional travel company in my home state of Oregon (the Western Meadowlark is the state bird of Oregon).  Meadowlark Travel allows travelers to connect to local "amateur tour guides," and partners with companies offering bike and scooter rentals and local tours.  In addition, it maintains a database of local attractions, complete with history and location-aware services.
+
+Like any pedagogical example, the Meadowlark Travel website is contrived, but it is an example that covers many of the challenges facing real-world websites: third-party component integration, geolocation, ecommerce, performance, and security.
+
+As the focus on this book is backend infrastructure, the example website will not be complete; it merely serves as a fictional example of a real-world website to provide depth and context to the examples.  Presumably, you are working on your own website, and you can use the Meadowlark Travel example as a template for it.
+
+=== Conventions Used in This Book
+
+The following typographical conventions are used in this book:
+
+_Italic_:: Indicates new terms, URLs, email addresses, filenames, and file extensions.
+
++Constant width+:: Used for program listings, as well as within paragraphs to refer to program elements such as variable or function names, databases, data types, environment variables, statements, and keywords.
+
+**`Constant width bold`**:: Shows commands or other text that should be typed literally by the user.
+
+_++Constant width italic++_:: Shows text that should be replaced with user-supplied values or by values determined by context.
+
+
+[TIP]
+====
+This element signifies a tip or suggestion.
+====
+
+[NOTE]
+====
+This element signifies a general note.
+====
+
+[WARNING]
+====
+This element indicates a warning or caution.
+====
+
+=== Using Code Examples
+++++
+<remark>PROD: Please reach out to author to find out if they will be uploading code examples to oreilly.com or their own site (e.g., GitHub). If there is no code download, delete this whole section. If there is, when you email digidist with the link, let them know what you filled in for title_title (should be as close to book title as possible, i.e., learning_python_2e). This info will determine where digidist loads the files.</remark>
+++++
+
+Supplemental material (code examples, exercises, etc.) is available for download at https://github.com/EthanRBrown/web-development-with-node-and-express.
+
+This book is here to help you get your job done.((("code examples from this book"))) In general, if example code is offered with this book, you may use it in your programs and documentation. You do not need to contact us for permission unless you’re reproducing a significant portion of the code. For example, writing a program that uses several chunks of code from this book does not require permission. Selling or distributing a CD-ROM of examples from O’Reilly books does require permission. Answering a question by citing this book and quoting example code does not require permission. Incorporating a significant amount of example code from this book into your product’s documentation does require permission.
+
+We appreciate, but do not require, attribution. An attribution usually includes the title, author, publisher, and ISBN. For example: “_Web Development with Node and Express_ by Ethan Brown (O’Reilly). Copyright 2014 Ethan Brown, 978-1-491-94930-6.”
+
+If you feel your use of code examples falls outside fair use or the permission given above, feel free to contact us at pass:[<email>permissions@oreilly.com</email>].
+
+=== Safari® Books Online
+
+[role = "safarienabled"]
+[NOTE]
+====
+pass:[<ulink role="orm:hideurl:ital" url="http://my.safaribooksonline.com/?portal=oreilly">Safari Books Online</ulink>] is an on-demand digital library that delivers expert pass:[<ulink role="orm:hideurl" url="http://www.safaribooksonline.com/content">content</ulink>] in both book and video form from the world&#8217;s leading authors in technology and business.
+====
+
+Technology professionals, software developers, web designers, and business and creative professionals use Safari Books Online as their primary resource for research, problem solving, learning, and certification training.
+
+Safari Books Online offers a range of pass:[<ulink role="orm:hideurl" url="http://www.safaribooksonline.com/subscriptions">product mixes</ulink>] and pricing programs for pass:[<ulink role="orm:hideurl" url="http://www.safaribooksonline.com/organizations-teams">organizations</ulink>], pass:[<ulink role="orm:hideurl" url="http://www.safaribooksonline.com/government">government agencies</ulink>], and pass:[<ulink role="orm:hideurl" url="http://www.safaribooksonline.com/individuals">individuals</ulink>]. Subscribers have access to thousands of books, training videos, and prepublication manuscripts in one fully searchable database from publishers like O’Reilly Media, Prentice Hall Professional, Addison-Wesley Professional, Microsoft Press, Sams, Que, Peachpit Press, Focal Press, Cisco Press, John Wiley & Sons, Syngress, Morgan Kaufmann, IBM Redbooks, Packt, Adobe Press, FT Press, Apress, Manning, New Riders, McGraw-Hill, Jones & Bartlett, Course Technology, and dozens pass:[<ulink role="orm:hideurl" url="http://www.safaribooksonline.com/publishers">more</ulink>]. For more information about Safari Books Online, please visit us pass:[<ulink role="orm:hideurl" url="http://www.safaribooksonline.com/">online</ulink>].
+
+=== How to Contact Us
+
+Please address comments and questions concerning this book to the publisher:
+
+++++
+<simplelist>
+<member>O’Reilly Media, Inc.</member>
+<member>1005 Gravenstein Highway North</member>
+<member>Sebastopol, CA 95472</member>
+<member>800-998-9938 (in the United States or Canada)</member>
+<member>707-829-0515 (international or local)</member>
+<member>707-829-0104 (fax)</member>
+</simplelist>
+++++
+
+We have a web page for this book, ((("web page for this book")))where we list errata, examples, and any additional information. You can access this page at link:$$http://bit.ly/web_dev_node_express$$[].
+
+++++
+<remark>Don't forget to update the link above.</remark>
+++++
+
+To comment or ask technical questions about this book, send email to pass:[<email>bookquestions@oreilly.com</email>].
+
+For more information about our books, courses, conferences, and news, see our website at link:$$http://www.oreilly.com$$[].
+
+Find us on Facebook: link:$$http://facebook.com/oreilly$$[]
+
+Follow us on Twitter: link:$$http://twitter.com/oreillymedia$$[]
+
+Watch us on YouTube: link:$$http://www.youtube.com/oreillymedia$$[]
+
+=== Acknowledgments
+
+So many people in my life have played a part in making this book a reality: it would not have been possible without the influence of all the people who have touched my life and made me who I am today.
+
+I would like to start out by thanking everyone at Pop Art: not only has my time at Pop Art given me a renewed passion for engineering, but I have learned so much from everyone there, and without their support, this book would not exist.  I am grateful to Steve Rosenbaum for creating an inspiring place to work, and to Del Olds for bringing me on board, making me feel welcome, and being an honorable leader.  Thanks to Paul Inman for his unwavering support and inspiring attitude toward engineering, and Tony Alferez for his warm support and for helping me carve out time for writing without impacting Pop Art.  Finally, thanks to all the great engineers I have worked with, who keep me on my toes: John Skelton, Dylan Hallstrom, Greg Yung, Quinn Michael, and CJ Stritzel.
+
+Zach Mason, thank you for being an inspiration to me.  This book may be no _The Lost Books of the Odyssey_, but it is _mine_, and I don't know if I would have been so bold without your example.
+
+I owe everything to my family.  I couldn't have wished for a better, more loving education than the one they gave me, and I see their exceptional parenting reflected in my sister too.
+
+Many thanks to Simon St. Laurent for giving me this opportunity, and to Brian Anderson for his steady and encouraging editing.  Thanks to everyone at O'Reilly for their dedication and passion.  Thanks to Jennifer Pierce, Mike Wilson, Ray Villalobos, and Eric Elliot for their thorough and constructive technical reviews.
+
+Katy Roberts and Hanna Nelson provided invaluable feedback and advice on my "over the transom" proposal that made this book possible.  Thank you both so much!  Thanks to Chris Cowell-Shah for his excellent feedback on the QA chapter.
+
+Lastly, thanks to my dear friends, without whom I surely would have gone insane.  Byron Clayton, Mark Booth, Katy Roberts, and Sarah Lewis, you are the best group of friends a man could ask for.  And thanks to Vickey and Judy, just for being who they are.  I love you all.

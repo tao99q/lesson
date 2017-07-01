@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figure 4.10 Text-Align Property</title>
+<style type="text/css">
+body {font-family:helvetica, arial, sans-serif;}
+.lefttext {text-align:left;}
+.centeredtext {text-align:center;}
+.righttext {text-align:right;}
+.justifiedtext {text-align:justify;}
+</style>
+</head>
+
+<body>
+    <p class="lefttext">This is text that is left aligned and is the usual way that
+      text is aligned. It's easy to read because every line starts against the left
+      edge of the containing element and that's why it's the default setting.</p>
+    <p class="righttext">This is text that is right aligned and it can be somewhat hard to read because every line starts in a different place.</p>
+    <p class="centeredtext">This is text that is centered. Small blocks of text
+      look good centered but it's hard to read large amounts of text as every line
+      starts a different distance from the edge of the page.</p>
+    <p class="justifiedtext">Justified text is both left and right aligned at the
+      same time. This is achieved by mathematically increasing word space on a line-by-line basis. This can result in gaps of white space (known as rivers)
+      throughout the text, if the containing element is narrow or if there
+      are multiple numerous extended consecutive occurrences of exceptionally lengthy
+      words like these, so that only a few fit on each line.</p>
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>

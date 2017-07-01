@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>事件传播机制</title>
+		<style type="text/css">
+			html,body{
+				height: 100%;
+			}
+
+			#outer {
+				width: 300px;
+				height: 300px;
+				border: 1px solid red;
+			}
+			
+			#inter {
+				width: 200px;
+				height: 200px;
+				border: 1px solid blue;
+			}
+			
+			#center {
+				width: 100px;
+				height: 100px;
+				border: 1px solid green;
+			}
+			
+			div {
+				cursor: pointer;
+				font-size: 20px;
+				margin-left: 50px;
+			}
+		</style>
+	</head>
+	<body id="body">
+	body
+		<div id="outer">
+			outer
+			<div id="inter">
+				inter
+				<div id="center">
+					center
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
+<!--
+事件传播三部分
+捕获阶段->目标阶段->冒泡阶段
+捕获阶段 从外到里 body->outer->inter->center
+目标  center
+冒泡阶段：center->inter->outer>body
+先捕获后冒泡
+
+DOM0事件都是在冒泡阶段发生的，不管你给事件行为绑没绑定方法，依然会继续冒泡
+
+在DOM2级事件第三个参数false(冒泡)/true(捕获)
+
+只能阻止事件的冒泡不能阻止捕获
+
+-->
+<script type="text/javascript">
+    var body = document.getElementById("body");
+    var outer = document.getElementById("outer");
+    var inter = document.getElementById("inter");
+    var center = document.getElementById("center");
+
+    /*
+    body.onclick=function (e) {
+		console.log("body")
+    };
+    outer.onclick=function (e) {
+        console.log("outer")
+    };
+    inter.onclick=function (e) {
+        console.log("inter")
+    };
+    center.onclick=function (e) {
+        console.log("center")
+    };
+    */
+    function fn(e) {
+        console.log(this.id);
+        e.stopPropagation();
+        //在IE下没有，用
+		//e.cancelBubble=true;
+    }
+    body.addEventListener("click",fn,true);
+    body.addEventListener("click",fn,false);
+    outer.addEventListener("click",fn,false);
+    center.addEventListener("click",fn,true);
+
+
+
+    //在给一组元素绑定事件的时候，我们需要循环绑定，而且里面用到变量还需要另行处理，所以我们可以用一个其他的方式，给高级元素绑定事件，利用冒泡原理，通过判断事件源是谁来做相应的处理，这种方式叫做事件委托
+</script>

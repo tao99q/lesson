@@ -1,0 +1,204 @@
+[[ch_tidying_up]]
+== Tidying Up
+
+In the last two chapters, we were just experimenting: dipping our toes into the waters, so to speak.  Before we proceed to more complex functionality, we're going to do some housekeeping and build some good habits into our work.
+
+In this chapter, we'll start our Meadowlark Travel project in earnest.  Before we start building the website itself, though, we're going to make sure we have the tools we need to produce a high-quality product.
+
+[TIP]
+====
+The running example in this book is not necessarily one you have to follow.  If you're anxious to build your own website, you could pass:[<phrase role="keep-together">follow</phrase>] the framework of the running example, but modify it accordingly so that by the time you finish this book, you could have a finished pass:[<phrase role="keep-together">website!</phrase>]
+====
+
+=== Best Practices
+
+The phrase "best practices" is one you hear thrown around a lot these days, and it means that you should "do things right" and not cut corners (we'll talk about what this means specifically in a moment).((("best practices")))  No doubt you've heard the engineering adage that your options are "fast," "cheap," and "good," and you can pick any two.  The thing that's always bothered me about this model is that it doesn't take into account the _accrual value_ of doing things correctly.  The first time you do something correctly, it may take five times as long to do it as it would have to do it quick and dirty.  The second time, though, it's only going to take three times as long.  By the time you've done it correctly a dozen times, you'll be doing it almost as fast as the quick and dirty way.
+
+I had a fencing coach who would always remind us that practice doesn't make perfect: practice makes _permanent_.  That is, if you do something over and over again, eventually it will become automatic, rote.  That is true, but it says nothing about the quality of the thing you are practicing.  If you practice bad habits, then bad habits become rote.  Instead, you should follow the rule that _perfect_ practice makes perfect.  In that spirit, I encourage you to follow the rest of the examples in this book as if you were making a real-live website, as if your reputation and remuneration were depending on the quality of the outcome.  Use this book to not only learn new skills, but to practice building good habits.
+
+The practices we will be focusing on are version control and QA.  In this chapter, we'll be discussing version control, and we'll discuss QA in the next chapter.
+
+=== Version Control
+
+Hopefully I don't have to convince you of the value of version control (if I did, that might take a whole book itself).((("version control")))  Broadly speaking, version control offers these benefits:
+
+Documentation::
+	Being able to go back through the history of a project to see the decisions that were made and the order in which components were developed can be valuable documentation.((("documentation")))  Having a technical history of your project can be quite useful.
+
+Attribution::
+	If you work on a team, attribution can be hugely important.((("attribution")))  Whenever you find something in code that is opaque or questionable, knowing who made that change can save you many hours.  It could be that the comments associated with the change are sufficient to answer your questions, and if not, you'll know who to talk to.
+
+Experimentation::
+	A good version control system enables experimentation.  You can go off on a tangent, trying something new, without fear of affecting the stability of your project.  If the experiment is successful, you can fold it back into the project, and if it is not successful, you can abandon it.
+
+Years ago, I made the switch to distributed version control systems (DVCS).((("DVCS (distributed version control systems)")))((("distributed version control systems (DVCS)")))  I narrowed my choices down to Git and Mercurial, and went with Git, due to its ubiquity and flexibility.((("Mercurial")))((("Git")))  Both are excellent and free version control systems, and I recommend you use one of them.  In this book, we will be using Git, but you are welcome to substitute Mercurial (or another version control system altogether).
+
+If you are unfamiliar with Git, I recommend Jon Loeliger's excellent pass:[<emphasis><ulink role="orm:hideurl" url="http://bit.ly/Version_Ctrl_Git">Version Control with Git</ulink></emphasis>] (O'Reilly).  Also, Code School has a nice http://try.github.io[introductory course on Git].
+
+=== How to Use Git with This Book
+
+First, make sure you have Git.  Type +git --version+.  If it doesn't respond with a version number, you'll need to install Git.  See the http://git-scm.com[Git documentation] for installation pass:[<phrase role="keep-together">instructions.</phrase>]((("Git", "how to use it in this book")))
+
+There are two ways to follow along with the examples in this book.  One is to type out the examples yourself, and follow along with the Git commands.  The other is to clone the Git repository I am using for all of the examples and check out the associated tags for each example.  Some people learn better by typing out examples, while some prefer to just see and run the changes without having to type it all in.
+
+==== If You're Following Along by Doing It Yourself
+
+We've already got a very rough framework for our project: some views, a layout, a logo, a main application file, and a __package.json__ file.  Let's go ahead and create a Git repository and add all those files.((("Git", "creating a repository")))
+
+First, we go to the project directory and create a Git repository there:
+
+----
+git init
+----
+
+Now before we add all the files, we'll create a __.gitignore__ file to help prevent us from accidentally adding things we don't want to add.((("Git", "creating .gitignore file")))  Create a text file called __.gitignore__ in your project directory in which you can add any files or directories you want Git to ignore by default (one per line).  It also supports wildcards.  For example, if your editor creates backup files with a tilde at the end (like __meadowlark.js\~__), you might put +*~+ in the __.gitignore__ file.  If you're on a Mac, you'll want to put +.DS_Store+ in there.  You'll also want to put +node_modules+ in there (for reasons that will be discussed soon).((("Mac OS X", "creating .gitignore file")))  So for now, the file might look like this:
+
+----
+node_modules
+*~
+.DS_Store
+----
+
+[NOTE]
+====
+Entries in the __.gitignore__ file also apply to subdirectories.  So if you put +*~+ in the __.gitignore__ in the project root, all such backup files will be ignored even if they are in subdirectories.
+====
+
+Now we can add all of our existing files.  There are many ways to do this in Git.  I generally favor +git add -A+, which is the most sweeping of all the variants.  If you are new to Git, I recommend you either add files one by one (+git add meadowlark.js+, for example) if you only want to commit one or two files, or +git add -A+ if you want to add all of your changes (including any files you might have deleted).((("Git", "adding files to repository with git add")))  Since we want to add all the work we've already done, we'll use:
+
+----
+git add -A
+----
+
+[TIP]
+====
+Newcomers to Git are commonly confused by the +git add+ pass:[<phrase role="keep-together">command:</phrase>] it adds _changes_, not files.  So if you've modified __meadowlark.js__, and then you type +git add meadowlark.js+, what you're really doing is adding the changes you've made.
+====
+
+Git has a "staging area," where changes go when you run +git add+.  So the changes we've added haven't actually been committed yet, but they're ready to go.((("Git", "committing changes with git commit")))  To commit the changes, use +git commit+:
+
+----
+git commit -m "Initial commit."
+----
+
+The +-m "Initial commit."+ allows you to write a message associated with this commit.  Git won't even let you make a commit without a message, and for good reason.  Always strive to make meaningful commit messages: they should briefly but concisely describe the work you've done.
+
+==== If You're Following Along by Using the Official Repository
+
+For the official repository, I create a tag every time we add to or modify the existing source code.  To get started with it,((("Git", "following along using official repository"))) simply clone it:
+
+----
+git clone https://github.com/EthanRBrown/web-development-with-node-and-express
+----
+
+For convenience, I've added a tag for the beginning of each chapter (which usually points to the last commit of the previous chapter).  So now you can just check out the tag associated with this chapter:
+
+----
+git checkout ch04
+----
+
+Note that chapter tags (like +ch04+) represent the state of the project as you're going into that chapter, before we've covered anything, and may sometimes be concomitant with the last tag in the previous chapter.  As the chapter progresses, tags will be added after the content is discussed.  For example, once you read the upcoming "npm Packages" section, you can check out the tag +ch04-npm-packages+ to see the changes discussed in that section.  Not every section has a corresponding tag, but I've tried to make the repository as easy to follow as possible.  See the https://github.com/EthanRBrown/web-development-with-node-and-express/blob/master/README.md[__README__ file] for more information about how the repository is structured.
+
+[NOTE]
+====
+If at any point you want to experiment, keep in mind that the tag you have checked out puts you in what Git calls a "detached HEAD" state.((("Git", "creating experimental branch")))  While you are free to edit any files, it is unsafe to commit anything you do without creating a branch first.  So if you do want to base an experimental branch off of a tag, simply create a new branch and check it out, which you can do with one command: +git checkout+ pass:[<literal role="keep-together">-b</literal>] +experiment+ (where +experiment+ is the name of your branch; you can use whatever you want).  Then you can safely edit and commit on that branch as much as you want.
+====
+
+=== npm Packages
+
+The npm packages that your project relies on reside in a directory called __node_modules__ (it's unfortunate that this is called __node_modules__ and not __npm_packages__, as Node modules are a related but different concept).((("npm (package manager)", "packages your project relies on")))((("+node_modules+ directory")))  Feel free to explore that directory to satisfy your curiosity or to debug your program, but you should never modify any code in this directory.  In addition to that being bad practice, all of your changes could easily be undone by npm.  If you need to make a modification to a package your project depends on, the correct course of action would be to create your own fork of the project.  If you do go this route, and you feel that your improvements would be useful to others, congratulations: you're now involved in an open source project!  You can submit your changes, and if they meet the project standards, they'll be included in the official package.  Contributing to existing packages and creating customized builds is beyond the scope of this book, but there is a vibrant community of developers out there to help you if you want to contribute to existing packages.
+
+The purpose of the __package.json__ file is twofold: to describe your project and to list dependencies.  Go ahead and look at your __package.json__ file now.((("project dependencies")))((("dependencies, listing for a project")))((("package.json file")))  You should see this:
+
+[source,json]
+----
+{
+  "dependencies": {
+    "express": "^4.0.0",
+    "express3-handlebars": "^0.5.0"
+  }
+}
+----
+
+Right now, our __package.json__ file contains only information about dependencies.  The caret (^) in front of the package versions indicates that any version that starts with the specified version number—up to the next major version number—will work.  For example, this __package.json__ indicates that any version of Express that starts with 4.0.0 will work, so 4.0.1 and 4.9.9 would both work, but 3.4.7 would not, nor would 5.0.0.  This is the default version specificity when you use +npm install --save+, and is generally a pretty safe bet.  The consequence of this approach is that if you want to move up to a newer version, you will have to edit the file to specify the new version.  Generally, that's a good thing because it prevents changes in dependencies from breaking your project without your knowing about it.((("versioning, semver in npm")))  Version numbers in npm are parsed by a component((("semver (semantic versioner) in npm"))) called "semver" (for "semantic versioner").  If you want more information about versioning in npm, consult the https://www.npmjs.org/doc/misc/semver.html[semver documentation].
+
+Since the __package.json__ file lists all the dependencies, the __node_modules__ directory is really a derived artifact.  That is, if you were to delete it, all you would have to do to get the project working again would be to run +npm install+, which will recreate the directory and put all the necessary dependencies in it.  It is for this reason that I recommend putting +node_modules+ in your __.gitignore__ file, and not including it in source control.  However, some people feel that your repository should contain everything necessary to run the project, and prefer to keep +node_modules+ in source control.  I find that this is "noise" in the repository, and I prefer to omit it.
+
+Whenever you use a Node module in your project, you should make sure it's listed as a dependency in __package.json__.  If you fail to do this, npm will be unable to construct the right dependencies, and when another developer checks out the project (or when you do on a different computer), the correct dependencies won't be installed, which negates the value of a package manager.
+
+=== Project Metadata
+
+The other purpose of the __package.json__ file is to store project metadata,((("package.json file", "project metadata")))((("project metadata"))) such as the name of the project, authors, license information, and so on.  If you use +npm init+ to initially create your __package.json__ file, it will populate the file with the necessary fields for you, and you can update them at any time.  If you intend to make your project available on npm or GitHub, this metadata becomes critical.  If you would like more information about the fields in __package.json__, see the https://npmjs.org/doc/json.html[__package.json__ documentation].  The other important piece of metadata is the __README.md__ file. ((("README.md file"))) This file can be a handy place to describe the overall architecture of the website, as well as any critical information that someone new to the project might need.  It is in a text-based wiki format called Markdown.((("Markdown")))  Refer to the http://daringfireball.net/projects/markdown[Markdown documentation] for more information.
+
+=== Node Modules
+
+As mentioned earlier, Node modules and npm packages are related but different concepts.((("Node modules")))  Node modules, as the name implies, offer a mechanism for modularization and encapsulation.  npm packages provide a standardized scheme for storing, versioning, and referencing projects (which are not restricted to modules).  For example, we import Express itself as a module in our main application file:
+
+[source,js]
+----
+var express = require('express');
+----
+
++require+ is a Node function for importing a module.((("Node modules", "importing")))((("require function")))  By default, Node looks for modules in the directory __node_modules__ (it should be no surprise, then, that there's an _express_ directory inside of __node_modules__).  However, Node also provides a mechanism for pass:[<phrase role="keep-together">creating</phrase>] your own modules (you should never create your own modules in the __node_modules__ directory).  Let's see how we can modularize the fortune cookie functionality we implemented in the previous chapter.((("fortune cookies for Meadowlark Travel example website", "modularizing")))
+
+First let's create a directory to store our modules.  You can call it whatever you want, but __lib__ (short for "library") is a common choice.  In that folder, create a file called __fortune.js__:
+
+[source,js]
+----
+var fortuneCookies = [
+	"Conquer your fears or they will conquer you.",
+	"Rivers need springs.",
+	"Do not fear what you don't know.",
+	"You will have a pleasant surprise.",
+	"Whenever possible, keep it simple.",
+];
+
+exports.getFortune = function() {
+	var idx = Math.floor(Math.random() * fortuneCookies.length);
+	return fortuneCookies[idx];
+};
+----
+
+The important thing to note here is the use of the global variable +exports+. ((("Node modules", "exporting functionality from"))) If you want something to be visible outside of the module, you have to add it to +exports+.((("exporting functionality from Node modules")))  In this example, the function +getFortune+ will be available from outside this module, but our array +fortuneCookies+ will be _completely hidden_. ((("encapsulation, using Node modules"))) This is a good thing: encapsulation allows for less error-prone and fragile code.
+
+[NOTE]
+====
+There are several ways to export functionality from a module.  We will be covering different methods throughout the book and summarizing them in <<ch_maintenance>>.
+====
+
+Now in __meadowlark.js__, we can remove the +fortuneCookies+ array (though there would be no harm in leaving it: it can't conflict in any way with the array with the same name defined in __lib/fortune.js__).  It is traditional (but not required) to specify imports at the top of the file, so at the top of the __meadowlark.js__ file, add the following line:
+
+[source,js]
+----
+var fortune = require('./lib/fortune.js');
+----
+
+Note that we prefix our module name with ++./++. This signals to Node that it should not look for the module in the __node_modules__ directory; if we omitted that prefix, this would fail.
+
+++++
+<?hard-pagebreak?>
+++++
+
+Now in our route for the About page, we can utilize the +getFortune+ method from our module:
+
+[source,js]
+----
+app.get('/about', function(req, res) {
+	res.render('about', { fortune: fortune.getFortune() } );
+});
+----
+
+If you're following along, let's commit those changes:
+
+----
+git add -A
+git commit -m "Moved 'fortune cookie' functionality into module."
+----
+
+Or if you're using the official repository, you can see the changes in this tag:
+
+----
+git checkout ch04
+----
+
+You will find modules to be a very powerful and easy way to encapsulate functionality, which will improve the overall design and maintainability of your project, as well as make testing easier.  Refer to the http://nodejs.org/api/modules.html[official Node module documentaion] for more pass:[<phrase role="keep-together">information.</phrase>]((("Node modules", "official documentation site")))

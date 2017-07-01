@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>复习题</title>
+</head>
+<body>
+<script type="text/javascript">
+        var name = "The Window";
+        var object = {
+            name : "My Object",
+            getNameFunc : function(){
+                return function(){
+                    return this.name;
+                };
+            }
+        };
+        alert(object.getNameFunc()());
+        //var ss=object.getNameFunc()
+       //ss()
+
+</script>
+<!--<script type="text/javascript">-->
+    <!--var z = "0";-->
+    <!--var obj = (function (z) {-->
+        <!--//z="0"-->
+        <!--z = (function (z) {-->
+            <!--//私有z="0"-->
+            <!--var z = this.z + 1;//z="01"-->
+            <!--z++;//z=2-->
+            <!--if (this.z === "0") {-->
+                <!--z++;//z=3-->
+                <!--//z();报错-->
+            <!--}-->
+        <!--})(z);//z=undefined-->
+        <!--console.log(this.z&#45;&#45;);//0,window.z=-1-->
+        <!--var z = this.z;//z=-1-->
+        <!--return z;-->
+    <!--})(z);-->
+    <!--console.log(z, obj);-->
+
+<!--</script>-->
+<script TYPE="text/javascript">
+    var g=0;
+    var obj={f:3};
+    var a="1";
+    function f(g){
+        //私有g="1"
+        var a=3;
+        if(g){
+            function ff(){
+                a++;//a=4,a=5
+                g++;//g=2,g=3
+                obj.g=function(){
+                    a++;
+                };//obj={f:4,g:function}
+                console.log(obj);
+                return function(){
+                    console.log(a++,a)//5,6
+                }
+            }
+        }
+        obj.f++;//{f:4}
+        console.log(obj);
+        ff();
+        ff()();
+    }
+    f(a);
+    console.log(g++);//0  g=1
+    console.log(obj);
+
+</script>
+</body>
+</html>
+<script type="text/javascript">
+    var num = '7';//8
+    var obj = {
+        num: 20,
+        fn: (function (num) {
+            //num=7
+            this.num *= 2;//this.num=16
+            num += 10;//num=17
+            return function () {
+                this.num *= 3;//window.num=48,obj.num=60
+                num += 1;//num=18,19
+                console.log(num);//18,19
+            }
+        })(num++)//7
+    };
+    var fn = obj.fn;
+    fn();//this=window
+    obj.fn();//this=obj
+    console.log(num, obj.num);//48 60
+
+</script>

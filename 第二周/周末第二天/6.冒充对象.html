@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //冒充对象继承
+    function F1(){
+        this.x=100;
+    }
+    F1.prototype.getX=function(){
+        console.log(this.x);
+    };
+//    function F2(){
+//        //this ->f2
+//        var f1=new F1();
+//        //f1={x(私有的):100,getX(公有的):function}
+//        for(var key in f1){
+//            this[key]=f1[key]
+//        }
+//    };
+
+
+    function F2(){
+            var f1=new F1();
+            for(var key in f1){
+                if(f1.hasOwnProperty(key)){
+                    this[key]=f1[key];
+                }else{
+                    //this.__proto__[key]=f1[key]
+                    F2.prototype[key]=f1[key]
+                }
+            }
+        }
+
+
+//    function F2(){
+//        var f1=new F1();
+//        //this=f1;
+//    }
+    var f2=new F2();//{x:100,getX:function}
+
+    var a=2;
+    //2=2
+
+
+
+</script>
+</body>
+</html>

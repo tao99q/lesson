@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" /> 
+<title>Stylin' with CSS - Figures 5.10a - 5.10b A Three-Column Fluid Center Layout with Negative Margins</title>
+<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700|PT+Sans:400,700|Open+Sans:400,700|Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
+<meta charset="UTF-8">
+<script src="helpers/modernizr_dev.js"></script>
+<style>
+* {margin:0; padding:0;}
+body {font:1em helvetica, arial, sans-serif;}
+div#main_wrapper {
+	min-width:600px; max-width:1100px;  
+	margin:0 auto; /* centers layout when > max width */
+	background:url(images/bg_tile_150pxw.png) repeat-y #eee;
+	}
+header {
+	padding:5px 10px;
+	background:#3f7ccf;
+	}
+header h1 {
+	font-family:Metrophobic;
+	font-size:2.5em;
+	letter-spacing:-.05em;
+	color:#fff;
+	}
+div#threecolwrap {
+	float:left;
+	width:100%;
+	background:url(images/bg_tile_210pxw.png) top right repeat-y;
+	}
+div#twocolwrap {
+ 	float:left;
+	width:100%;
+	display:inline; /* stops IE doubling margin on float*/
+	margin-right:-210px; /* neg margin move */
+	}
+nav {
+ 	float:left;
+ 	width:150px;
+	background:#f00;
+	padding:20px 0;
+	}
+nav > * {margin:0 10px;} /* moves child elements from column sides */
+nav li {margin-left:28px;} /* pushes list item markers onto page */
+nav a {
+	font-family:'Open Sans';
+	font-weight:800;
+	font-size:.75em;
+	letter-spacing:-.07em;
+	text-decoration:none;
+	color:#fff;
+	}
+article {
+ 	width:auto;
+ 	margin-left:150px;
+ 	margin-right:210px;
+ 	height:1%; /* forces hasLayout on IE */
+	background:#EEE;
+	padding:20px 0;
+	}
+article > * {margin:0px 20px;} /* moves child elements from column sides */
+article h2 {
+	font-family:Metrophobic;
+	font-weight:700;
+	font-size:1.25em;
+	letter-spacing:-.05em;
+	color:#000;
+	}
+article h3 {
+	font-family:Metrophobic;
+	font-weight:700;
+	font-size:1.15em;
+	letter-spacing:-.05em;
+	color:#000;
+	}
+article p {
+	font-family:'Open Sans Condensed';
+	font-weight:300;
+	font-size:1em;
+	color:#000;
+	}
+article ol {
+	font-family:'Open Sans Condensed';
+	font-weight:700;
+	font-size:1em;
+	color:#000;
+	}
+article li {
+	font-family:'Open Sans Condensed';
+	font-weight:300;
+	font-size:1em;
+	color:#000;
+	}
+article code {
+	font-family:'Droid Sans Mono';
+	font-size:.9em;
+	color:#000;
+	}
+aside {
+ 	float:left;
+ 	width:210px; 
+	background:#ffed53;
+	padding:20px 0;
+	}
+aside > * {margin:0 10px;} /* moves child elements from column sides */
+aside h3 {
+	font-family:'Droid Sans';
+	font-weight:300;
+	letter-spacing:-.1em;
+	color:#f00;
+	}
+aside p {
+	font-family:'Open Sans Condensed';
+	font-weight:300;
+	font-style:italic;
+	font-size:1em;
+	line-height:1.5em;
+	color:#000;
+	}
+footer {
+	clear:both;
+ 	width:100%;
+	text-align:center;
+	background:#000;
+ 	}
+footer p {
+	font-family:'Open Sans';
+	font-weight:600;
+	font-size:.7em;
+	letter-spacing:-.05em;
+	color:#fff;
+	}
+footer a {
+	font-family:'Open Sans';
+	font-weight:700italic;
+	font-size:1em;
+	color:#ffed53;
+	text-decoration:none;
+	}
+/* end of structural styles */ 
+</style>
+</head>
+
+<body>
+<div id="main_wrapper">
+  <header>
+      <h1>A Three-Column Fluid Center Layout</h1>
+  </header> 
+  
+  <div id="threecolwrap">  <!--encloses the three columns-->
+    <div id="twocolwrap">  <!-- encloses the left and center columns-->
+    
+      <nav>  <!-- the left column-->
+          <ul>
+            <li><a href="#">Nav Link 1</a></li>
+            <li><a href="#">Nav Link 2</a></li>
+          </ul>
+      </nav>
+      
+      <article> <!-- the center column -->
+          <!--start of page content-->
+          <h2>About This Layout</h2>
+          <p><strong>This page is styled with <abbr title="Cascading Style Sheets">CSS</abbr>.
+              This layout uses negative margins to create this feature-rich
+              layout.</strong></p>
+          <h3>Key Features</h3>
+          <p>Resize this page to see the following:</p>
+          <ol>
+            <li>The center content column changes width as you change the browser width.</li>
+            <li>The <code>min-width</code> setting prevents the content being crushed down
+              to nothing; once the content reaches minimum width, the layout
+              gets no narrower.</li>
+            <li>The <code>max-width</code> setting prevents the content getting too wide;
+              once it reaches maximum width, the layout gets no wider and the auto margins center the layout
+              in the browser window.</li>
+            <li>The footer sits below whichever column is longest.</li>
+          </ol>
+          <!--end of page content-->
+      </article>  <!--end of content section-->
+      
+    </div>  <!--end of twocolwrap-->
+    
+    <aside>
+        <h3>Sidebar Area</h3>
+        <p>This column has a negative margin applied to it to draw it
+          inside of the full width content div. A positive margin on the content
+          div ensures there will be room for it.</p>
+    </aside>  <!--end of promo div-->
+    
+  </div>  <!--end of threecolwrap div-->
+  
+  <footer>
+      <p>A CSS template from <a href="http://www.stylinwithcss.com"><em>Stylin'
+            with CSS, Third Edition</em></a> by Charles Wyke-Smith</p>
+  </footer>  <!--end footer -->
+  
+</div>  <!--end main_wrapper-->
+    
+    <!-- OK to remove the code between here and </body> -->
+	<div style="clear:both; padding:100px 0 0 0; font-size:.85em; color:#666;">
+    <p>A code example from <em>Stylin&rsquo; with CSS, Third Edition</em> by Charles Wyke-Smith. Visit <a href="http://www.stylinwithcss.com">stylinwithcss.com</a> for more CSS information and updates.</p>
+    </div>
+    
+</body>
+
+</html>
+

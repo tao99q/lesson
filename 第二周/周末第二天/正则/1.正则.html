@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //正则是来处理复杂字符串的
+    //1.正则的匹配:test返回值->true,false
+    //2.正则的捕获;把匹配内容找出来,exec方法
+    var reg=/9/g;
+    //正则的组成
+    //1.元字符,写在//中间的全是元字符
+    //2.修饰符 写在//后面
+    //g(全局匹配),i(忽略大小写),m(换行匹配)
+
+    //注意:一个元字符只能匹配一个字符
+    //特殊意义的元字符
+    //1.\ 转义字符,一般都是把具有特殊意义的字符变成仅仅是本身意思的字符
+    var str='I\'m a person';
+    var reg=/./;
+    reg.test(str);//true
+    var reg=/\./;
+    reg.test("1.1");//true
+    //^ 以什么什么开始
+    var reg=/^1/;
+    reg.test("123445464");//true
+    reg.test("0001");//false
+    //$ 以什么什么结尾
+    var reg=/m$/;
+    reg.test("mq");//false
+    reg.test("qm");//true
+
+    var reg=/^6$/;//"6"
+    var reg=/^\d$/;//"0" ....
+
+    // \d 匹配0-9中任意一个字符
+    // \D 除了\d以外任意一个字符
+    // \w 匹配0-9,a-z,A-Z,_这63个中的任意一个
+    // \W 匹配除了\w以外的任意一个
+    // \n 匹配一个换行符
+    var str="abc\nefd";
+    console.log(str);
+    // \s 匹配一个空白符(空格 制表符 换页符)
+    // \S 匹配除了\s以外的任意一个字符
+    // \b 匹配一个边界
+    // \B 匹配一个非边界
+    // .除了\n以外的任意一个字符
+
+    var reg=/\d\w/;
+    reg.test("1.2");//false
+    reg.test("1-2");//false
+    reg.test("1");//false
+    reg.test("1w");//true
+
+    var reg=/^\s\w\s$/;//字符串length是三
+    reg.test(" w ");
+    var reg=/^\s\s\s$/;// "   "
+
+    var reg=/\baa\B/;
+    reg.test("a aa a aaa");//true
+
+    //量词元字符(量词元字符一定要写在元字符的后面)
+    // * 前面的元字符出现0到多次
+    // + 前面的元字符出现1到多次
+    // ? 前面的元字符出现0次或者1次
+    // {number}   前面的元字符出现number次
+    // {number,}  前面的元字符出现number到多次
+    // {number,m}  前面的元字符出现number到m次
+
+    var reg=/\d*/;
+    reg.test("");//true
+    reg.test("1");//true
+    reg.test("111");//true
+    reg.test("wwww...");//true
+
+    var reg=/^\w{4}1+$/;//length>=5
+    reg.test("111111");//true
+    reg.test("abcd2");//false
+    reg.test("121221");//false
+
+    var reg=/^1\d{10}$/;
+</script>
+</body>
+</html>
