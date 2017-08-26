@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>Test</title>
+<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+}
+body {
+	background:#f3f2ef;
+	font-family:sans-serif;
+	
+  display: -webkit-flex;  /* 新版本语法： Chrome 21+ */
+  display: flex;       /* 新版本语法： Opera 12.1, Firefox 22+ */
+	
+	/*-webkit-flex-direction: row;
+	flex-direction:  row;
+	flex-wrap:wrap;
+	flex-flow: row wrap;
+	justify-content: space-around;
+	*/
+	-webkit-flex-direction:row;
+	flex-direction:row;
+	-webkit-flex-wrap:wrap;
+	flex-wrap:wrap;
+	/*
+	
+	flex-direction: row-reverse;
+	justify-content: space-between;
+	-webkit-flex-wrap:wrap;*/
+		
+}
+.comic{
+	text-align:center;
+
+	background:#e5e8e1;
+	box-shadow:0 0 1px rgba(0, 0, 0, 0.2) inset;
+	padding:30px 0;
+	-webkit-flex:1 1 auto;
+  flex:1 1 auto;
+	
+}
+.comic:nth-child(even){
+	margin-left:0;
+	
+}
+.comic h1{
+	color:#666;
+	font-weight:normal;
+	font-size:2em;
+}
+.comic img{
+	width:60%;
+}
+</style>
+</head>
+
+<body>
+<div class="comic">
+  <img src="fate.png" alt="Fate">
+  <h1>Fate</h1>
+</div>
+<div class="comic">
+  <img src="hulk.png" alt="Hulk">
+  <h1>Hulk</h1>
+</div>
+<div class="comic">
+  <img src="superman.png" alt="Superman">
+  <h1>Superman</h1>
+</div>
+<div class="comic">
+  <img src="captain.png" alt="Captain">
+  <h1>Captain</h1>
+</div>
+<div class="comic">
+  <img src="wonder.png" alt="Wonder">
+  <h1>Wonder</h1>
+</div>
+<div class="comic">
+  <img src="ironman.png" alt="Ironman">
+  <h1>Ironman</h1>
+</div>
+</body>
+</html>

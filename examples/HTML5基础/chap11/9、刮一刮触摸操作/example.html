@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<style type="text/css">
+body {
+	background:#F39C12;
+	text-align:center;
+	margin:40px;
+	color:#FFF;
+	font-family:sans-serif;
+}
+img{
+	width:200px;
+}
+h1{
+	font-size:50px;
+	margin-bottom:10px;
+}
+#guajiang{
+	width:240px;
+	height:65px;
+	background:url(result.png) no-repeat;
+	background-size:240px 65px;
+	margin:0 auto;
+}
+</style>
+</head>
+
+<body>
+<img src="bg.png">
+<h1>刮一刮</h1>
+<div id="guajiang">
+  <canvas width="240" height="65" id="mask"></canvas>
+</div>
+<p id="status">请在以上的刮奖区刮奖</p>
+<script type="text/javascript">
+var canvas=document.getElementById("mask");
+var context=canvas.getContext("2d");
+context.fillStyle="#D1D1D1";
+context.fillRect(0,0,240,65);
+context.globalCompositeOperation = 'destination-out';
+canvas.addEventListener('touchmove', function(event) { //当手指在画布上移动时
+		event.preventDefault(); //先去除默认的响应行为
+		var touch = event.touches[0]; //获取触摸的第一个点
+		context.beginPath(); //开始路径的绘制
+		context.arc(touch.pageX-canvas.offsetLeft,touch.pageY-canvas.offsetTop,20,0,Math.PI*2); //在所触摸处绘制圆形，半径为20像素
+		context.closePath(); //结束路径绘制
+		context.fillStyle="#BDC3C7"; //随意设置一种绘制颜色
+		context.fill(); //填充该颜色
+		var imgData = context.getImageData(0,0,240,65); //获取画布中的所有像素
+		var pixelsArr = imgData.data; //得到像素的字节数据
+		var loop = pixelsArr.length; //获取该数据的长度
+		var transparent = 0; //设置一个变量来记录已经变为透明的像素点的数量
+		for (var i = 0; i < loop; i += 4) { //循环遍历每一个像素
+			var alpha = pixelsArr[i + 3]; //获取每个像素的透明度数值
+			if (alpha < 10) { //当透明度小于10时，认为它已经被擦除
+				transparent++; //使transparent加1
+			}
+		}
+		var percentage = transparent / (loop / 4); //计算透明像素在所有像素点中所占的比例
+		if(percentage>.9){ //当该比例大于90%时
+			document.getElementById("status").innerHTML = "刮奖结束！"; //显示刮奖结束字样
+		}
+});
+</script>
+</body>
+</html>

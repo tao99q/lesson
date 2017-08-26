@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background: #FFF;
+	margin: 50px;
+}
+.run {
+	width: 300px;
+	height: 372px;
+	position:relative;
+}
+.run-pic{
+	position:absolute;
+	width: 300px;
+	height: 372px;
+	display:block;
+	top:0;
+	left:0;
+}
+#frame1{
+	background:url(images/run_01.png);
+}
+#frame2{
+	background:url(images/run_02.png);
+}
+#frame3{
+	background:url(images/run_03.png);
+}
+#frame4{
+	background:url(images/run_04.png);
+}
+#frame5{
+	background:url(images/run_05.png);
+}
+#frame6{
+	background:url(images/run_06.png);
+}
+#frame7{
+	background:url(images/run_07.png);
+}
+#frame8{
+	background:url(images/run_08.png);
+}
+#frame9{
+	background:url(images/run_09.png);
+}
+#frame10{
+	background:url(images/run_10.png);
+}
+#frame11{
+	background:url(images/run_11.png);
+}
+#frame12{
+	background:url(images/run_12.png);
+}
+</style>
+</head>
+
+<body>
+<div class="run">
+  <div id="frame1" class="run-pic"></div>
+  <div id="frame2" class="run-pic"></div>
+  <div id="frame3" class="run-pic"></div>
+  <div id="frame4" class="run-pic"></div>
+  <div id="frame5" class="run-pic"></div>
+  <div id="frame6" class="run-pic"></div>
+  <div id="frame7" class="run-pic"></div>
+  <div id="frame8" class="run-pic"></div>
+  <div id="frame9" class="run-pic"></div>
+  <div id="frame10" class="run-pic"></div>
+  <div id="frame11" class="run-pic"></div>
+  <div id="frame12" class="run-pic"></div>
+</div>
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.run-pic').each(function(index){
+			$(this).hide(0).delay(index*100).show(0,loop);
+		});
+	});
+	
+	function loop(){
+		$(this).delay(100).hide(0).delay(1100).show(0,loop);
+	}
+</script>
+</body>
+</html>

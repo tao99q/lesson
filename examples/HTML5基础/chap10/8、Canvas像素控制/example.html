@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body {
+	height:100%;
+	margin:20px;
+	padding:0;
+}
+</style>
+</head>
+
+<body>
+<canvas id="myCanvas" width="800" height="500">
+Your browser does not support the canvas element.
+</canvas>
+<script type="text/javascript">
+	var canvas=document.getElementById("myCanvas");
+	var context=canvas.getContext("2d");
+	var img = new Image();
+	img.src = "bg.jpg";
+	img.onload = function(){
+		context.drawImage(img, 0, 0, 800, 500);
+		//context.drawImage(img, 820, 0, 180, 113);
+		img = context.getImageData(0, 0, 800, 500);
+		var picLength = 800 * 500; //获得像素个数
+		for (var i = 0; i < picLength * 4; i += 4) {
+				var myRed = img.data[i]; //第一个字节单位代表红色
+				var myGreen = img.data[i + 1]; //第一个字节单位代表绿色
+				var myBlue = img.data[i + 2]; //第一个字节单位代表蓝色
+				var myGray = parseInt((myRed + myGreen + myBlue) / 3); 
+				//img.data[i] = 0; //去掉所有红色
+				img.data[i] = myGray;
+				img.data[i + 1] = myGray;
+				img.data[i + 2] = myGray;
+				//img.data[i + 3] = 128; //第四个字节单位代表透明度，在此设置为50%透明
+			}
+		context.putImageData(img, 0, 0);
+	}
+</script>
+</body>
+</html>

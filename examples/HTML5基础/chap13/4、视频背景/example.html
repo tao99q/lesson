@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#333;
+	font-family:"Helvetica Neue", sans-serif;
+	text-align:center;
+	color:#FF0;
+	padding:40px 0;
+}
+h1{
+	font-size:150px;
+	text-transform:uppercase;
+	opacity:.9;
+	font-weight:100;
+}
+
+#video{
+	position:fixed;
+	top: 50%;
+	left: 50%;
+	min-width: 100%;
+	min-height: 100%;
+	width: auto;
+	height: auto;
+	z-index: -100;
+	transform: translateX(-50%) translateY(-50%);
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	opacity:.5;
+}
+</style>
+</head>
+
+<body>
+<h1>Vestibulum neque</h1>
+<video src="video.mp4" id="video" autoplay loop>
+  您的浏览器不支持 video 标签。
+</video>
+</body>
+</html>

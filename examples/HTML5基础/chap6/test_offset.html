@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test</title>
+</head>
+
+<body>
+<button id="button">Test</button>
+<script src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	newPos=new Object();
+	newPos.left=100;
+	newPos.top=100;
+	$("#button").offset(newPos);
+
+});
+</script>
+</body>
+</html>

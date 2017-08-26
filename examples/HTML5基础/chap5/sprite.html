@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CSS Sprites</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+	font-family:sans-serif;
+}
+li {
+	font-size:32px;
+	color:#565656;
+	border-bottom: 1px solid #ccc;
+	line-height:120px;
+	text-indent:130px;
+	position:relative;
+}
+li::before{
+	content:"";
+	width:96px;
+	height:100px;
+	background:url(sprite.png) no-repeat;
+	position:absolute;
+	top:10px;
+	left:12px;
+}
+li:nth-child(1)::before{
+	background-position:0 0;
+}
+li:nth-child(2)::before{
+	background-position:0 -100px;
+}
+li:nth-child(3)::before{
+	background-position:0 -200px;
+}
+li:nth-child(4)::before{
+	background-position:0 -300px;
+}
+</style>
+</head>
+
+<body>
+<ul>
+  <li>Weather</li>
+  <li>Feature</li>
+  <li>Phone</li>
+  <li>Notebook</li>
+</ul>
+</body>
+</html>

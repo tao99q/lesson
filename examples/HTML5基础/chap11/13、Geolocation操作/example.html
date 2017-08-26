@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<style type="text/css">
+body {
+	background:#8E44AD;
+	text-align:center;
+	margin:40px;
+	color:#FFF;
+	font-family:sans-serif;
+}
+h1{
+	border-bottom:1px solid rgba(255,255,255,.5);
+	padding-bottom:20px;
+	font-size:50px;
+}
+p{
+	line-height:150%;
+}
+</style>
+</head>
+
+<body>
+<img src="Map.png">
+<h1 id="steps">0</h1>
+<p id="status">测一测你走了多少步？</p>
+<script type="text/javascript">
+var watchId;
+var lastLat;
+var lastLong;
+var totalDistance = 0;
+function testSupport() { 
+	if (navigator.geolocation) { 
+		//navigator.geolocation.getCurrentPosition(updateLocation);
+		watchId = navigator.geolocation.watchPosition(updateLocation);
+	} else { 
+		alert("该浏览器不支持 HTML5 Geolocation ！建议升级浏览器。"); 
+	} 
+}
+function updateLocation(position) { 
+	var latitude = position.coords.latitude; 
+	var longitude = position.coords.longitude; 
+	var accuracy = position.coords.accuracy; 
+	document.getElementById("status").innerHTML = "纬度：" + latitude + "<br>经度："+ longitude + "<br>精确度：" + accuracy; 
+	if ((lastLat != null) && (lastLong != null)) { 
+    var currentDistance = distance(latitude, longitude, lastLat, lastLong)*1000; 
+    totalDistance += currentDistance.toFixed(0); 
+    document.getElementById("steps").innerHTML = String(totalDistance); 
+    lastLat = latitude; 
+    lastLong = longitude; 
+ }
+}
+function toRadians(degree) { 
+  return this * Math.PI / 180; 
+} 
+function distance(latitude1, longitude1, latitude2, longitude2) { 
+	// R 是地球半径（KM）
+	var R = 6371; 
+
+	var deltaLatitude = toRadians(latitude2-latitude1); 
+	var deltaLongitude = toRadians(longitude2-longitude1); 
+	latitude1 = toRadians(latitude1); 
+	latitude2 = toRadians(latitude2); 
+
+	var a = Math.sin(deltaLatitude/2) * 
+					Math.sin(deltaLatitude/2) + 
+					Math.cos(latitude1) * 
+					Math.cos(latitude2) * 
+					Math.sin(deltaLongitude/2) * 
+					Math.sin(deltaLongitude/2); 
+
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+	var d = R * c; 
+	return d; 
+}
+testSupport();
+</script>
+</body>
+</html>

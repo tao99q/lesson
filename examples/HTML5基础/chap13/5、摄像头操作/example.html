@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#ECF0F1;
+	margin:50px;
+	text-align:center;
+}
+#video, #canvas{
+	display:inline-block;
+	background:#BDC3C7;
+}
+button{
+	font-size:32px;
+	padding:10px 100px;
+	display:block;
+	margin:20px auto;
+	clear:both;
+	border-radius:6px;
+	background:#3498DB;
+	border:0;
+	color:#FFF;
+}
+</style>
+</head>
+
+<body>
+<video id="video" width="400" height="300" autoplay></video>
+<canvas id="canvas" width="400" height="300"></canvas>
+<button id="capture">Capture</button> 
+<script type="text/jscript">
+var capture = document.getElementById("capture");
+var video = document.getElementById("video");
+var canvas = document.getElementById("canvas");
+var context = canvas.getContext("2d");
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+window.URL = window.URL || window.webkitURL;
+navigator.getUserMedia({video:true}, onSuccess, onError); //调用摄像头捕捉视频信息
+capture.onclick = function(e){
+	e.preventDefault();
+	context.drawImage(video, 0, 0, 400, 300);  
+	var img = context.getImageData(0, 0, 400, 300);
+	var picLength = 400 * 300; //获得像素个数
+	for (var i = 0; i < picLength * 4; i += 4) {
+			var myRed = img.data[i]; //第一个字节单位代表红色
+			var myGreen = img.data[i + 1]; //第一个字节单位代表绿色
+			var myBlue = img.data[i + 2]; //第一个字节单位代表蓝色
+			var myGray = parseInt((myRed + myGreen + myBlue) / 3); 
+			//img.data[i] = 0; //去掉所有红色
+			img.data[i] = myGray;
+			img.data[i + 1] = myGray;
+			img.data[i + 2] = myGray;
+		}
+	context.putImageData(img, 0, 0);
+	/*
+	var image = canvas.toDataURL("image/png");
+	image = image.replace("image/png", "image/octet-stream");
+	window.location.href=image;
+	*/
+}
+function onSuccess(stream){
+	video.src = window.URL.createObjectURL(stream);  
+}
+function onError(){
+	mystatus.innerHTML = "获取视频出错。"
+}
+</script>
+</body>
+</html>

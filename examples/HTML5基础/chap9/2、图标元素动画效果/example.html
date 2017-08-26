@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#8b8ab3;
+	margin:50px;
+}
+@font-face {
+	font-family: 'icon-font';
+	src: url('font/flat-ui-icons-regular.ttf'), url('font/flat-ui-icons-regular.eot'), url('font/flat-ui-icons-regular.woff'), url('font/flat-ui-icons-regular.svg');
+}
+.close{
+	font-size:0px;/*使span中的文字不显示*/
+	cursor:pointer;/*使鼠标指针显示为手型*/
+	display:block;
+	width:100px;
+	height:100px;
+	line-height:100px;
+	border-radius:50%;/*使背景形状显示为圆形*/
+	background:#FFF;
+	color:#8b8ab3;
+	text-align:center;
+}
+.close::before{
+	content:"\e609";
+	font-family: 'icon-font';
+	speak:none; /*使文本内容不能通过屏幕阅读器等辅助设备读取*/
+	font-size:48px;
+	display:block;
+}
+.close:hover::before{
+	/*-webkit-transform:rotate(360deg);
+	transform:rotate(360deg);
+	-webkit-transition:-webkit-transform 21.5s;
+	transition:transform 21.5s;*/
+	-webkit-animation: spin 1s linear infinite;
+	animation: spin 1s linear infinite;
+}
+@-webkit-keyframes spin {
+	from {
+		-webkit-transform: rotate(0deg);
+	}
+	to {
+		-webkit-transform: rotate(360deg);
+	}
+}
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+</style>
+</head>
+
+<body>
+<span class="close">Close</span>
+</body>
+</html>

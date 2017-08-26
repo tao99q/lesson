@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#d4676a;
+	margin:50px;
+	font-family:sans-serif;
+}
+article{
+	background:#FFF;
+	border-radius:8px;
+	padding:20px 40px;
+	width:400px;
+	position:relative;
+	box-shadow:5px 7px 1px rgba(0,0,0,.1);
+}
+article h1{
+	color:#d4676a;
+}
+article p{
+	color:#666;
+}
+article::after,article::before{
+	content:'';
+	width:0;
+  height:0;
+  border-width:10px;
+  border-style:solid;
+	position:absolute;
+	top:42px;
+	border-color:transparent transparent transparent #d4676a;
+	right:20px;
+}
+article::after{
+	right:25px;
+	border-color:transparent transparent transparent #FFF;
+}
+</style>
+</head>
+
+<body>
+<section>
+<article>
+  <h1>Lorem ipsum</h1>
+  <p>Ne maluisset sententiae qui, mucius epicuri reprimique et cum, sumo saperet laboramus et pri. An ignota incorrupte quo, ex his dicta nominavi, erat consulatu eum cu. Eum ea illum assum dictas, tincidunt reprimique est eu.</p>
+</article>
+</section>
+</body>
+</html>

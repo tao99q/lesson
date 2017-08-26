@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#333;
+	margin:50px;
+	font-family:sans-serif;
+}
+@font-face {
+	font-family: 'icon-font';
+	src: url('font/flat-ui-icons-regular.ttf'), url('font/flat-ui-icons-regular.eot'), url('font/flat-ui-icons-regular.woff'), url('font/flat-ui-icons-regular.svg');
+}
+#audio-player{
+	box-sizing:border-box;
+	width:640px;
+	height:50px;
+	background:rgba(255,255,255,.1);
+	border:1px solid rgba(255,255,255,.3);
+	position:relative;
+}
+#audio-player button{
+	font-size:0;
+	background:none;
+	border:0;
+	position:absolute;
+}
+#play{
+	left:0px;
+}
+#pause{
+	left:50px;
+}
+#play::after{
+	content:'\e616';
+	font-size:21px;
+	font-family: 'icon-font';
+	color:#FFF;
+	line-height:50px;
+	cursor:pointer;
+}
+#play:hover::after{
+	color:rgba(255,255,255,.8);
+}
+#pause::after{
+	content:'\e615';
+	font-size:21px;
+	font-family: 'icon-font';
+	color:#FFF;
+	line-height:50px;
+	cursor:pointer;
+}
+#pause:hover::after{
+	color:rgba(255,255,255,.8);
+}
+#progress-bar{
+	width:0px;
+	background:#FFF;
+	z-index:100;
+}
+#progress-bg{
+	width:450px;
+	background:rgba(255,255,255,.3);
+	z-index:200;
+}
+.progress{
+	position:absolute;
+	height:10px;
+	top:20px;
+	left:150px;
+	border-radius:10px;
+}
+
+#video{
+	width:640px;
+}
+</style>
+</head>
+
+<body>
+<video src="video.mp4" id="video">
+  您的浏览器不支持 video 标签。
+</video>
+<div id="audio-player">
+  <button id="play">Play</button>
+  <button id="pause">Pause</button>
+  <div id="progress-bar" class="progress"></div>
+  <div id="progress-bg" class="progress"></div>
+</div>
+<script type="text/javascript">
+var player = document.getElementById("audio-player");
+var play = document.getElementById("play");
+var pause = document.getElementById("pause");
+var bar = document.getElementById("progress-bar");
+var barbg = document.getElementById("progress-bg");
+var video = document.getElementById("video");
+var totalWidth = barbg.offsetWidth;
+play.onclick = function(){
+	video.play();
+}
+pause.onclick = function(){
+	video.pause();
+}
+barbg.onmousedown = function(e){
+	var pos = e.clientX - barbg.offsetLeft - player.offsetLeft;
+	video.currentTime = video.duration * pos / totalWidth;
+}
+video.addEventListener("timeupdate", showProgress);
+function showProgress(){
+	var progress = video.currentTime / video.duration;
+	bar.style.width = progress*totalWidth + "px";
+	if(progress>=1){
+		video.src = 'video.mp4';  
+    video.play(); 
+	}
+}
+</script>
+</body>
+</html>

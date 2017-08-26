@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+}
+body{
+	margin:50px;
+}
+.row{
+	width:100%;
+	background:#000;
+}
+.side{
+	width:300px;
+	height:500px;
+	background:#C0392B;
+}
+.main{
+	width:100%;
+	height:500px;
+	background:#E74C3C;
+}
+.main h1{
+	font-size:82px;
+}
+.main p{
+	font-size:26px;
+}
+.side img{
+	margin-bottom:30px;
+}
+.side button{
+	background:#F39C12;
+	border:none;
+	border-radius:4px;
+	padding:5px 40px;
+	margin-top:30px;
+	font-size:18px;
+}
+.side{
+	padding:50px;
+}
+.main{
+	padding:100px;
+}
+.side, .main{
+	text-align:center;
+	font-family:"Comic Sans MS", cursive;
+	color:#FFF;
+	box-sizing:border-box;
+}
+.side{
+	float:left;
+}
+.main{
+	float:right;
+	margin-left:-300px;
+}
+.content{
+	margin-left:300px;
+}
+</style>
+</head>
+
+<body>
+<div class="row">
+  <div class="main">
+  	<div class="content">
+      <img src="pizza.png" alt="pizza">
+      <h1>Pizza</h1>
+      <p>Various types of ovens are used to cook them and many varieties exist.</p>
+    </div>
+  </div>
+  <div class="side">
+    <img src="side.png" alt="order">
+    <p>In restaurants, pizza can be baked in an oven with stone bricks above the heat source, an electric deck oven, a conveyor belt oven or a wood- or coal-fired brick oven.</p>
+    <button>Order</button>
+  </div>
+</div>
+</body>
+</html>

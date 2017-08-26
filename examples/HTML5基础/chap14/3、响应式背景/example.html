@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body{
+	height:100%;
+}
+body {
+	margin:0;
+	padding:0;
+}
+#background{
+	height:100%;
+	background-position:50% 50%;
+	background-size:cover;
+}
+</style>
+</head>
+
+<body>
+<div id="background" data-bg-xl="2880x1800.jpg" data-bg-l="1200x750.jpg" data-bg-m="980x613.jpg" data-bg-s="768x480.jpg" data-bg-xs="480x300.jpg">
+</div>
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	var bg = $("#background");
+	$(window).resize(function() {
+		resizeBackground();
+	});
+	resizeBackground();
+	function resizeBackground(){
+		var winWidth = $(window).width();
+		if (winWidth>1200) {
+				bg.css("background-image", "url('"+bg.attr("data-bg-xl")+"')");
+		} else if (winWidth>980) {
+				bg.css("background-image", "url('"+bg.attr("data-bg-l")+"')");
+		} else if (winWidth>768) {
+				bg.css("background-image", "url('"+bg.attr("data-bg-m")+"')");
+		} else if (winWidth>480) {
+				bg.css("background-image", "url('"+bg.attr("data-bg-s")+"')");
+		} else {
+				bg.css("background-image", "url('"+bg.attr("data-bg-xs")+"')");
+		}
+	}
+});
+</script>
+</body>
+</html>

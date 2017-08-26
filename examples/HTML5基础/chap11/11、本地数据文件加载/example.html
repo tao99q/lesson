@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background: url(bg.png);
+	font-family: "Helvetica Neue", sans-serif;
+	color: #FFF;
+}
+#result{
+	margin-top:100px;
+	border-radius:12px;
+	border:1px solid rgba(255,255,255,.3);
+	background:rgba(0,0,0,.5);
+	width:500px;
+	height:350px;
+	padding:60px;
+	margin:100px auto;
+	text-align:center;
+	box-shadow:0px 20px 35px rgba(0,0,0,.75);
+	position:relative;
+}
+#loading{
+	position:absolute;
+	font-size:32px;
+	width:500px;
+	text-align:center;
+	top:200px;
+	transition:opacity 1s;
+	-webkit-transition:opacity 1s;
+}
+#loading.hide{
+	opacity:0;
+}
+#icon, #city, #temp{
+	transition:opacity 1s .5s;
+	-webkit-transition:opacity 1s .5s;
+	opacity:0;
+}
+img{
+	width:200px;
+}
+p {
+	font-size: 70px;
+	margin: 10px auto;
+}
+#icon.show, #city.show, #temp.show{
+	opacity:1;
+}
+</style>
+</head>
+
+<body>
+<div id="result">
+	<p id="loading">Loading...</p>
+  <img src="sunny.png" id="icon">
+  <p id="city"></p>
+  <p id="temp"></p>
+</div>
+<script type="text/javascript">
+function loadXMLDoc() {
+  var xmlhttp;
+  if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp = new XMLHttpRequest();
+  } else { // code for IE6, IE5
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange = function() {
+
+    if (xmlhttp.readyState == 4) {
+      var jsonObject = eval("(" + xmlhttp.responseText + ")");
+      document.getElementById("icon").src = jsonObject.weather + ".png";
+      document.getElementById("city").innerHTML = jsonObject.city;
+      document.getElementById("temp").innerHTML = jsonObject.temp + "℃";
+      document.getElementById("icon").className = "show";
+      document.getElementById("city").className = "show";
+      document.getElementById("temp").className = "show";
+      document.getElementById("loading").className = "hide";
+    }
+  }
+  xmlhttp.open("GET", "json.php", true);
+  xmlhttp.send();
+}
+loadXMLDoc();
+</script>
+</body>
+</html>

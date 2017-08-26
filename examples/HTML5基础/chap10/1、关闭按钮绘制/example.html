@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#2ECC71; /*使页面背景显示为绿色*/
+	margin:50px;
+}
+.close{
+	font-size:0px;
+	display:block;
+}
+.close::before, .close::after{
+	content:'';
+	width:50px;
+	height:2px;
+	background:#FFF;
+	display:block;
+}
+.close::after{
+	/*background:#F00;*/
+}
+.close::before{
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+.close::after{
+	-webkit-transform:translateY(-2px) rotate(-45deg);
+	transform:translateY(-2px) rotate(-45deg);
+}
+</style>
+</head>
+
+<body>
+<span class="close">Close Me</span>
+</body>
+</html>

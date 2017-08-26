@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#4ea980;
+	margin:150px;
+}
+.loader {
+	font-size: 20px;
+	width: 1em;
+	height: 1em;
+	border-radius: 50%;
+	text-indent: -9999em;
+	/*box-shadow: 0 -3em 0 .2em #FFF, 2em -2em 0 .2em #eeeeee, 3em 0 0 .2em #ddd, 2em 2em 0 .2em #ccc, 0 3em 0 .2em #bbb, -2em 2em 0 .2em #aaa, -3em 0 0 .2em #999, -2em -2em 0 .2em #888;*/
+	-webkit-animation: load-effect 1s infinite linear;
+	animation: load-effect 1s infinite linear;
+}
+@-webkit-keyframes load-effect {
+	0%,
+	100% {
+		box-shadow: 0 -3em 0 .2em #FFF, 2em -2em 0 0 #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 -.5em #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 0 #FFF;
+	}
+	12.5% {
+		box-shadow: 0 -3em 0 0 #FFF, 2em -2em 0 .2em #FFF, 3em 0 0 0 #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 -.5em #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	25% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 0 #FFF, 3em 0 0 .2em #FFF, 2em 2em 0 0 #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 -.5em #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	37.5% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 0 #FFF, 2em 2em 0 .2em #FFF, 0 3em 0 0 #FFF, -2em 2em 0 -.5em #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	50% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 0 #FFF, 0 3em 0 .2em #FFF, -2em 2em 0 0 #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	62.5% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 0 #FFF, -2em 2em 0 .2em #FFF, -3em 0 0 0 #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	75% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 0 #FFF, -3em 0 0 .2em #FFF, -2em -2em 0 0 #FFF;
+	}
+	87.5% {
+		box-shadow: 0 -3em 0 0 #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 0 #FFF, -3em 0 0 0 #FFF, -2em -2em 0 .2em #FFF;
+	}
+}
+@keyframes load-effect {
+	0%,
+	100% {
+		box-shadow: 0 -3em 0 .2em #FFF, 2em -2em 0 0 #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 -.5em #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 0 #FFF;
+	}
+	12.5% {
+		box-shadow: 0 -3em 0 0 #FFF, 2em -2em 0 .2em #FFF, 3em 0 0 0 #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 -.5em #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	25% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 0 #FFF, 3em 0 0 .2em #FFF, 2em 2em 0 0 #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 -.5em #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	37.5% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 0 #FFF, 2em 2em 0 .2em #FFF, 0 3em 0 0 #FFF, -2em 2em 0 -.5em #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	50% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 0 #FFF, 0 3em 0 .2em #FFF, -2em 2em 0 0 #FFF, -3em 0 0 -.5em #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	62.5% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 0 #FFF, -2em 2em 0 .2em #FFF, -3em 0 0 0 #FFF, -2em -2em 0 -.5em #FFF;
+	}
+	75% {
+		box-shadow: 0 -3em 0 -.5em #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 0 #FFF, -3em 0 0 .2em #FFF, -2em -2em 0 0 #FFF;
+	}
+	87.5% {
+		box-shadow: 0 -3em 0 0 #FFF, 2em -2em 0 -.5em #FFF, 3em 0 0 -.5em #FFF, 2em 2em 0 -.5em #FFF, 0 3em 0 -.5em #FFF, -2em 2em 0 0 #FFF, -3em 0 0 0 #FFF, -2em -2em 0 .2em #FFF;
+	}
+}
+</style>
+</head>
+
+<body>
+  <div class="loader">Loading...</div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body {
+	height: 100%;
+}
+body {
+	background: url(bg.png) no-repeat;
+	background-size: cover;
+	font-family: "Helvetica Neue", sans-serif;
+	color: #FFF;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	position: relative;
+}
+#holder {
+	position: absolute;
+	width: 980px;
+	height: 300px;
+	line-height: 300px;
+	font-size: 35px;
+	font-weight: 200;
+	left: 50%;
+	top: 50%;
+	margin-top: -150px;
+	margin-left: -490px;
+	background: rgba(0,0,0,.2);
+}
+#holder.hover {
+	border: 3px dashed #F00;
+}
+#holder.normal {
+	border: 3px dashed #FFF;
+}
+#canvas {
+	position: absolute;
+	z-index: -20;
+	top: 0;
+	left: 0;
+}
+</style>
+</head>
+
+<body>
+<canvas id="canvas"></canvas>
+<div id="holder" class="normal">Drop your bitmap here</div>
+<script type="text/javascript">
+var holder = document.getElementById('holder');
+var canvas = document.getElementById('canvas');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var ctx = canvas.getContext('2d');
+/*
+if (window.File && window.FileReader && window.FileList && window.Blob) {
+		alert("支持！");
+} else {
+    alert('HTML5 File API在您的浏览器里是不完全支持的。');
+}*/
+holder.ondragover = function() {
+		this.className = 'hover';
+		return false;
+};
+holder.ondragend = function() {
+		this.className = 'normal';
+		return false;
+};
+holder.ondrop = function(e) {
+		this.className = 'normal';
+		e.preventDefault();
+		var file = e.dataTransfer.files[0]; //获取到所拖拽的第一个文件
+		reader = new FileReader(); //创建一个FileReader对象
+		reader.onload = function(event) { //当本地文件读取完毕后调用以下函数
+				img = new Image(); //创建一个Image对象
+				img.src = event.target.result; //将读取的二进制位图数据赋予该对象
+				img.onload = function() { 
+						ctx.clearRect(0, 0, canvas.width, canvas.height); //清除Canvas中已有的内容
+						ctx.drawImage(this, 0, 0, canvas.width, canvas.height); //将Image对象显示在Canvas中
+						delete this; //删除Image对象，以释放缓存
+				}
+		};
+		reader.readAsDataURL(file); //在FileReader对象中读取文件内容
+		return false;
+};
+</script>
+</body>
+</html>

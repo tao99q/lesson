@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+}
+body {
+	background:#FFF;
+	margin:50px;
+	font-family:"Helvetica Neue", sans-serif;
+}
+#menu{
+	background:#27AE60;
+	height:65px;
+}
+#menu ul li{
+	list-style:none;
+	display:block;
+	float:left;
+	border-right:1px solid rgba(255,255,255,.3);
+	position:relative;
+}
+#menu ul li a{
+	display:block;
+	padding:0 35px;
+	line-height:65px;
+	font-size:21px;
+	color:#FFF;
+	text-decoration:none;
+}
+#menu ul li ul{
+	display:none;
+	position:absolute;
+	top:65px;
+	background:#2ECC71;
+}
+#menu ul li:hover ul{
+	display:block;
+}
+
+#menu ul li ul li{
+	width:100%;
+	border-right:0;
+	border-top:1px solid rgba(255,255,255,.3);
+}
+#menu ul li ul li a{
+	font-size:18px;
+	line-height:50px;
+}
+#menu ul li:hover{
+	background:rgba(0,0,0,.2);
+}
+</style>
+</head>
+
+<body>
+<nav id="menu">
+  <ul>
+    <li><a href="">Home</a></li>
+    <li><a href="">News</a>
+      <ul>
+        <li><a href="">Sports</a></li>
+        <li><a href="">Weather</a></li>
+        <li><a href="">Finance</a></li>
+      </ul>
+    </li>
+    <li><a href="">Products</a>
+      <ul>
+        <li><a href="">Construction</a></li>
+        <li><a href="">Machinery</a></li>
+        <li><a href="">Compressor</a></li>
+        <li><a href="">Vehicle</a></li>
+      </ul>
+    </li>
+    <li><a href="">Services</a></li>
+    <li><a href="">Contact</a></li>
+  </ul>
+</nav>
+</body>
+</html>

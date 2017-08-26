@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+}
+body {
+	background:#8b8ab3;
+	margin:150px;
+}
+@font-face {
+	font-family: 'icon-font';
+	src: url('font/flat-ui-icons-regular.ttf'), url('font/flat-ui-icons-regular.eot'), url('font/flat-ui-icons-regular.woff'), url('font/flat-ui-icons-regular.svg');
+}
+.icon{
+	font-size:0px;
+	cursor: pointer;
+	display:inline-block;
+	position:relative;
+	width:100px;
+	height:100px;
+	border-radius:50%;
+	background:#FFF;
+	margin-right:20px;
+	-webkit-animation:move 1s  cubic-bezier(.62,-0.91,.45,1.97);
+	animation:move 1s cubic-bezier(.62,-0.91,.45,1.97); /*http://cubic-bezier.com/#.62,-0.91,.45,1.97*/
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both; /*backwards*/
+}
+.icon::before{
+	content:"\e609";
+	font-family: 'icon-font';
+	speak: none;
+	font-size:50px;
+	text-align:center;
+	display:block;
+	box-sizing:border-box;
+	line-height:100px;
+	color:#8b8ab3;
+}
+
+.home{
+	-webkit-animation-delay:0s;
+	animation-delay:0s;
+}
+.search{
+	-webkit-animation-delay:.1s;
+	animation-delay:.1s;
+}
+.user{
+	-webkit-animation-delay:.2s;
+	animation-delay:.2s;
+}
+.mail{
+	-webkit-animation-delay:.3s;
+	animation-delay:.3s;
+}
+.chat{
+	-webkit-animation-delay:.4s;
+	animation-delay:.4s;
+}
+
+.home::before{
+	content:"\e62e";
+}
+.search::before{
+	content:"\e630";
+}
+.user::before{
+	content:"\e631";
+}
+.mail::before{
+	content:"\e632";
+}
+.chat::before{
+	content:"\e62d";
+}
+@-webkit-keyframes move {
+	from {
+		opacity:0;
+		-webkit-transform: translateY(100%);
+	}
+	to {
+		opacity:1;
+		-webkit-transform: translateY(0%);
+	}
+}
+@keyframes move {
+	from {
+		opacity:0;
+		transform: translateY(100%);
+	}
+	to {
+		opacity:1;
+		transform: translateY(0%);
+	}
+}
+</style>
+</head>
+
+<body>
+<span class="home icon">Home</span>
+<span class="search icon">Search</span>
+<span class="user icon">User</span>
+<span class="mail icon">Mail</span>
+<span class="chat icon">Chat</span>
+</body>
+</html>

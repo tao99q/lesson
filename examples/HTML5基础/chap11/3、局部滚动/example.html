@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body{
+	height:100%;
+}
+body {
+	background:#06C url(bg.jpg) no-repeat;
+	background-size:cover;
+	margin:0;
+	padding:0;
+	color:#FFF;
+	font-family:'Helvetica Neue', sans-serif;
+	position:relative;
+}
+#title{
+	position:absolute;
+	bottom:20%;
+	left:8%;
+}
+#title h1{
+	font-size:56px;
+	text-transform:uppercase;
+}
+#title ul{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+#title li{
+	display:inline-block;
+}
+#title li a{
+	color:#FFF;
+}
+#scroll{
+	position:absolute;
+	left:65%;
+	width:300px;
+	padding:0 30px;
+	background:rgba(255,255,255,.15);
+}
+#scroll .article {
+	width:300px;
+}
+#scroll .article h1{
+	font-weight:normal;
+}
+#scroll .article img{
+	margin-top:30px;
+}
+#scroll{
+	overflow:auto;
+	height:100%;
+}
+</style>
+</head>
+
+<body>
+<div id="title">
+  <h1>The Scroll Effect</h1>
+<!--  <h2>Making this the first true generator on the Internet</h2>
+-->  <ul>
+    <li><a href="#pic1">PIC1</a></li>
+    <li><a href="#pic2">PIC2</a></li>
+    <li><a href="#pic3">PIC3</a></li>
+    <li><a href="#pic4">PIC4</a></li>
+  </ul>
+</div>
+<div id="scroll">
+  <div class="article" id="pic1">
+    <img src="pic1.jpg">
+    <h1>Duis volutpat</h1>
+    <p>Phasellus hendrerit posuere velit sed suscipit. Morbi eget blandit mauris. Quisque convallis quis velit sit amet placerat. Vestibulum ut leo bibendum, rutrum mi non, vulputate nibh. Praesent vitae viverra orci, at imperdiet nisl.</p>
+  </div>
+  <div class="article" id="pic2">
+    <img src="pic2.jpg">
+    <h1>Fusce interdum</h1>
+    <p>Etiam cursus erat eros, at gravida augue lacinia ut. Fusce odio lorem, fringilla sed aliquam vel, consequat feugiat lectus. Morbi sollicitudin lacus sed erat tempus, non finibus nunc aliquam. Donec a pulvinar metus, id scelerisque lectus. Aliquam erat volutpat.</p>
+  </div>
+  <div class="article" id="pic3">
+    <img src="pic3.jpg">
+    <h1>Vivamus</h1>
+    <p>Mauris consectetur magna sit amet metus placerat, consequat ullamcorper mi pellentesque. Pellentesque et velit dui. Nunc felis erat, rutrum in velit ac, luctus molestie nunc. Morbi sed consequat nibh, vitae iaculis lacus. Pellentesque eget consectetur libero. In sit amet luctus mi. Proin quis interdum elit.</p>
+  </div>
+  <div class="article"  id="pic4">
+    <img src="pic4.jpg">
+    <h1>Praesent</h1>
+    <p>Sed fermentum massa in dui volutpat dignissim. Nunc at neque vel dui aliquam elementum. Morbi varius laoreet arcu, vel lobortis enim faucibus vitae. Morbi nec lorem tempor, luctus enim sed, imperdiet sem.</p>
+  </div>
+</div>
+</body>
+</html>

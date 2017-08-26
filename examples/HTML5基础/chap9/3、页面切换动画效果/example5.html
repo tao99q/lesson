@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body{
+	height:100%;
+}
+body {
+	margin:0;
+	padding:0;
+	font-family:sans-serif;
+	text-align:center;
+	color:#FFF;
+	overflow:hidden;
+	position:relative;
+	-webkit-perspective: 1500px;
+	-moz-perspective: 1500px;
+	perspective: 1500px;
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+#tablet{
+	background:#4ac4aa;
+	-webkit-transform:rotateY(0deg) scale(1,1);
+	transform:rotateY(0deg) scale(1,1);
+}
+#wifi{
+	background:#ea5634;
+	-webkit-transform:rotateY(180deg) scale(0,0);
+	transform:rotateY(180deg) scale(0,0);
+}
+article{
+	position: absolute;
+	width:100%;
+	height:100%;
+	padding:100px;
+	box-sizing:border-box;
+	-webkit-transition:all 1s ease-in-out;
+	-moz-transition:all 1s ease-in-out;
+	-o-transition:all 1s ease-in-out;
+	transition:all 1s ease-in-out;
+	left:0;
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+#tablet.move{
+	-webkit-transform:rotateY(-180deg) scale(0,0);
+	transform:rotateY(-180deg) scale(0,0);
+}
+#wifi.move{
+	-webkit-transform:rotateY(0deg) scale(1,1);
+	transform:rotateY(0deg) scale(1,1);
+}
+h1{
+	font-size:4em;
+	border-bottom:1px solid rgba(255,255,255,.2);
+	padding-bottom:30px;
+}
+p{
+	color:rgba(255,255,255,.8);
+	margin-bottom:30px;
+}
+a{
+	color:#FFF;
+	font-size:1.5em;
+	padding:5px 50px;
+	border:1px solid #FFF;
+	border-radius:4px;
+	text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+<article id="tablet">
+  <img src="tablet.png" alt="tablet">
+  <h1>Comprehensam</h1>
+  <p>Mel homero labores ce maluisset sententiae qui, mucius epicuri reprimique et cum, sumo saperet laboramus et pri. An ignota incorrupte quo, ex his dicta nominavi, erat consulatu eum cu. Eum ea illum assum dictas, tincidunt reprimique est eu. Nostro voluptatum id has, velit bonorum sanctus an his. Ea per esse volumus albucius, ut qui ipsum labitur expetendis. Has meis nonumes dissentiunt ad, mel atqui oblique aliquam te.</p>
+  <a href="#wifi">Next</a>
+</article>
+<article id="wifi">
+  <img src="wifi.png" alt="wifi">
+  <h1>Adversarium</h1>
+  <p>Ea qui graece facilisi persequeris. Ne est quodsi atomorum, ex cum argumentum definitionem, vim no iudico oportere constituam. No mei vide utamur mandamus, duo ne ignota convenire sadipscing. An sed cibo albucius appetere, est at putent labores delicatissimi. Ne prima moderatius adversarium duo, autem forensibus dissentiet nec ne. Copiosae similique ex qui.</p>
+  <a href="#tablet">Next</a>
+</article>
+</body>
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('a').click(function(e){
+			e.preventDefault();
+			$('#tablet').toggleClass('move');
+			$('#wifi').toggleClass('move');
+		});
+	});
+</script>
+</html>

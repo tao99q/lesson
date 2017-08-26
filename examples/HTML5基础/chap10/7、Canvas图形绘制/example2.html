@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body {
+	height:100%;
+	margin:50px;
+	padding:0;
+}
+</style>
+</head>
+
+<body>
+<canvas id="myCanvas" width="850" height="400">
+Your browser does not support the canvas element.
+</canvas>
+<script type="text/javascript">
+	var canvas=document.getElementById("myCanvas");
+	var context=canvas.getContext("2d");
+	context.fillStyle="#2C3E50";
+	context.fillRect(0,0,850,400);
+	context.save();
+	var img = new Image();
+	img.src = "flag.png";
+	img.onload = function(){
+		context.restore();
+		context.drawImage(img, 80, 150);
+	}
+	//context.rotate(5*Math.PI*2/180);
+	context.fillStyle="#FFFFFF";
+	context.font = '48px georgia';
+	context.fillText("This is a Canvas",230,200);
+	context.font = '21px georgia';
+	context.fillText("Happiness is a way station between too much and too little",230,250);
+
+	
+</script>
+</body>
+</html>

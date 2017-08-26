@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>菜单按钮图标</title>
+<style type="text/css">
+body {
+	margin:50px;
+}
+a{
+	text-indent:-9999em;
+	display:block;
+	width: 40px;
+	height: 40px;
+	background:#333;
+	border-radius:3px;
+	position:relative;
+	box-sizing:border-box;
+}
+a::after{
+	content:'';
+	width:22px;
+	position:absolute;
+	left:9px;
+	top:0px;
+	box-sizing:border-box;
+	padding:0;
+	box-shadow: 0 10px 0 2px #FFF,0 20px 0 2px #FFF,0 30px 0 2px #FFF;
+}
+a:hover{
+	background:#2ECC71;
+}
+</style>
+</head>
+
+<body>
+<a href="">Menu</a>
+</body>
+</html>

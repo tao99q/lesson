@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#006b9d;
+}
+#verify{
+	width:508px;
+	height:523px;
+	background:url(bg.png);
+	margin:50px auto;
+	position:relative;
+}
+#drag{
+	width:171px;
+	height:140px;
+	background:url(drag.png);
+	position:absolute;
+	top:185px;
+	left:0px;
+}
+#dot{
+	width:29px;
+	height:29px;
+	background:url(dot.png);
+	position:absolute;
+	top:460px;
+	left:70px;
+}
+#success{
+	position:absolute;
+	display:none;
+	color:#fff;
+	font-size:32px;
+	right:0;
+	top:130px;
+	font-family:sans-serif;
+	background:#C33;
+	padding:5px 20px;
+}
+</style>
+</head>
+
+<body>
+<div id="verify">
+  <div id="drag"></div>
+  <div id="dot"></div>
+  <p id="success">Success!</p>
+</div>
+<script type="text/javascript">
+var max = 350; //设置最大可拖动的范围
+var final = 158; //设置拼图的正确位置坐标
+var buffer = 7; //设置缓冲数值
+var success = document.getElementById("success");
+var dot = document.getElementById("dot");
+var drag = document.getElementById("drag");
+var dotStart = dot.offsetLeft; //获取圆点的起始x坐标
+drag.style.left = -Math.random()*200+drag.offsetLeft+"px"; //使拼图随机向左移动一段距离
+var dragStart = drag.offsetLeft; //获取拼图的起始x坐标
+
+dot.onmousedown = function (e) { //当在滑块上按下鼠标左键时，开始执行以下代码
+	var startx = e.clientX; //获取按下时的鼠标指针x坐标
+	var dotLeft = dot.offsetLeft; //获取按下时的滑块x坐标
+	document.onmousemove = function (e) { //此时，当鼠标在页面中移动时，触发以下函数
+		var move = e.clientX - startx; //计算当前鼠标指针x坐标与初始坐标之间的距离
+		var to = dotLeft + move; //将以上距离加以起始滑块坐标，计算得到目的坐标值
+		if(to > max + dotStart){ //判断目的坐标值是否超过了滑块可移动区域的最右侧
+			to = max + dotStart; //如果超过，则使滑块停留在最右侧
+		}else if(to < dotStart){ //如果目的坐标值小于了滑块的起始坐标
+			to = dotStart; //此时使滑块停留在可滑动区域的最左侧
+		}
+		dot.style.left = to + 'px'; //刷新滑块的x位置
+		drag.style.left = (dragStart+to-dotStart) + 'px'; //根据滑块的位移，刷新拼图的x位置
+	};
+	document.onmouseup = function (e) { //当松开鼠标左键时，开始执行以下代码
+		this.onmousemove=null; //此时清除onmousemove事件侦听
+		if(Math.abs(drag.offsetLeft - final) < buffer){ //计算拼图与目的坐标值的差值，判断其绝对值是否小于缓冲值
+			success.style.display = "block"; //如果是，则表示拼图移动到了正确位置，此时显示success
+		}else{
+			success.style.display = "none"; //如果否，则继续隐藏拼图
+		}
+	}
+};
+</script>
+</body>
+</html>

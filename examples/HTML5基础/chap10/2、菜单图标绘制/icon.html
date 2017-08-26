@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>菜单按钮图标</title>
+<style type="text/css">
+body {
+	margin:50px;
+	font-family:arial;
+	background:#fbfbfb;
+}
+a{
+	text-decoration:none;
+	color:#999;
+	text-indent:1.2em; /*使文字右移，为图标腾出显示空间*/
+	font-size:32px;
+	display:block;
+	line-height:1; /*使文字垂直居中*/
+	position:relative;
+}
+a::after{
+	content:'';
+	position:absolute;
+	left:0;
+	top:-4px;
+	width:.75em;
+	box-shadow: 0 10px 0 2px #999,0 20px 0 2px #999,0 30px 0 2px #999;
+}
+a:hover{
+	color:#2ECC71;
+}
+a:hover::after{
+	box-shadow: 0 10px 0 2px #2ECC71,0 20px 0 2px #2ECC71, 0 30px 0 2px #2ECC71;
+}
+</style>
+</head>
+
+<body>
+<a href="">Menu</a>
+</body>
+</html>

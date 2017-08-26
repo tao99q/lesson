@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body {
+	height:100%;
+	margin:0;
+	padding:0;
+}
+</style>
+</head>
+
+<body>
+<canvas id="myCanvas" width="600" height="400">
+Your browser does not support the canvas element.
+</canvas>
+<script type="text/javascript">
+	var canvas=document.getElementById("myCanvas");
+	var context=canvas.getContext("2d");
+	context.strokeStyle = '#E74C3C'; //线条颜色为红色
+	context.lineWidth = 5; //线条粗细为5像素
+	context.moveTo(100,100); //线条起点坐标为100，100
+	context.lineTo(200,200); //从起点创建一条路径到200，200的坐标点
+	context.stroke(); //为以上的路径描边
+	
+	context.strokeRect(250,100,100,100);
+	context.fillStyle="#000"; 
+	context.fillRect(250,100,100,100);
+	context.beginPath();
+	context.arc(450,150,50,0,Math.PI*2);
+	context.closePath();
+	context.stroke();
+	context.fill();
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body{
+	height:100%;
+}
+body {
+	background:#eb584f;
+	padding:0;
+	position:relative;
+}
+.box{
+	background:#f4f4de;
+	width:200px;
+	height:200px;
+	display:inline-block;
+	position:absolute;
+	left:100px;
+	top:200px;
+	box-shadow:inset 0 0 0px 10px #dd483f;
+}
+</style>
+</head>
+
+<body>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+  <div class="box"></div>
+</body>
+<script src="js/TweenMax.min.js"></script>
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		CSSPlugin.defaultTransformPerspective = 500;
+		$('.box').each(function(index){
+			TweenMax.to($(this), 2, {left:index*130, top:200, rotationY:45+12*index, scale:1.2});
+		});
+	});
+</script>
+</html>

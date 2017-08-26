@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#4ea980;
+	margin:150px;
+}
+.loader {
+	font-size: 20px;
+	width: 1em;
+	height: 1em;
+	border-radius: 50%;
+	position: relative;
+	text-indent: -9999em;
+	-webkit-animation: load-effect 1s infinite linear;
+	animation: load-effect 1s infinite linear;
+}
+@-webkit-keyframes load-effect {
+	0% {
+		box-shadow: -3em 2em 0 .5em #FFF, 0 2em 0 0 #FFF, 3em 2em 0 -.5em #FFF;
+	}
+	25% {
+		box-shadow: -3em 2em 0 0 #FFF, 0 2em 0 -.5em #FFF, 3em 2em 0 0 #FFF;
+	}
+	50% {
+		box-shadow: -3em 2em 0 -0.5em #FFF, 0 2em 0 0 #FFF, 3em 2em 0 .5em #FFF;
+	}
+	75% {
+		box-shadow: -3em 2em 0 0 #FFF, 0 2em 0 .5em #FFF, 3em 2em 0 0 #FFF;
+	}
+	100% {
+		box-shadow: -3em 2em 0 .5em #FFF, 0 2em 0 0 #FFF, 3em 2em 0 -.5em #FFF;
+	}
+}
+@keyframes load-effect {
+	0% {
+		box-shadow: -3em 2em 0 .5em #FFF, 0 2em 0 0 #FFF, 3em 2em 0 -.5em #FFF;
+	}
+	25% {
+		box-shadow: -3em 2em 0 0 #FFF, 0 2em 0 -.5em #FFF, 3em 2em 0 0 #FFF;
+	}
+	50% {
+		box-shadow: -3em 2em 0 -0.5em #FFF, 0 2em 0 0 #FFF, 3em 2em 0 .5em #FFF;
+	}
+	75% {
+		box-shadow: -3em 2em 0 0 #FFF, 0 2em 0 .5em #FFF, 3em 2em 0 0 #FFF;
+	}
+	100% {
+		box-shadow: -3em 2em 0 .5em #FFF, 0 2em 0 0 #FFF, 3em 2em 0 -.5em #FFF;
+	}
+}
+</style>
+</head>
+
+<body>
+  <div class="loader">Loading...</div>
+</body>
+</html>

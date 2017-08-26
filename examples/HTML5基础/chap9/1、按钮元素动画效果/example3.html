@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+@font-face {
+	font-family: 'icon-font';
+	src: url('font/flat-ui-icons-regular.ttf'), url('font/flat-ui-icons-regular.eot'), url('font/flat-ui-icons-regular.woff'), url('font/flat-ui-icons-regular.svg');
+}
+body {
+	background:#d53ea4;
+	margin:50px;
+}
+a{
+	color:#FFF;
+	text-decoration:none;
+	font-family:sans-serif;
+	font-size:34px;
+	display:block;
+	width:350px;
+	height:60px;
+	line-height:60px;
+	border:1px solid #FFF;
+	border-radius:4px;
+	box-sizing:border-box;
+	padding-left:140px;
+	-webkit-transition:all .5s;
+	transition:all .5s;
+	position:relative;
+}
+a:hover{
+	padding-left:20px;
+	background:rgba(0,0,0,.1);
+}
+a::after{
+	font-family: 'icon-font';
+	content:'\e607';
+	position:absolute;
+	right:85%;
+	-webkit-transition:all .5s;
+	transition:all .5s;
+}
+a:hover::after{
+	right:5%;
+}
+</style>
+</head>
+
+<body>
+<a href="">This is a link</a>
+</body>
+</html>

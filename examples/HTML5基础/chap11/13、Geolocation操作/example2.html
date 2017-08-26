@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<style type="text/css">
+body {
+	background:#8E44AD;
+	text-align:center;
+	margin:40px;
+	color:#FFF;
+	font-family:sans-serif;
+}
+h1{
+	border-bottom:1px solid rgba(255,255,255,.5);
+	padding-bottom:20px;
+	font-size:50px;
+}
+p{
+	line-height:150%;
+}
+</style>
+</head>
+
+<body>
+<img src="Map.png">
+<h1 id="steps">您的位置</h1>
+<p id="status">加载中</p>
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+function showError(error) { 
+	//console.log(error.code);
+	alert("获取地理位置时出错"); 
+}
+function updateLocation(position) { 
+	var latitude = position.coords.latitude; 
+	var longitude = position.coords.longitude; 
+	var accuracy = position.coords.accuracy; 
+	document.getElementById("status").innerHTML = "纬度：" + latitude + "<br>经度："+ longitude + "<br>精确度：" + accuracy; 
+	var url = "http://api.map.baidu.com/geocoder/v2/?ak=B3475112871cafd7401aa6395bde02f1&location="+latitude+","+longitude+"&output=json";
+	$.ajax({
+		 type : "get", //jquey不支持post方式跨域，因此使用get方式
+		 async:false, //设置异步加载
+		 url : url, //跨域请求的URL
+		 dataType : "jsonp", //数据类型为jsonp
+		 //成功获取跨域服务器上的jsonp数据后,执行以下函数
+		 success : function(json){ 
+				 document.getElementById("status").innerHTML = json.result.sematic_description; 
+		 } 
+	 }); 
+}
+$(document).ready(function() {
+	if (navigator.geolocation) { 
+		navigator.geolocation.getCurrentPosition(updateLocation,showError);
+	} else { 
+		 document.getElementById("status").innerHTML = "该浏览器不支持 HTML5 Geolocation。"; 
+	} 
+});
+
+</script>
+</body>
+</html>

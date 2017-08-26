@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+}
+body {
+	background:#E1E1E1;
+	font-family:Georgia, "Times New Roman", Times, serif;
+	position:relative;
+}
+h1{
+	font-size:100px;
+	margin-bottom:30px;
+}
+p{
+	font-size:27px;
+	margin-bottom:30px;
+}
+#mask {
+	background:url(p1.png) no-repeat;
+	padding-left:45%;
+	padding-right:15%;
+}
+#hat {
+	background:url(p2.png) no-repeat;
+	padding-left:5%;
+	padding-right:45%;
+}
+#movie {
+	background:url(p3.png) no-repeat;
+	padding-left:50%;
+	padding-right:10%;
+}
+.description{
+	position:relative;
+	box-sizing:border-box;
+	padding-top:100px;
+}
+</style>
+</head>
+
+<body>
+<div id="mask" class="description">
+    <h1>Mask</h1>
+    <p>Etiam cursus erat eros, at gravida augue lacinia ut. Fusce odio lorem, fringilla sed aliquam vel, consequat feugiat lectus. Morbi sollicitudin lacus sed erat tempus, non finibus nunc aliquam. Donec a pulvinar metus, id scelerisque lectus. Aliquam erat volutpat. Nam id ligula sed urna dignissim congue. Fusce ut varius tellus. Integer vel rhoncus tellus.</p>
+    <p>Phasellus hendrerit posuere velit sed suscipit. Morbi eget blandit mauris. Quisque convallis quis velit sit amet placerat. Vestibulum ut leo bibendum, rutrum mi non, vulputate nibh. Praesent vitae viverra orci, at imperdiet nisl.</p>
+    <p>In a tincidunt sem. Fusce interdum metus ut bibendum congue. Suspendisse a erat leo. Vivamus efficitur ac neque eget luctus. Nunc aliquam eleifend eros a dignissim. Aliquam congue id justo sed finibus. Praesent finibus pretium malesuada. Mauris malesuada at lectus sit amet mattis. Quisque feugiat libero id erat gravida, sit amet euismod est gravida.</p>
+</div>
+
+<div id="hat" class="description">
+    <h1>Hat</h1>
+    <p>Sed fermentum massa in dui volutpat dignissim. Nunc at neque vel dui aliquam elementum. Morbi varius laoreet arcu, vel lobortis enim faucibus vitae. Morbi nec lorem tempor, luctus enim sed, imperdiet sem. Nam quis dui feugiat nibh tincidunt rhoncus. Integer tincidunt nec ipsum tristique imperdiet. Fusce ornare tellus purus, ac condimentum elit varius et. Nullam nec purus at mauris aliquam cursus. Sed vitae sapien ac nulla porttitor mattis euismod sed justo. Aenean vulputate sagittis libero, nec mattis sapien ultrices vel.</p>
+    <p>Phasellus hendrerit posuere velit sed suscipit. Morbi eget blandit mauris. Quisque convallis quis velit sit amet placerat. Vestibulum ut leo bibendum, rutrum mi non, vulputate nibh. Praesent vitae viverra orci, at imperdiet nisl.</p>
+    <p>In a tincidunt sem. Fusce interdum metus ut bibendum congue. Suspendisse a erat leo. Vivamus efficitur ac neque eget luctus. Nunc aliquam eleifend eros a dignissim. Aliquam congue id justo sed finibus. Praesent finibus pretium malesuada. Mauris malesuada at lectus sit amet mattis. Quisque feugiat libero id erat gravida, sit amet euismod est gravida.</p>
+</div>
+
+<div id="movie" class="description">
+    <h1>Movie</h1>
+    <p>Mauris consectetur magna sit amet metus placerat, consequat ullamcorper mi pellentesque. Pellentesque et velit dui. Nunc felis erat, rutrum in velit ac, luctus molestie nunc. Morbi sed consequat nibh, vitae iaculis lacus. Pellentesque eget consectetur libero. In sit amet luctus mi. Proin quis interdum elit. Praesent ante elit, porta a orci a, suscipit eleifend velit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi facilisis lectus facilisis magna commodo scelerisque. Nunc et volutpat libero, sed eleifend dolor. Vestibulum pellentesque auctor ex sagittis consequat. Aenean sodales ultrices ante eget dignissim. Sed ornare aliquet massa non pulvinar.</p>
+    <p>Quisque a dui vitae felis aliquam ornare. Morbi nec faucibus erat, eu blandit libero. Pellentesque in justo odio. In hac habitasse platea dictumst. Phasellus auctor, quam eget rhoncus malesuada, arcu nibh auctor eros, vitae sodales sem ante et enim. Quisque sit amet feugiat metus, non aliquam dui. Sed congue varius ipsum a semper. Quisque arcu nibh, sagittis vel faucibus id, imperdiet id libero. Mauris ut purus sed est vehicula pretium. Nam consectetur odio ut mauris convallis faucibus. Nunc in consectetur lacus. Phasellus semper lorem ac quam tincidunt aliquet. Mauris non odio vestibulum, varius sem eleifend, mollis lectus.</p>
+    <p>Integer vitae turpis enim. Nunc ac lobortis est, in elementum metus. Morbi a laoreet dolor. Nulla varius, tortor at cursus porttitor, erat dui volutpat turpis, vitae rhoncus justo risus tincidunt nulla. Integer rhoncus purus id dolor sollicitudin, a auctor leo aliquam. In scelerisque sem sed enim vulputate condimentum. Pellentesque auctor ullamcorper nibh, eget bibendum nisl venenatis at. Donec a lectus posuere, ultrices nisi quis, consequat purus. Morbi sed volutpat nulla. Aliquam et dolor ullamcorper, tempus turpis quis, fermentum nisl. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris velit turpis, porttitor aliquam auctor sit amet, facilisis sed nulla.</p>
+</div>
+
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var windowHeight = $(window).height();
+		maskHeight = $('#mask').height();
+		hatHeight = $('#hat').height();
+		movieHeight = $('#movie').height();
+		console.log(maskHeight);
+		$(window).scroll(function(){
+				pos = $(window).scrollTop();
+				$('#mask').css({
+						"background-position" : "0 "+ pos/2.5 +"px"
+				});
+				$('#hat').css({
+						"background-position" : "right "+(pos-maskHeight)/2 +"px"
+				});
+				$('#movie').css({
+						"background-position" : "0 "+(pos-hatHeight-maskHeight)/1.3 +"px"
+				});
+		})
+	});
+</script>
+</body>
+</html>

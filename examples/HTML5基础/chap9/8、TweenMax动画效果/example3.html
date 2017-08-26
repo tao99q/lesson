@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body{
+	height:100%;
+}
+body {
+	background:#45a7e2;
+	margin:100px;
+	padding:0;
+	position:relative;
+}
+#box{
+	border:5px solid #d2e5ff;
+	width:200px;
+	height:200px;
+}
+</style>
+</head>
+
+<body>
+<div id="box"></div>
+</body>
+<script src="js/TweenMax.min.js"></script>
+<script type="text/javascript"> 
+TweenMax.to(box, 2, {borderRadius:"50%", repeat:-1});
+</script>
+</html>

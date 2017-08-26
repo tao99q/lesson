@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#4ea980;
+	margin:50px;
+}
+.loader {
+	text-indent: -9999em;
+	position: relative;
+	width: 200px;
+	height: 200px;
+	box-shadow: inset 0 0 0 15px #FFF;
+	border-radius: 50%;
+}
+.loader::before {
+	position: absolute;
+	content: '';
+	width: 100px;
+	height: 200px;
+	background: #4ea980;
+	border-radius: 0 200px 200px 0;
+	left: 100px;
+	-webkit-transform-origin: 0px 100px;
+	transform-origin: 0px 100px;
+	-webkit-animation: load-effect 2s infinite linear;
+	animation: load-effect 2s infinite linear;
+}
+.loader::after {
+	position: absolute;
+	content: '';
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	left: 0;
+	box-shadow: inset 0 0 0 15px rgba(255,255,255,.2);
+}
+@-webkit-keyframes load-effect {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}
+@keyframes load-effect {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}
+</style>
+</head>
+
+<body>
+  <div class="loader">Loading...</div>
+</body>
+</html>

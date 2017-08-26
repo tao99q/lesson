@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DragDrop</title>
+<style type="text/css">
+body {
+	margin:60px;
+	background:#fff;
+	position:relative;
+}
+#logo{
+	width:300px;
+	height:200px;
+	background:url(logo-mask.png) center 50% no-repeat;
+	position:absolute;
+	left:0;
+}
+#box{
+	width:300px;
+	height:200px;
+	background:#d4efdf;
+	border-radius:10px;
+	border:5px dashed #27AE60;
+	position:absolute;
+	right:0;
+}
+</style>
+</head>
+
+<body>
+<div id="logo"></div>
+<div id="box"></div>
+<script type="text/javascript">
+var logo = document.getElementById("logo");
+var box = document.getElementById("box");
+logo.draggable = true;
+box.ondragover = function(ev){
+	ev.preventDefault();
+}
+box.ondrop = function(ev){
+	box.appendChild(logo);
+}
+var person = { 
+	age: 31, 
+	gender: "male", 
+	address:{
+		city:"shanghai", 
+		zipcode:"200000"
+	} 
+}
+
+</script>
+</body>
+</html>

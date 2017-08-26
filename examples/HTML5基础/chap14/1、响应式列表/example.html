@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+}
+body {
+	background:#16A085;
+	font-family:"Helvetica Neue", sans-serif;
+	margin:4%;
+}
+h1{
+	font-size:90px;
+	color:rgba(255,255,255,.8);
+	text-align:center;
+	margin:50px auto;
+}
+#content{
+	
+}
+#content article{
+	width:25%;
+	float:left;
+	box-sizing:border-box;
+	padding:2%;
+	text-align:center;
+	margin-bottom:25px;
+}
+#content article h1{
+	font-size:36px;
+	color:rgba(255,255,255,.9);
+	margin:20px auto;
+}
+#content article p{
+	color:rgba(255,255,255,.7);
+}
+#content article img{
+	width:50%;
+}
+@media screen and (min-width: 768px) and (max-width: 979px) {
+	#content article{
+		width:50%;
+		position:relative;
+		text-align:left;
+	}
+	#content article img{
+		width:20%;
+		position:absolute;
+	}
+	#content article h1{
+		margin:0 0 20px 30%;
+		text-align:left;
+	}
+	#content article p{
+		margin-left:30%;
+	}
+	#content article:nth-child(odd){
+		clear:both;
+	}
+}
+@media screen and (max-width: 767px) {
+	#content article{
+		width:50%;
+	}
+	#content article img{
+		width:40%;
+	}
+	#content article:nth-child(odd){
+		clear:both;
+	}
+}
+@media screen and (max-width: 480px) {
+	#content article{
+		width:100%;
+	}
+}
+</style>
+</head>
+
+<body>
+<section id="content">
+  <article>
+    <img src="Calendar.png" alt="Calendar">
+    <h1>Calendar</h1>
+    <p>Duis vitae dapibus elit. Integer urna purus, convallis et magna ut, hendrerit molestie nisi. Morbi posuere sapien in dolor feugiat, lacinia sollicitudin justo vehicula. Proin quis pretium risus. </p>
+  </article>
+  <article>
+    <img src="Clipboard.png" alt="Clipboard">
+    <h1>Clipboard</h1>
+    <p>Donec nisl lectus, euismod sit amet elementum id, tristique eu nulla. Integer vitae purus ut risus tincidunt scelerisque vitae nec dui. Quisque lobortis at augue nec finibus.</p>
+  </article>
+  <article>
+    <img src="Mail.png" alt="Mail">
+    <h1>Mail</h1>
+    <p>Aliquam tempus faucibus metus vitae suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+  </article>
+  <article>
+    <img src="Pocket.png" alt="Pocket">
+    <h1>Pocket</h1>
+    <p>Aliquam consequat eleifend lacus, et molestie turpis volutpat nec. Pellentesque nulla diam, feugiat eu vestibulum porta, volutpat ac justo. Quisque in vehicula nisl. </p>
+  </article>
+</section>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body{
+	height:100%;
+}
+body {
+	background:#747261;
+	margin:0;
+	padding:0;
+	position:relative;
+}
+img{
+	position:absolute;
+	left:50%;
+	bottom:10px;
+	margin-left:-50px;
+	margin-top:-77px;
+}
+</style>
+</head>
+
+<body>
+<img src="shuttle.png" id="shuttle">
+<script src="js/TweenMax.min.js"></script>
+<script type="text/javascript"> 
+TweenMax.to(shuttle, 1, {top:'50%', left:250, rotation:90, delay:1, ease:Back.easeOut, onComplete:completeHandler});
+function completeHandler(e){
+	TweenMax.to(shuttle, 2, {left:'100%', scale:.2, opacity:0, ease:Back.easeIn});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#ECF0F1;
+	margin:50px;
+	font-family:"Helvetica Neue", sans-serif;
+	color:#666;
+}
+#tab-container{
+	background:#FFF;
+	width:400px;
+	box-shadow:1px 1px 2px rgba(0,0,0,.15);
+}
+#tab-nav{
+	background:#1ABC9C;
+	margin:0;
+	padding:0;
+}
+#tab-nav li{
+	display:inline-block;
+	list-style:none;
+	width:100px;
+	height:50px;
+	line-height:50px;
+	text-align:center;
+}
+#tab-nav li a{
+	display:block;
+	color:#FFF;
+	text-decoration:none;
+}
+#tab-content{
+	padding:25px;
+}
+#tab-nav li a.active{
+	color:#1ABC9C;
+	background:#FFF;
+}
+</style>
+</head>
+
+<body>
+<section id="tab-container">
+<ul id="tab-nav">
+  <li><a href="#weather" id="nav-weather">Weather</a></li>
+  <li><a href="#sport" id="nav-sport">Sport</a></li>
+  <li><a href="#travel" id="nav-travel">Travel</a></li>
+</ul>
+<div id="tab-content">
+  <article id="weather">
+    <p>Weather is the state of the atmosphere, to the degree that it is hot or cold, wet or dry, calm or stormy, clear or cloudy. Weather, seen from an anthropological perspective, is something all humans in the world constantly experience through their senses, at least while being outside. There are socially and scientifically constructed understandings of what weather is, what makes it change, the effect it has on humans in different situations, etc. Therefore, weather is something people often communicate about.</p>
+  </article>
+  <article id="sport">
+    <p>Sports are usually governed by a set of rules or customs, which serve to ensure fair competition, and allow consistent adjudication of the winner. Winning can be determined by physical events such as scoring goals or crossing a line first. It can also be determined by judges who are scoring elements of the sporting performance, including objective or subjective measures such as technical performance or artistic impression.</p>
+  </article>
+  <article id="travel">
+    <p>Travel is the movement of people between relatively distant geographical locations, and can involve travel by foot, bicycle, automobile, train, boat, airplane, or other means, with or without luggage, and can be one way or round trip. Travel can also include relatively short stays between successive movements.</p>
+  </article>
+</div>
+</section>
+<script type="text/javascript">
+var nav_weather=document.getElementById("nav-weather");
+var nav_sport=document.getElementById("nav-sport");
+var nav_travel=document.getElementById("nav-travel");
+var weather=document.getElementById("weather");
+var sport=document.getElementById("sport");
+var travel=document.getElementById("travel");
+//设置sport和travel初始状态不显示
+sport.style.display = "none";
+travel.style.display = "none";
+//设置nav_weather初始状态为被点击效果
+nav_weather.className = "active";
+nav_weather.onclick = function(){
+	hideAll();
+	weather.style.display = "block";
+	nav_weather.className = "active";
+}
+nav_sport.onclick = function(){
+	hideAll();
+	sport.style.display = "block";
+	nav_sport.className = "active";
+}
+nav_travel.onclick = function(){
+	hideAll();
+	travel.style.display = "block";
+	nav_travel.className = "active";
+}
+function hideAll(){ //将所有内容都设置为隐藏，所有链接的样式类都清除
+	weather.style.display = "none";
+	sport.style.display = "none";
+	travel.style.display = "none";
+	nav_weather.className = "";
+	nav_sport.className = "";
+	nav_travel.className = "";
+}
+</script>
+</body>
+</html>

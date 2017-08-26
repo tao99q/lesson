@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test</title>
+<style type="text/css">
+@font-face {
+	font-family: 'icon-font';
+	src: url('font/flat-ui-icons-regular.ttf'), url('font/flat-ui-icons-regular.eot'), url('font/flat-ui-icons-regular.woff'), url('font/flat-ui-icons-regular.svg');
+}
+body {
+	background:#16A085;
+	margin:40px;
+	color:#FFF;
+	font-family:sans-serif;
+}
+#audio-player{
+	width:480px;
+	height:100px;
+	border-radius:20px;
+	border:2px solid rgba(255,255,255,.8);
+	position:relative;
+}
+#audio-player button{
+	font-size:0;
+	background:none;
+	border:0;
+	position:absolute;
+}
+#play{
+	left:0px;
+}
+#pause{
+	left:50px;
+}
+#play::after{
+	content:'\e616';
+	font-size:36px;
+	font-family: 'icon-font';
+	color:#FFF;
+	line-height:100px;
+	cursor:pointer;
+}
+#play:hover::after{
+	color:rgba(255,255,255,.8);
+}
+#pause::after{
+	content:'\e615';
+	font-size:36px;
+	font-family: 'icon-font';
+	color:#FFF;
+	line-height:100px;
+	cursor:pointer;
+}
+#pause:hover::after{
+	color:rgba(255,255,255,.8);
+}
+#progress-bar{
+	width:0px;
+	background:#FFF;
+	z-index:100;
+}
+#progress-bg{
+	width:240px;
+	background:rgba(255,255,255,.3);
+	z-index:200;
+}
+.progress{
+	position:absolute;
+	height:10px;
+	top:45px;
+	left:150px;
+	border-radius:10px;
+}
+#play-status{
+	position:absolute;
+	left:420px;
+}
+#play-status.mute::after{
+	content:'\e618';
+	font-size:36px;
+	font-family: 'icon-font';
+	color:#FFF;
+	line-height:100px;
+	cursor:pointer;
+}
+#play-status.unmute::after{
+	content:'\e617';
+	font-size:36px;
+	font-family: 'icon-font';
+	color:#FFF;
+	line-height:100px;
+	cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<audio id="music" src="music.mp3"></audio>
+<div id="audio-player">
+  <button id="play">Play</button>
+  <button id="pause">Pause</button>
+  <div id="progress-bar" class="progress"></div>
+  <div id="progress-bg" class="progress"></div>
+  <div id="play-status" class="mute"></div>
+</div>
+
+<script type="text/javascript">
+
+var player = document.getElementById("audio-player");
+var play = document.getElementById("play");
+var pause = document.getElementById("pause");
+var bar = document.getElementById("progress-bar");
+var music = document.getElementById("music");
+var barbg = document.getElementById("progress-bg");
+var totalWidth = barbg.offsetWidth;
+var playstatus = document.getElementById("play-status");
+play.onclick = function(){
+	music.play();
+	playstatus.className = "unmute";
+}
+pause.onclick = function(){
+	music.pause();
+	playstatus.className = "mute";
+}
+music.addEventListener("timeupdate", showProgress);
+function showProgress(){
+	var progress = music.currentTime / music.duration;
+	bar.style.width = progress*totalWidth + "px";
+	if(progress>=1){
+		music.src = 'music.mp3';  
+    music.play(); 
+	}
+}
+barbg.onmousedown = function(e){
+	var pos = e.clientX - barbg.offsetLeft - player.offsetLeft;
+	music.currentTime = music.duration * pos / totalWidth;
+}
+
+</script>
+</body>
+</html>

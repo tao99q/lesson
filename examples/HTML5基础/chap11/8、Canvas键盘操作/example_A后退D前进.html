@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+html, body {
+	height:100%;
+	margin:0;
+	padding:0;
+}
+#myCanvas{
+	background:url(images/bg.png);
+	background-size:cover;
+}
+</style>
+</head>
+
+<body>
+<canvas id="myCanvas">
+Your browser does not support the canvas element.
+</canvas>
+<script type="text/javascript">
+var canvas=document.getElementById("myCanvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var context=canvas.getContext("2d");
+var sequence = []; //创建一个数组来容纳人物跑步的每帧图像
+var frameCount = 1; //人物动画的当前帧，默认为第1帧
+var frameTotal = 12; //人物动画的总的帧数
+var man = {}; //创建一个对象来对应正在跑步的游戏人物
+man.vx = 0; //设置水平方向上的速度默认为0
+man.x = 50; //设置游戏人物的起始x位置
+man.y = window.innerHeight - 410; //设置游戏人物的起始y位置
+for(var i=1;i<=frameTotal;i++){
+	loadImg("images/run_"+i+".png"); //循环调用loadImg函数来加载所有动画帧的图像
+}
+function loadImg(url){
+	var img = new Image(); //创建一个Image对象
+	img.src = url; //加载该路径对应的图像文件
+	sequence.push(img); //将该图像放入sequence数组中
+}
+function run(e){
+	man.x += man.vx; //根据动画人物的水平方向速度更新其坐标位置
+	if(man.x>canvas.width){ //当人物移动到画布右侧之外时
+		man.x = -300; //使人物回到画布最左侧
+	}
+	if(man.x<-300){ //当人物移动到画布左侧之外时
+		man.x = canvas.width; //使人物回到画布最右侧
+	}
+	frameCount++; //刷新当前帧数
+	if(frameCount>=frameTotal){ //如果当前帧数大于了总帧数
+		frameCount = 1; //使当前帧数回到第1帧
+	}
+	context.clearRect(0, 0, canvas.width, canvas.height); //清空画布显示
+	context.drawImage(sequence[frameCount],man.x,man.y); //在画布中绘制当前要显示的动画帧
+}
+setInterval(run, 100); //每100毫秒调用一次run，以播放一帧
+document.onkeydown = function(e) { //当按键按下时触发
+	if (e.keyCode == 68) { //当按下的键为“D”键时
+		man.vx = 50; //x方向的速度为50
+	}else if (e.keyCode == 65) { //当按下的键为“A”键时
+		man.vx = -50; //x方向的速度为-50
+	}
+}; 
+document.onkeyup = function(e) { //当按键松开时触发
+	man.vx = 0; //重置x方向的速度为0
+}; 
+</script>
+</body>
+</html>

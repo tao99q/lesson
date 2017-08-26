@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:#95A5A6;
+	margin:50px;
+}
+#container{
+	width:960px;
+	margin:0 auto;
+}
+.col{
+	-webkit-column-count: 3;
+	-webkit-column-gap: 10px;
+	-webkit-column-fill: auto;
+	-moz-column-count: 3;
+	-moz-column-gap: 10px;
+	-moz-column-fill: auto;
+	column-count: 3;
+	column-gap: 15px;
+	column-fill: auto;
+}
+.pic{
+	display: inline-block;
+	box-sizing:border-box;
+	width:300px;
+	background:#FFF;
+	padding:20px;
+	box-shadow:0 0 5px rgba(0,0,0,.5);
+	margin-bottom:20px;
+	-webkit-column-break-inside: avoid;
+	-moz-column-break-inside: avoid;
+	column-break-inside: avoid;
+}
+.pic img{
+	width:260px;
+}
+</style>
+</head>
+
+<body>
+<div id="container">
+  <div class="col">
+    <div class="pic">
+      <img src="images/1.jpg">
+      <p>In sagittis sit amet lacus non luctus. In hac habitasse platea dictumst. Donec consequat felis odio, non mollis ipsum dictum blandit.</p>
+    </div>
+    <div class="pic">
+      <img src="images/2.jpg">
+      <p>Vestibulum sapien elit, malesuada in augue quis, ultrices volutpat massa.</p>
+    </div>
+    <div class="pic">
+      <img src="images/3.jpg">
+      <p>Aliquam ut euismod mi. Suspendisse nec justo tincidunt, cursus mauris in, ullamcorper mauris.</p>
+    </div>
+    <div class="pic">
+      <img src="images/4.jpg">
+      <p>Fusce maximus odio in dolor iaculis, finibus pulvinar nisl blandit.</p>
+    </div>
+    <div class="pic">
+      <img src="images/5.jpg">
+      <p>Cras pretium interdum orci eu mollis.</p>
+    </div>
+    <div class="pic">
+      <img src="images/6.jpg">
+      <p>Maecenas at urna pellentesque, suscipit massa et, mattis odio. Duis quis egestas ligula, quis faucibus felis.</p>
+    </div>
+    <div class="pic">
+      <img src="images/7.jpg">
+      <p>Integer quis justo ornare, tempor purus at, efficitur justo.</p>
+    </div>
+    <div class="pic">
+      <img src="images/8.jpg">
+      <p>Sed libero lectus, mollis non feugiat sed, viverra at dolor.</p>
+    </div>
+    <div class="pic">
+      <img src="images/9.jpg">
+      <p>Mauris mattis orci a ligula molestie consequat.</p>
+    </div>
+    <div class="pic">
+      <img src="images/10.jpg">
+      <p>Aenean quis quam ac ex viverra pulvinar nec non lectus.</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+	box-sizing:border-box;
+}
+body {
+	background:#FFF;
+	font-family:"Helvetica Neue", sans-serif;
+	margin:50px;
+}
+#timeline{
+	margin-left:30%;
+	border-left:10px solid #bce1fa;
+}
+#timeline li{
+	list-style:none;
+	display:block;
+	width:100%;
+	clear:both;
+	position:relative;
+}
+#timeline li::before{
+	content:'';
+	display:block;
+	border-radius:50%;
+	background:#3498DB;
+	width:30px;
+	height:30px;
+	border:5px solid #bce1fa;
+	position:absolute;
+	left:-25px;
+	top:0;
+}
+#timeline li time{
+	left:-25%;
+	top:8px;
+	width:20%;
+	position:absolute;
+	font-size:21px;
+	color:#AAA;
+	text-align:right;
+}
+.timeline-content{
+	margin:0 0 20px 5%;
+	background:#57b4f6;
+	color:#FFF;
+	padding:30px;
+	border-radius:4px;
+	position:relative;
+}
+.timeline-content h1{
+	font-size:32px;
+	margin-bottom:20px;
+}
+.timeline-content::after{
+	content:'';
+	width:0;
+  height:0;
+  border-width:10px;
+  border-style:solid;
+  border-color:transparent #57b4f6 transparent transparent;
+	position:absolute;
+	left:-20px;
+	top:12px;
+}
+</style>
+</head>
+
+<body>
+<ul id="timeline">
+  <li>
+    <time datetime="2015-09-18">2015-9-18</time>
+    <div class="timeline-content">
+      <h1>Pablo Groisman</h1>
+      <p>Ut ut magna ligula. Praesent vitae vestibulum magna. In lobortis metus non consequat vehicula. Fusce massa magna, pretium ut augue non, vehicula egestas leo. Ut lacinia viverra nunc, ut lobortis orci imperdiet id. Fusce dolor nulla, tempus vel dolor vel, accumsan facilisis sem. Curabitur congue odio a sem imperdiet finibus.</p>
+    </div>
+  </li>
+  <li>
+    <time datetime="2015-09-14">2015-9-14</time>
+    <div class="timeline-content">
+      <h1>Elliptic Equation</h1>
+      <p>Pellentesque sagittis et sapien sit amet bibendum. Vestibulum eu purus quis ipsum sollicitudin ornare. Ut diam justo, lacinia id ante non, hendrerit pharetra felis. Donec dignissim in libero eu imperdiet. Nunc magna felis, ultrices eu nunc ac, aliquam imperdiet odio. Integer blandit velit vestibulum ex laoreet placerat. </p>
+    </div>
+  </li>
+  <li>
+    <time datetime="2015-09-13">2015-9-13</time>
+    <div class="timeline-content">
+      <h1>Praesent nulla</h1>
+      <p>Aenean id nisl vestibulum ex venenatis gravida vel ac neque. Nulla at lacinia eros. In placerat semper orci, id facilisis risus interdum nec. Fusce velit dui, aliquam egestas aliquet vulputate, imperdiet sed ante. Proin pretium arcu ac augue varius consequat.</p>
+    </div>
+  </li>
+  <li>
+    <time datetime="2015-09-12">2015-9-12</time>
+    <div class="timeline-content">
+      <h1>Aenean mauris</h1>
+      <p>Duis vehicula semper velit quis semper. Integer placerat tincidunt ipsum. Nulla facilisi. Aenean ut sapien varius, tincidunt justo nec, dictum orci. Donec fringilla nibh et felis eleifend porttitor. Etiam in molestie dui. Praesent nec neque id lectus egestas luctus nec eget tellus.</p>
+    </div>
+  </li>
+  <li>
+    <time datetime="2015-09-10">2015-9-10</time>
+    <div class="timeline-content">
+      <h1>Fusce ultrices</h1>
+      <p>Sed turpis diam, lobortis eget neque sed, mollis egestas massa. Nunc dictum velit a nisl volutpat ullamcorper. Suspendisse vel posuere lacus. Nullam blandit erat ut fermentum facilisis. Nulla porttitor eget magna et finibus. Nullam nec leo tempus, gravida dolor id, dapibus magna. Aliquam erat volutpat.</p>
+    </div>
+  </li>
+</ul>
+</body>
+</html>

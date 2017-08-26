@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Example</title>
+<style type="text/css">
+body {
+	background:url(bg.jpg) no-repeat 50% 0;
+	font-family:'Helvetica Neue', sans-serif;
+	color:#FFF;
+}
+#slogan1,#slogan2,#slogan3{
+	position:relative;
+	height:500px;
+}
+#slogan1{
+	padding-top:200px;
+	text-align:center;
+}
+h1{
+	font-size:81px;
+	text-transform:uppercase;
+}
+h2{
+	font-size:32px;
+	font-weight:100;
+}
+
+#slogan2{
+	padding-top:50px;
+	text-align:center;
+}
+#slogan2 h1{
+	display:inline-block;
+	padding-top:20px;
+	padding-bottom:20px;
+	border-top:5px solid #FFF;
+	border-bottom:5px solid #FFF;
+}
+#slogan2 h2{
+	margin-top:0;
+	padding-top:0;
+	font-size:26px;
+}
+
+#slogan1{
+	opacity:0;
+	-webkit-transition:all 2s .5s;
+	transition:all 2s .5s;
+}
+#slogan1.show{
+	opacity:.8;
+}
+
+
+#slogan2{
+	-webkit-transform-style: preserve-3d;
+}
+#slogan2 h1{
+	opacity:0;
+	-webkit-transform:scaleY(0);
+	transform:scaleY(0);
+	-webkit-transition:all 1s;
+	transition:all 1s;
+	-webkit-backface-visibility:hidden;
+}
+#slogan2 h2{
+	opacity:0;
+	-webkit-transform:scaleX(0);
+	transform:scaleX(0);
+	-webkit-transition:all 1s .5s;
+	transition:all 1s .5s;
+	-webkit-backface-visibility:hidden;
+}
+#slogan2 h1.scrolled{
+	opacity:1;
+	-webkit-transform:scaleY(1);
+	transform:scaleY(1);
+}
+#slogan2 h2.scrolled{
+	opacity:1;
+	-webkit-transform:scaleX(1);
+	transform:scaleX(1);
+}
+
+#slogan3{
+	-webkit-transform-style: preserve-3d;
+}
+#slogan3 h1{
+	opacity:0;
+	-webkit-transform:translateX(-200px);
+	transform:translateX(-200px);
+	-webkit-transition:all 1.5s;
+	transition:all 1.5s;
+	-webkit-backface-visibility:hidden;
+}
+#slogan3 h2{
+	opacity:0;
+	-webkit-transform:translateX(200px);
+	transform:translateX(200px);
+	-webkit-transition:all 1.5s .25s;
+	transition:all 1.5s .25s;
+	-webkit-backface-visibility:hidden;
+}
+#slogan3 img{
+	opacity:0;
+	-webkit-transform:translateX(200px);
+	transform:translateX(200px);
+	-webkit-transition:all 1.5s .5s;
+	transition:all 1.5s .5s;
+	-webkit-backface-visibility:hidden;
+}
+#slogan3 h1.scrolled, #slogan3 h2.scrolled, #slogan3 img.scrolled{
+	opacity:1;
+	-webkit-transform:translateX(0px);
+	transform:translateX(0px);
+}
+
+#slogan3 h1{
+	position:absolute;
+	font-size:72px;
+	left:10%;
+	top:60px;
+}
+#slogan3 h2{
+	position:absolute;
+	font-size:24px;
+	left:10%;
+	width:650px;
+	top:200px;
+}
+#slogan3 img{
+	position:absolute;
+	left:60%;
+	top:100px;
+}
+
+</style>
+</head>
+
+<body>
+<div id="slogan1">
+  <h1>Donec fringilla</h1>
+  <h2>Aenean cursus metus nec sem aliquet maximus in ut felis. </h2>
+</div>
+<div id="slogan2">
+  <h1>Pellentesque</h1>
+  <h2>Mauris tortor enim vehicula ac blandit varius semper non lacus.</h2>
+</div>
+<div id="slogan3">
+  <h1>Vestibulum</h1>
+  <h2>Class aptent taciti sociosqu ad litora torquent per inceptos himenaeos.</h2>
+  <img src="car.png" alt="car">
+</div>
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	var windowHeight = $(window).height();
+	var slogan2_y = $('#slogan2').offset().top;
+	var slogan3_y = $('#slogan3').offset().top;
+	var buffer = 200;
+	$('#slogan1').addClass('show');
+	$(window).scroll(function(){
+			pos = $(window).scrollTop();
+			if(pos > slogan2_y-buffer){
+				$('#slogan2 > h1').addClass('scrolled');
+				$('#slogan2 > h2').addClass('scrolled');
+			}
+			if(pos < slogan2_y-windowHeight+buffer){
+				$('#slogan2 > h1').removeClass('scrolled');
+				$('#slogan2 > h2').removeClass('scrolled');
+			}
+			if(pos > slogan3_y-buffer){
+				$('#slogan3 > h1').addClass('scrolled');
+				$('#slogan3 > h2').addClass('scrolled');
+				$('#slogan3 > img').addClass('scrolled');
+			}
+			if(pos < slogan3_y-windowHeight+buffer){
+				$('#slogan3 > h1').removeClass('scrolled');
+				$('#slogan3 > h2').removeClass('scrolled');
+				$('#slogan3 > img').removeClass('scrolled');
+			}
+	})
+});
+</script>
+</body>
+</html>

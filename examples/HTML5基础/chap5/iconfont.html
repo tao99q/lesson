@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Icon Font</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<style type="text/css">
+@font-face {
+	font-family:'my-icon-font';
+  src:url('my-icon-font.ttf'),url('my-icon-font.eot'),url('my-icon-font.woff');
+}
+body {
+	background:#2ECC71;
+	color:#fff;
+	font-size:50px;
+	font-family:sans-serif;
+	margin:70px;
+}
+
+h1{
+	font-weight:normal;
+	text-shadow:8px 10px 0 rgba(0,0,0,.2);
+}
+h1::before{
+	font-family:'my-icon-font';
+	content: "\e63f";
+	font-size:.85em;
+	margin-right:20px;
+}
+</style>
+</head>
+
+<body>
+<h1>Example</h1>
+</body>
+</html>

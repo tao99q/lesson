@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<style type="text/css">
+body {
+	background:#E67E22;
+	text-align:center;
+	margin:40px;
+	color:#FFF;
+	font-family:sans-serif;
+}
+img{
+	width:200px;
+	margin-left:50px;
+	animation:page_shake 1s ease infinite;
+	-webkit-animation:page_shake 1s ease infinite;
+}
+h1{
+	border-bottom:1px solid rgba(255,255,255,.5);
+	padding-bottom:20px;
+	font-size:50px;
+}
+p{
+	line-height:150%;
+}
+@keyframes page_shake {
+	from {
+	transform:rotate(0deg);
+	}
+	4% {
+	transform:rotate(5deg);
+	}
+	12.5% {
+	transform:rotate(-5deg);
+	}
+	21% {
+	transform:rotate(5deg);
+	}
+	29% {
+	transform:rotate(-5deg);
+	}
+	37.5% {
+	transform:rotate(5deg);
+	}
+	46% {
+	transform:rotate(-5deg);
+	}
+	50%, to {
+	transform:rotate(0deg);
+	}
+}
+
+@-webkit-keyframes page_shake {
+	from {
+	-webkit-transform:rotate(0deg);
+	}
+	4% {
+	-webkit-transform:rotate(5deg);
+	}
+	12.5% {
+	-webkit-transform:rotate(-5deg);
+	}
+	21% {
+	-webkit-transform:rotate(5deg);
+	}
+	29% {
+	-webkit-transform:rotate(-5deg);
+	}
+	37.5% {
+	-webkit-transform:rotate(5deg);
+	}
+	46% {
+	-webkit-transform:rotate(-5deg);
+	}
+	50%, to {
+	-webkit-transform:rotate(0deg);
+	}
+}
+</style>
+</head>
+
+<body>
+<img src="shake.png">
+<h1>摇一摇</h1>
+<p id="status"></p>
+<script type="text/javascript">
+var threshold = 5000; //设置一个摇动的阈值
+var x, y, z, lastx, lasty, lastz = 0; //本次摇晃和上一次摇晃时设备的x、y和z轴上的加速度值，初始为0
+var lastTime, curTime; //本次摇晃和上一次摇晃对应的时间
+if (window.DeviceMotionEvent) { //如果浏览器支持运动传感事件
+	window.addEventListener('devicemotion', deviceMotionHandler); //侦听devicemotion事件
+} else {
+	document.getElementById("status").innerHTML = "本设备不支持摇一摇"; //否则将输出不支持字样
+}
+lastTime = new Date().getTime(); //获取当前的时间
+function deviceMotionHandler(eventData) { //在侦听到devicemotion事件时触发本函数
+	var acceleration = eventData.accelerationIncludingGravity; //获取含重力在内的加速度值
+	x = acceleration.x; //分别获取x、y、z轴的加速度值
+	y = acceleration.y;
+	z = acceleration.z;
+	//document.getElementById("status").innerHTML = "x:"+x+", y:"+y+", z:"+z;
+	curTime = new Date().getTime(); //获取当前时间
+	if((curTime - lastTime)>100){ //当前时间距上一次时间相差100毫秒时，执行下列代码
+		//将各轴的加速度值变化量除以时间值，并乘以10000，以得到一个相对的速度值
+		var speed = Math.abs(x + y + z - lastx - lasty - lastz) / (curTime - lastTime) * 10000;
+		document.getElementById("status").innerHTML = "您的摇一摇速度达到了"+speed; //在页面中显示当前速度
+		lastTime = curTime;
+		lastx = x;
+		lasty = y;
+		lastz = z;
+	}
+	if(speed > threshold){ //当速度大于所设阈值时
+		//alert("恭喜您获得红包！");
+		window.removeEventListener('devicemotion', deviceMotionHandler); //移除devicemotion事件侦听
+		document.getElementById("status").innerHTML = "恭喜您获得红包！"; //提示用户获得红包
+	}	
+}
+</script>
+</body>
+</html>
