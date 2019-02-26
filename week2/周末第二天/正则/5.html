@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script type="text/javascript">
+    let str = "font-family:'宋体_GB2312';font-size:'16px';font-family:'宋体_GB23121';";
+    var reg = /(font-family)+:'([\w\u4e00-\u9fa5-]+)';?/g;
+    str = str.replace(reg, function () {
+        console.log(arguments);
+        return arguments[1]+":'';";
+    });
+    console.log(str);
+</script>
+</body>
+</html>

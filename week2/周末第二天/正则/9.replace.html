@@ -32,6 +32,7 @@
         //console.log(arguments)
         return arguments[1]+":'"+arguments[2]+"',";
     });
+    console.log(str);
     str=str.substr(0,str.length-1);
     var obj=eval("({"+str+"})");
     console.log(obj);
